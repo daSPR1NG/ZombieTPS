@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9749591cddcc69248a5d6d48366b15d3, type: 3}
+  m_Name: Weapon_AssaultRiffle_Auto
+  m_EditorClassIdentifier: 
+  _type: 2
+  _damage: 10
+  _ammoFiredPerShot: 1
+  _fireRate: 0.12
+  _range: 15
+  _aimSpeed: 0.15
+  _maxAmmo: 150
+  _magAmount: 6
+  _timeToReload: 2.5
+  _recoilForce: 10
+  _impulseForce: 0.25
+  _prefab: {fileID: 2266614924684990292, guid: c952687555fccac47b2e2394553fc362, type: 3}
+  _icon: {fileID: 21300040, guid: 10045ad39fef69944b33bedc39310592, type: 3}
+  _muzzleFlashPf: {fileID: 5426031798781912364, guid: 12a91f77ed72e8d4388cd5a419e6e464,
+    type: 3}
+  _bulletTrailPf: {fileID: 5409875807907865768, guid: 19d24228ea6028f40af3675a8b2cbd1a,
+    type: 3}
+  _bulletPf: {fileID: 4974453963120927326, guid: 9dceb17467781e644a34a5cd63eee64a,
+    type: 3}
+  EmitsSound: 1
+  <WeaponAudioSettingList>k__BackingField: {fileID: 11400000, guid: e8b943fdeb8505f4fa0844ab15b8c83c,
+    type: 2}

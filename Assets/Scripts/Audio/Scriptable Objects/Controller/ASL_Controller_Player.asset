@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 483ec195fcdc97847ad9ed6ce819b523, type: 3}
+  m_Name: ASL_Controller_Player
+  m_EditorClassIdentifier: 
+  _controllerAudioSettings:
+  - _name: Controller - Player
+    _audioClip: {fileID: 0}
+    _pitchMinValue: 1
+    _pitchMaxValue: 1
+    _volumeMinValue: 0.5
+    _volumeMaxValue: 0.5
+    _relatedControllerAction: 1

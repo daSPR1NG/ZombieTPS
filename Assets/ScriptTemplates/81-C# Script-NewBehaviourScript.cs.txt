@@ -1,0 +1,28 @@
+using UnityEngine;
+
+namespace Khynan_Coding
+{
+	#ROOTNAMESPACEBEGIN#
+    public class #SCRIPTNAME# : MonoBehaviour
+    {
+        #region Public References
+
+        #endregion
+
+        void Start()
+        {
+            Init();
+        }
+
+        void Update()
+        {
+            #NOTRIM#
+        }
+
+        void Init()
+        {
+            //Set all datas that need it at the start of the game
+        }
+    }
+    #ROOTNAMESPACEEND#
+}

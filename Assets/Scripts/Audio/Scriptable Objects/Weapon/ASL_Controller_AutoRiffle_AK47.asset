@@ -1,0 +1,78 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac47656aaf9cb5d428ca3735aba17341, type: 3}
+  m_Name: ASL_Controller_AutoRiffle_AK47
+  m_EditorClassIdentifier: 
+  _weaponAudioSettings:
+  - _name: Shoot
+    _audioClip: {fileID: 8300000, guid: 097e8235e0162d64ba53da9ef4ab8d61, type: 3}
+    _pitchMinValue: 0.85
+    _pitchMaxValue: 0.9
+    _volumeMinValue: 0.15
+    _volumeMaxValue: 0.25
+    _relatedWeaponAction: 1
+  - _name: Reload - Start
+    _audioClip: {fileID: 8300000, guid: 13970bb949c55ed4f8fd2d295b4d57ff, type: 3}
+    _pitchMinValue: 1
+    _pitchMaxValue: 1
+    _volumeMinValue: 0.6
+    _volumeMaxValue: 0.6
+    _relatedWeaponAction: 2
+  - _name: Reload - Mid
+    _audioClip: {fileID: 8300000, guid: d008fd04e07b5eb409883d06e6a5b600, type: 3}
+    _pitchMinValue: 1
+    _pitchMaxValue: 1
+    _volumeMinValue: 0.6
+    _volumeMaxValue: 0.6
+    _relatedWeaponAction: 3
+  - _name: Reload - End
+    _audioClip: {fileID: 8300000, guid: ae573e2a03602ea47a17975e3990a264, type: 3}
+    _pitchMinValue: 1
+    _pitchMaxValue: 1
+    _volumeMinValue: 0.6
+    _volumeMaxValue: 0.6
+    _relatedWeaponAction: 4
+  - _name: Mag Empty
+    _audioClip: {fileID: 8300000, guid: e65efcf0618be5e4aa5a7ba55e73eb6e, type: 3}
+    _pitchMinValue: 0
+    _pitchMaxValue: 3
+    _volumeMinValue: 0
+    _volumeMaxValue: 0.15
+    _relatedWeaponAction: 5
+  - _name: No Ammo Left
+    _audioClip: {fileID: 8300000, guid: 9c5ac02550d31504ebb57020dde8e988, type: 3}
+    _pitchMinValue: 0
+    _pitchMaxValue: 1
+    _volumeMinValue: 0
+    _volumeMaxValue: 1
+    _relatedWeaponAction: 6
+  - _name: Swap - Equip
+    _audioClip: {fileID: 8300000, guid: 97cc681a105798a44916efd675389042, type: 3}
+    _pitchMinValue: 0
+    _pitchMaxValue: 1
+    _volumeMinValue: 0
+    _volumeMaxValue: 1
+    _relatedWeaponAction: 7
+  - _name: Aim
+    _audioClip: {fileID: 8300000, guid: b6c0d23db0a9040448ebbc333b284e8f, type: 3}
+    _pitchMinValue: 0
+    _pitchMaxValue: 1.75
+    _volumeMinValue: 0
+    _volumeMaxValue: 0.5
+    _relatedWeaponAction: 8
+  - _name: UnAim
+    _audioClip: {fileID: 8300000, guid: e7d53cc2fd45cce47a9dd9b17b7668a6, type: 3}
+    _pitchMinValue: 0
+    _pitchMaxValue: 3
+    _volumeMinValue: 0
+    _volumeMaxValue: 0.25
+    _relatedWeaponAction: 9
