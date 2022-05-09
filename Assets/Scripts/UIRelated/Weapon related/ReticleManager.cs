@@ -71,7 +71,7 @@ namespace Khynan_Coding
             Actions.OnReloadEnded += HideReloadFeedback;
             Actions.OnReloadEnded += HideReloadReticle;
 
-            Actions.OnHittingEnemy += DisplayHitMarker;
+            Actions.OnHittingValidTarget += DisplayHitMarker;
         }
 
         private void OnDisable()
@@ -89,7 +89,7 @@ namespace Khynan_Coding
             Actions.OnReloadEnded -= HideReloadFeedback;
             Actions.OnReloadEnded -= HideReloadReticle;
 
-            Actions.OnHittingEnemy -= DisplayHitMarker;
+            Actions.OnHittingValidTarget -= DisplayHitMarker;
         }
 
         void Start() => Init();

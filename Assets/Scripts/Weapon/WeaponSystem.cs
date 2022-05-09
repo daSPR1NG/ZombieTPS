@@ -37,9 +37,6 @@ namespace Khynan_Coding
         [Header("RIG SETTINGS")]
         [Range(10, 100)][SerializeField] private float aimingRigTransitionDuration = 1.25f;
 
-        [Header("Debug")]
-        [SerializeField] private GameObject bulletImpactDebugger;
-
         #region Inputs
         private PlayerInput _playerInput;
         private InputAction _shoot;
@@ -52,8 +49,6 @@ namespace Khynan_Coding
 
         private bool _canShoot = true;
         private float _shootingCD = 0;
-        private float _resetToIdlePositionDelay = .175f;
-        private float _sinceHasShotTimer = 0.1f;
 
         private bool _isReloading = false;
         private float _reloadTimer = 0;
@@ -187,7 +182,7 @@ namespace Khynan_Coding
         #region Shoot
         private void Shoot()
         {
-            // The pause state is already handled directly in Update.
+            // Notes : The pause state is already handled directly in Update.
 
             if (!_canShoot || IsReloading || !_shoot.IsPressed() || !_autoReload && EquippedWeapon.GetCurrentAmmo() <= 0) 
             {
@@ -215,8 +210,6 @@ namespace Khynan_Coding
 
             FireBullet();
 
-            _sinceHasShotTimer = _resetToIdlePositionDelay;
-
             _canShoot = false;
         }
 
@@ -235,10 +228,7 @@ namespace Khynan_Coding
                 Debug.Log("Shot on " + hit.transform.name);
                 _thirdPersonController.RotateCharacterTowardsTargetRotation(transform, Quaternion.Euler(0, _thirdPersonController.CinemachineTargetYaw, 0));
 
-                //Decal setup
-                GameObject debugBullet = Instantiate(bulletImpactDebugger, hit.point, Quaternion.LookRotation(hit.normal));
-
-                ApplyDamageOnValidTarget(hit.transform, hit.collider);
+                ApplyDamageOnValidTarget(hit.transform, hit);
 
                 CreateBulletTrail(hit);
             }
@@ -264,24 +254,24 @@ namespace Khynan_Coding
             HandleBurst();
         }
 
-        private void ApplyDamageOnValidTarget(Transform target, Collider collider)
+        private void ApplyDamageOnValidTarget(Transform target, RaycastHit raycastHit)
         {
             float damageToApply = 0;
 
-            TPSCollider hitCollider = collider.transform.GetComponent<TPSCollider>();
+            TPSCollider tpsColliderFound = raycastHit.collider.GetComponent<TPSCollider>();
             //Debug.Log("Body part touched : " + hitCollider.ColliderBodyPart.ToString());
 
-            if (hitCollider)
+            if (tpsColliderFound)
             {
-                switch (hitCollider.ColliderType)
-                {
-                    case ColliderType.Head:
-                        damageToApply = (EquippedWeapon.GetDamage() * 2);
-                        break;
-                    case ColliderType.Body:
-                        damageToApply = EquippedWeapon.GetDamage();
-                        break;
-                }
+                // Decal
+                tpsColliderFound.InstantiateHitEffect(raycastHit.point, Quaternion.LookRotation(raycastHit.normal));
+
+                // Play Hit Sound
+                tpsColliderFound.PlayOnHitSound();
+
+                // Update damage done weither if the shot hit the head or any other bodypart.
+                damageToApply = 
+                    tpsColliderFound.ColliderType == ColliderType.Head ? (EquippedWeapon.GetDamage() * 2) : EquippedWeapon.GetDamage();
             }
 
             StatsManager targetStats = target.GetComponent<StatsManager>();
@@ -290,10 +280,10 @@ namespace Khynan_Coding
             {
                 targetStats.ApplyDamageToTarget(transform, target, damageToApply);
 
-                ScoreGiver scoreEarning = target.GetComponent<ScoreGiver>();
-                Actions.OnShootingEnemyAddScore?.Invoke(scoreEarning.GetScoreData(ScoreDataType.OnHit).Value);
+                ScoreGiver scoreGiver = target.GetComponent<ScoreGiver>();
+                scoreGiver.GiveScoreToTarget(transform, scoreGiver.GetScoreData(ScoreDataType.OnHit));
 
-                Actions.OnHittingEnemy?.Invoke();
+                Actions.OnHittingValidTarget?.Invoke();
             }
         }
 

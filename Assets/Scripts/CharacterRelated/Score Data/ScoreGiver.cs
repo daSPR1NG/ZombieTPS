@@ -11,6 +11,21 @@ namespace Khynan_Coding
         public List<ScoreData> ScoreDatas { get => scoreDatas; }
         #endregion
 
+        public void GiveScoreToTarget(Transform target, ScoreData scoreData)
+        {
+            int scoreValue = 0;
+
+            ScoreManager scoreManager = target.GetComponent<ScoreManager>();
+
+            scoreValue = Mathf.CeilToInt(scoreData.Value * GameManager.Instance.ScoreMultiplier);
+            scoreManager.AddValueToGlobalScore(scoreValue);
+
+            Debug.Log("Score added : " + scoreValue);
+
+            // Call event that sends message to UI handling the score
+            Actions.OnAddingScore?.Invoke(scoreValue);
+        }
+
         public ScoreData GetScoreData(ScoreDataType scoreDataType)
         {
             if (scoreDatas.Count == 0)

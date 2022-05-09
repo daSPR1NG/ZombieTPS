@@ -10,6 +10,7 @@ namespace Khynan_Coding
     [System.Serializable]
     public class ScoreData
     {
+        [SerializeField] private string _name;
         [SerializeField] private ScoreDataType type;
         [SerializeField] private int value;
 

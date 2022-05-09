@@ -5,7 +5,7 @@ namespace Khynan_Coding
 {
     public enum ColliderType
     {
-        Unassigned, None, Head, Body, Surface_Wood, Surface_Metal, Surface_Dirt, Surface_Glass // ...
+        Unassigned, None, Head, Body, Surface_Wood, Surface_Metal, Surface_Dirt, Surface_Glass, Forearm, Arm // ...
     }
 
     [RequireComponent(typeof(AudioSource))]
@@ -18,6 +18,9 @@ namespace Khynan_Coding
         [Header("AUDIO SETTINGS")]
         [SerializeField] private bool _emitsHitSound = false;
         [SerializeField] private ColliderAudioSettingList _colliderAudioSettingList;
+
+        [Header("LOOK")]
+        [SerializeField] private GameObject _hitEffectPf;
 
         public ColliderType ColliderType { get => _colliderType; }
 
@@ -44,6 +47,13 @@ namespace Khynan_Coding
             AudioHelper.SetVolume(_audioSource, randomVolume);
 
             AudioHelper.PlaySound(_audioSource, controllerAudioSetting.GetAudioClip());
+        }
+
+        public void InstantiateHitEffect(Vector3 pos, Quaternion rot)
+        {
+            if (!_hitEffectPf) { return; }
+
+            Instantiate(_hitEffectPf, pos, rot);
         }
     }
 }

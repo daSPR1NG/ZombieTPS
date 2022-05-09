@@ -15,7 +15,12 @@ namespace Khynan_Coding
         [Header("GENERAL SETTINGS")]
         public GameState GameState = GameState.Play;
         public Transform ActivePlayer = null;
+
+        [Header("WAVES")]
         public int WaveCount;
+
+        [Header("SCORE")]
+        public float ScoreMultiplier = 1;
 
         private PlayerInput _playerInputReference;
 
@@ -155,6 +160,18 @@ namespace Khynan_Coding
 
             Actions.OnWaveCountValueChanged?.Invoke(WaveCount);
         }
+
+        #region Score Multiplier
+        public void ResetScoreMultiplierValue()
+        {
+            ScoreMultiplier = 1;
+        }
+
+        public void UpdateScoreMultiplierValue(float value)
+        {
+            ScoreMultiplier = value;
+        }
+        #endregion
 
         private void OnGUI()
         {

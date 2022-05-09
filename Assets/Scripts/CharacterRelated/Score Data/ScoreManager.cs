@@ -8,14 +8,14 @@ namespace Khynan_Coding
 
         private void OnEnable()
         {
-            Actions.OnShootingEnemyAddScore += AddValueToGlobalScore;
-            Actions.OnKillingEnnemyAddScore += AddValueToGlobalScore;
+            Actions.OnAddingScore += AddValueToGlobalScore;
+            Actions.OnAddingScore += AddValueToGlobalScore;
         }
 
         private void OnDisable()
         {
-            Actions.OnShootingEnemyAddScore -= AddValueToGlobalScore;
-            Actions.OnKillingEnnemyAddScore -= AddValueToGlobalScore;
+            Actions.OnAddingScore -= AddValueToGlobalScore;
+            Actions.OnAddingScore -= AddValueToGlobalScore;
         }
 
         void Start() => Init();

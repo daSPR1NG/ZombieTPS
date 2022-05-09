@@ -33,6 +33,8 @@ namespace Khynan_Coding
 
             AnimatorHelper.PlayThisAnimationOnThisLayer(_controller.Animator, 1, 1f, "IsDead", true);
 
+            DisableColliders(stateManager.transform);
+
             Helper.DebugMessage("Entering <DEATH> state", stateManager.transform);
         }
 
@@ -57,7 +59,18 @@ namespace Khynan_Coding
             if (_deathAnimationDuration <= 0)
             {
                 _deathAnimationDuration = 0;
-                _statsManager.HandleRendererOnDeath();
+                _statsManager.InstantiateDeathFX();
+            }
+        }
+
+        private void DisableColliders(Transform transform)
+        {
+            Collider selfCollider = transform.GetComponent<Collider>();
+            selfCollider.enabled = false;
+
+            foreach (Collider c in transform.GetComponentsInChildren<Collider>())
+            {
+                c.enabled = false;
             }
         }
     }

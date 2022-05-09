@@ -77,7 +77,7 @@ namespace Khynan_Coding
             {
                 if (_aspectCombinations[i].IsActive) 
                 {
-                    Debug.Log(_aspectCombinations[i].Name, transform);
+                    //Debug.Log(_aspectCombinations[i].Name, transform);
                     return _aspectCombinations[i]; 
                 }
             }

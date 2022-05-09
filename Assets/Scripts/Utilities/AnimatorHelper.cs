@@ -149,7 +149,7 @@ namespace Khynan_Coding
                 + animator.runtimeAnimatorController.animationClips[i].name
                 + " | Length : "
                 + animator.runtimeAnimatorController.animationClips[i].length + " | AverageDuration : "
-                + animator.runtimeAnimatorController.animationClips[i].length);
+                + animator.runtimeAnimatorController.animationClips[i].length, animator.transform);
             }
         }
 

@@ -13,11 +13,11 @@ MonoBehaviour:
   m_Name: Weapon_AssaultRiffle_Auto
   m_EditorClassIdentifier: 
   _type: 2
-  _damage: 10
+  _damage: 25
   _ammoFiredPerShot: 1
-  _fireRate: 0.12
+  _fireRate: 0.1
   _range: 15
-  _aimSpeed: 0.15
+  _aimSpeed: 0.1
   _maxAmmo: 150
   _magAmount: 6
   _timeToReload: 2.5

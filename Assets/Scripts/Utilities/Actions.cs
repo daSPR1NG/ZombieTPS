@@ -20,11 +20,13 @@ namespace Khynan_Coding
 
         public static Action<CharacterType> OnAimingInteractable;
 
-        public static Action OnHittingEnemy;
-        public static Action<int> OnShootingEnemyAddScore;
+        public static Action<int> OnAddingScore;
 
+        public static Action OnHittingValidTarget;
         public static Action OnEnemyDeath;
-        public static Action<int> OnKillingEnnemyAddScore;
+
+        public static Action<int> OnKillCountValueChanged;
+        public static Action OnKillCountStepReached;
 
         public static Action<int> OnGlobalScoreValueChanged;
 

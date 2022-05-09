@@ -218,8 +218,8 @@ namespace Khynan_Coding
 
             if (_defaultController) { PlayOnDeathSound(_defaultController.AudioSource); }
 
-            ScoreGiver scoreEarning = transform.GetComponent<ScoreGiver>();
-            Actions.OnShootingEnemyAddScore?.Invoke(scoreEarning.GetScoreData(ScoreDataType.OnDeath).Value);
+            ScoreGiver scoreGiver = transform.GetComponent<ScoreGiver>();
+            scoreGiver.GiveScoreToTarget(killer, scoreGiver.GetScoreData(ScoreDataType.OnDeath));
 
             DefaultController defaultController = GetComponent<DefaultController>();
             defaultController.SwitchState(defaultController.Death());
@@ -237,7 +237,7 @@ namespace Khynan_Coding
             return false;
         }
 
-        public void HandleRendererOnDeath()
+        public void InstantiateDeathFX()
         {
             if (_deathVFX) { Instantiate(_deathVFX, transform.position, transform.rotation); }
 
