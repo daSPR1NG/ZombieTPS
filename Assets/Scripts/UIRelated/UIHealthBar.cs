@@ -57,7 +57,8 @@ namespace Khynan_Coding
             _currentValue = current;
             _maxValue = max;
 
-            _healthValueText.SetText(current.ToString() + " / " + max.ToString());
+            _healthValueText.SetText(current.ToString());
+            //_healthValueText.SetText($"<size=18>{current}</size>" + " / " + $"<size=16><color=grey>{max}</color></size>");
 
             _healthFillImage.fillAmount = current / max;
             _damagedFillImage.fillAmount = current / max;

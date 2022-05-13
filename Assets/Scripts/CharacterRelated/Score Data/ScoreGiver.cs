@@ -26,7 +26,7 @@ namespace Khynan_Coding
             Actions.OnAddingScore?.Invoke(scoreValue);
         }
 
-        public ScoreData GetScoreData(ScoreDataType scoreDataType)
+        public ScoreData GetScoreData(ScoreRelatedActionName scoreDataType)
         {
             if (scoreDatas.Count == 0)
             {
@@ -36,7 +36,7 @@ namespace Khynan_Coding
 
             for (int i = 0; i < scoreDatas.Count; i++)
             {
-                if (scoreDatas[i].Type != scoreDataType) { continue; }
+                if (scoreDatas[i].ScoreRelatedActionName != scoreDataType) { continue; }
 
                 return scoreDatas[i];
             }

@@ -281,7 +281,7 @@ namespace Khynan_Coding
                 targetStats.ApplyDamageToTarget(transform, target, damageToApply);
 
                 ScoreGiver scoreGiver = target.GetComponent<ScoreGiver>();
-                scoreGiver.GiveScoreToTarget(transform, scoreGiver.GetScoreData(ScoreDataType.OnHit));
+                scoreGiver.GiveScoreToTarget(transform, scoreGiver.GetScoreData(ScoreRelatedActionName.OnHit));
 
                 Actions.OnHittingValidTarget?.Invoke();
             }
@@ -431,8 +431,8 @@ namespace Khynan_Coding
             _rigBuilderHelper.SetRigWeight(RigBodyPart.HeldObject_Shoot_Aim, 0);
             _rigBuilderHelper.SetRigWeight(RigBodyPart.HeldObject_Shoot_NoAim, 1);
 
-            _thirdPersonController.SetSensitivity(_thirdPersonController.LookingSensitivity);
-
+            if (!IsReloading) { _thirdPersonController.SetSensitivity(_thirdPersonController.LookingSensitivity); }
+            
             _followCamera.Priority = _followCameraPriority;
             _aimCamera.Priority = _aimCameraPriority;
         }
@@ -460,7 +460,6 @@ namespace Khynan_Coding
 
             if (_shoot.IsPressed() && !IsAiming)
             {
-                //_rigBuilderHelper.SetRigDataRigWeight(RigBodyPart.HeldObject_Shoot_NoAim, 1);
                 _thirdPersonController.RotateCharacterTowardsTargetRotation(transform, Quaternion.Euler(0, _thirdPersonController.CinemachineTargetYaw, 0));
 
                 _rigBuilderHelper.GetRigData(RigBodyPart.HeldObject_Shoot_NoAim).GetMultiAimConstraint().weight = 1;
@@ -584,7 +583,7 @@ namespace Khynan_Coding
             if (IsReloading) { return; }
 
             //Ammo amount is the same as the max amount currently stored in the mag so there is no need to reload
-            if (EquippedWeapon.GetCurrentAmmo() == EquippedWeapon.GetMaxAmmo()) { return; }
+            if (EquippedWeapon.GetCurrentAmmo() == EquippedWeapon.GetMaxMagAmmo()) { return; }
 
             //No max ammo left > no ammo at all so we can't reload for now
 
@@ -592,18 +591,23 @@ namespace Khynan_Coding
 
             Debug.Log("Reload");
 
-            // Reset the sensitivy the looking sensitivity.
-            _thirdPersonController.SetSensitivity(_thirdPersonController.LookingSensitivity);
+            // Reset the sensitivy. - notes : it is commented, because we use a method
+            // where the sensitivity is reseted overtime in Processreloading() below.
+            //_thirdPersonController.SetSensitivity(_thirdPersonController.LookingSensitivity);
 
             // Hide the muzzle flash.
             _muzzleFlashInstance.SetActive(false);
 
-            // Reset aiming state - we don't want to be aiming when we want to reload.
-            if (IsAiming){ CancelAim(); }
-            _rigBuilderHelper.SetRigWeight(RigBodyPart.HeldObject_Shoot_NoAim, 0);
+            //// Reset aiming state - we don't want to be aiming when we want to reload.
+            //if (IsAiming){ CancelAim(); }
+            //_rigBuilderHelper.SetRigWeight(RigBodyPart.HeldObject_Shoot_NoAim, 0);
 
             IsReloading = true;
             SetReloadingStateRigIKs(IsReloading);
+
+            // Reset aiming state - we don't want to be aiming when we want to reload.
+            //if (IsAiming) { CancelAim(); }
+            _rigBuilderHelper.SetRigWeight(RigBodyPart.HeldObject_Shoot_NoAim, 0);
 
             _reloadTimer = EquippedWeapon.GetReloadingTimer();
 
@@ -624,6 +628,9 @@ namespace Khynan_Coding
             IsReloading = false;
             SetReloadingStateRigIKs(IsReloading);
 
+            // Reset the sensitivy.
+            _thirdPersonController.SetSensitivity(_thirdPersonController.LookingSensitivity);
+
             Actions.OnReloadEndedSetWeaponData?.Invoke(EquippedWeapon);
             Actions.OnReloadEnded?.Invoke();
 
@@ -642,6 +649,9 @@ namespace Khynan_Coding
             if (!IsReloading) { return; }
 
             _reloadTimer -= Time.deltaTime;
+
+            // Reset the sensitivy overtime.
+            _thirdPersonController.SetSensitivityOvertime(_thirdPersonController.LookingSensitivity, 1);
 
             if (_reloadTimer <= 0)
             {

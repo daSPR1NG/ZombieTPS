@@ -5,7 +5,7 @@ namespace Khynan_Coding
 {
     public enum RelatedControllerAction
     {
-        Unassigned, OnDeath //....
+        Unassigned, OnDeath, OnJump, OnRoll //....
     }
 
     [DisallowMultipleComponent]

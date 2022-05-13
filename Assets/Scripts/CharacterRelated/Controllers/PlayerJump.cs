@@ -6,6 +6,7 @@ namespace Khynan_Coding
     public class PlayerJump : MonoBehaviour
     {
         [Header("JUMP")]
+        [SerializeField] private bool _hideHandsWhileInAir = false;
         [SerializeField] private float _jumpHeight = 5f;
        
         private Vector3 _velocity;
@@ -99,9 +100,7 @@ namespace Khynan_Coding
         {
             if (_isGrounded && !_playerInteractionHandler.IsInteracting)
             {
-                // Set the hand free state
-                //_rigBuilderHelper.DisableAllRigLayers();
-                //_rigBuilderHelper.HideHeldObject();
+                FreeHandsWhileInAir();
 
                 // Play the jump animation and apply the jump velocity
                 _thirdPersonController.Animator.SetBool(_animIDJump, true);
@@ -109,7 +108,7 @@ namespace Khynan_Coding
                 float jumpVelocity = _jumpHeight * _stickToGroundValue * _gravity;
 
                 _velocity.y = Mathf.Sqrt(jumpVelocity);
-                _thirdPersonController.VerticalVelocity = _velocity.y;
+                _thirdPersonController.VerticalVelocityValue = _velocity.y;
 
                 Debug.Log("JUMP");
             }
@@ -121,7 +120,7 @@ namespace Khynan_Coding
 
             // Apply gravity
             _velocity.y += _gravity * Time.deltaTime;
-            _thirdPersonController.VerticalVelocity = _velocity.y;
+            _thirdPersonController.VerticalVelocityValue = _velocity.y;
 
             _controller.Move(_velocity * Time.deltaTime);
         }
@@ -138,12 +137,10 @@ namespace Khynan_Coding
                 _thirdPersonController.Animator.SetBool(_animIDJump, false);
                 _thirdPersonController.Animator.SetBool(_animIDFreeFall, false);
 
-                // Display and re-enable the holding weapon state
-                //_rigBuilderHelper.EnableAllRigLayers();
-                //_rigBuilderHelper.DisplayHeldObject();
+                ReAssignHandsOnTouchingGround();
 
                 _velocity.y = -2f;
-                _thirdPersonController.VerticalVelocity = _velocity.y;
+                _thirdPersonController.VerticalVelocityValue = _velocity.y;
                 return;
             }
 
@@ -154,6 +151,24 @@ namespace Khynan_Coding
             {
                 _thirdPersonController.Animator.SetBool(_animIDFreeFall, true);
             }
+        }
+
+        private void FreeHandsWhileInAir()
+        {
+            if (!_hideHandsWhileInAir) { return; }
+
+            // Set the hand free state
+            _rigBuilderHelper.DisableAllRigLayers();
+            _rigBuilderHelper.HideHeldObject();
+        }
+
+        private void ReAssignHandsOnTouchingGround()
+        {
+            if (!_hideHandsWhileInAir) { return; }
+
+            // Display and re-enable the holding weapon state
+            _rigBuilderHelper.EnableAllRigLayers();
+            _rigBuilderHelper.DisplayHeldObject();
         }
     }
 }

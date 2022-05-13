@@ -7,10 +7,12 @@ namespace Khynan_Coding
     public class WeaponBox : MonoBehaviour
     {
         [Header("SELECTION DEPENDENCIES")]
+        [SerializeField] private bool _isSelectionActive = false;
         [SerializeField] private GameObject selectedGO;
         [SerializeField] private GameObject notSelectedGO;
 
-        [Header("LOOK DEPENDENCIES")]
+        [Header("INFOS DEPENDENCIES")]
+        [SerializeField] private TMP_Text _weaponNameText;
         [SerializeField] private Image weaponIcon;
         [SerializeField] private TMP_Text weaponCurrentAmmoText;
         [SerializeField] private TMP_Text weaponMaxAmmoText;
@@ -19,7 +21,6 @@ namespace Khynan_Coding
         int animationIDBreathEffect;
 
         private Weapon _weaponReference;
-        private WeaponCompartment _weaponCompartment;
         private Animator _animator;
 
         #region OnEnable / OnDisable
@@ -42,8 +43,6 @@ namespace Khynan_Coding
 
         public void Init(Weapon weapon)
         {
-            _weaponCompartment = transform.parent.GetComponent<WeaponCompartment>();
-
             _animator = GetComponent<Animator>();
             animationIDBreathEffect = Animator.StringToHash("AmmoText_BreathEffect");
 
@@ -51,11 +50,12 @@ namespace Khynan_Coding
             weaponCurrentAmmoText.SetText(weapon.GetCurrentAmmo() + " | " + weapon.GetMaxAmmo());
 
             _weaponReference = weapon;
+            _weaponNameText.SetText(_weaponReference.GetName());
         }
 
         private void InitializeAmmoText(Weapon weapon)
         {
-            SetCurrentAndMaxAmmoTexts(weapon.GetCurrentAmmo().ToString(), "| " + weapon.GetMaxAmmo().ToString());
+            SetCurrentAndMaxAmmoTexts(weapon.GetCurrentAmmo().ToString(), /*"| " +*/ weapon.GetMaxAmmo().ToString());
 
             SetCurrentAmmoTextColor(colorGradient.Evaluate(
                 Helper.GetPercentage(weapon.GetCurrentAmmo(), weapon.GetMaxMagAmmo())));
@@ -65,7 +65,7 @@ namespace Khynan_Coding
         {
             if (weapon != _weaponReference) { return; }
 
-            SetCurrentAndMaxAmmoTexts(weapon.GetCurrentAmmo().ToString(), "| " + weapon.GetMaxAmmo().ToString());
+            SetCurrentAndMaxAmmoTexts(weapon.GetCurrentAmmo().ToString(), /*"| " +*/ weapon.GetMaxAmmo().ToString());
 
             SetCurrentAmmoTextColor(colorGradient.Evaluate(
                 Helper.GetPercentage(weapon.GetCurrentAmmo(), weapon.GetMaxMagAmmo())));
@@ -86,6 +86,8 @@ namespace Khynan_Coding
 
         public void Select()
         {
+            if (!_isSelectionActive) { return; }
+
             if (notSelectedGO.activeInHierarchy) { notSelectedGO.SetActive(false); }
 
             selectedGO.SetActive(true);
@@ -93,6 +95,8 @@ namespace Khynan_Coding
 
         public void Deselect()
         {
+            if (!_isSelectionActive) { return; }
+
             if (selectedGO.activeInHierarchy) { selectedGO.SetActive(false); }
 
             notSelectedGO.SetActive(true);

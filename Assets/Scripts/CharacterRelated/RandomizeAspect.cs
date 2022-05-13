@@ -92,11 +92,11 @@ namespace Khynan_Coding
             for (int i = 0; i < GetCurrentAspectCombination().Items.Count; i++)
             {
                 MeshRenderer meshRenderer = GetCurrentAspectCombination().Items[i].GetComponent<MeshRenderer>();
-                Debug.Log("Mesh Renderer found " + meshRenderer.name);
-                Debug.Log("Material found " + meshRenderer.sharedMaterial.name);
+                //Debug.Log("Mesh Renderer found " + meshRenderer.name);
+                //Debug.Log("Material found " + meshRenderer.sharedMaterial.name);
 
                 _aspectMaterials.Add(meshRenderer.material);
-                Debug.Log(meshRenderer.material.name);
+                //Debug.Log(meshRenderer.material.name);
             }
         }
 

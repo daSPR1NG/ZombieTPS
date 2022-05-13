@@ -11,6 +11,9 @@ namespace Khynan_Coding
     [CreateAssetMenu(menuName = "ScriptableObject/Weapon", fileName = "Weapon_", order = 0)]
     public class Weapon : ScriptableObject
     {
+        [Header("GENERAL SETTING")]
+        [SerializeField] private string _name;
+
         [Header("SHOT SETTINGS")]
         [SerializeField] private WeaponType _type = WeaponType.Unassigned;
         [SerializeField] private int _damage = 10, _ammoFiredPerShot = 1;
@@ -47,6 +50,8 @@ namespace Khynan_Coding
         {
             SetMaxMagAmmo();
         }
+
+        public string GetName() { return _name; }
 
         #region Weapon Type - Get
         public WeaponType GetWeaponType() { return _type; }

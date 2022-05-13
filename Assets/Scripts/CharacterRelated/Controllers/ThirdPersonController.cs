@@ -11,13 +11,13 @@ namespace Khynan_Coding
 	[RequireComponent(typeof(PlayerInput))]
 	public class ThirdPersonController : DefaultController
 	{
-		[Header("CONTROLLER SETTINGS")]
+		[Header("GENERAL SETTINGS")]
 		public bool CanJump = false;
+		public bool CanRoll = false;
+
+		[Header("MOVEMENT SETTINGS")]
 		public bool HoldToSprint = true;
 		public bool AnalogMovement = false;
-		[Tooltip("How fast the character turns to face movement direction")]
-		[Range(0.0f, 0.3f)]
-		public float RotationSmoothTime = 0.12f;
 		[Tooltip("Acceleration and deceleration")]
 		public float SpeedChangeRate = 10.0f;
 
@@ -71,7 +71,7 @@ namespace Khynan_Coding
         #region Public references
         public float CinemachineTargetYaw { get => _cinemachineTargetYaw; private set => _cinemachineTargetYaw = value; }
         public float CinemachineTargetPitch { get => _cinemachineTargetPitch; private set => _cinemachineTargetPitch = value; }
-        public float VerticalVelocity { get => _verticalVelocity; set => _verticalVelocity = value; }
+        public float VerticalVelocityValue { get => _verticalVelocity; set => _verticalVelocity = value; }
         #endregion
 
         protected override void Awake()
@@ -206,7 +206,7 @@ namespace Khynan_Coding
 
 			// move the player
 			_controller.Move(
-			targetDirection.normalized * (_speed * Time.deltaTime) + new Vector3(0.0f, VerticalVelocity, 0.0f) * Time.deltaTime);
+			targetDirection.normalized * (_speed * Time.deltaTime) + new Vector3(0.0f, VerticalVelocityValue, 0.0f) * Time.deltaTime);
 
 			// update animator if using character
 			if (Animator)
@@ -297,6 +297,13 @@ namespace Khynan_Coding
 		public void SetSensitivity(float value)
 		{
 			_currentSensitivity = value;
+		}
+
+		public void SetSensitivityOvertime(float value, float multiplier)
+		{
+			_currentSensitivity = Mathf.Lerp(_currentSensitivity, value, Time.deltaTime * multiplier);
+
+			Debug.Log("Set sensitivity overtime.");
 		}
 
 		public void RotateCharacterTowardsTargetRotation(Transform affectedTransform, Quaternion rotation)

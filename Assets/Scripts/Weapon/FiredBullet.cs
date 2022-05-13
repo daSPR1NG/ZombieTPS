@@ -33,8 +33,9 @@ namespace Khynan_Coding
         private void ApplyForceMode()
         {
             var cameraRight = Helper.GetMainCamera().transform.right;
+            var cameraForward = Helper.GetMainCamera().transform.forward;
 
-            _rigidbody.AddRelativeForce(transform.position + cameraRight * _appliedForce, _forceMode);
+            _rigidbody.AddRelativeForce(transform.right * _appliedForce/* + cameraRight * _appliedForce*/, _forceMode);
         }
     }
 }

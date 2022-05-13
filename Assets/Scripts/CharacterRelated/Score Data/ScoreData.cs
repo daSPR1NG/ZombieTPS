@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Khynan_Coding
 {
-    public enum ScoreDataType
+    public enum ScoreRelatedActionName
     {
         Unassigned, OnHit, OnDeath, //etc...
     }
@@ -11,10 +11,10 @@ namespace Khynan_Coding
     public class ScoreData
     {
         [SerializeField] private string _name;
-        [SerializeField] private ScoreDataType type;
+        [SerializeField] private ScoreRelatedActionName _scoreRelatedActionName;
         [SerializeField] private int value;
 
-        public ScoreDataType Type { get => type; }
+        public ScoreRelatedActionName ScoreRelatedActionName { get => _scoreRelatedActionName; }
         public int Value { get => value; private set => this.value = value; }
 
         public void SetValue(int value)

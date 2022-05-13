@@ -9,13 +9,13 @@ namespace Khynan_Coding
         private void OnEnable()
         {
             Actions.OnAddingScore += AddValueToGlobalScore;
-            Actions.OnAddingScore += AddValueToGlobalScore;
+            Actions.OnRemovingScore += RemoveValueToGlobalScore;
         }
 
         private void OnDisable()
         {
             Actions.OnAddingScore -= AddValueToGlobalScore;
-            Actions.OnAddingScore -= AddValueToGlobalScore;
+            Actions.OnRemovingScore -= RemoveValueToGlobalScore;
         }
 
         void Start() => Init();
@@ -23,7 +23,7 @@ namespace Khynan_Coding
         void Init()
         {
             GlobalScore = 0;
-            Actions.OnGlobalScoreValueChanged?.Invoke(GlobalScore);
+            Actions.OnGlobalScoreValueChanged?.Invoke(GlobalScore, false);
         }
 
         public void AddValueToGlobalScore(int value)
@@ -31,7 +31,7 @@ namespace Khynan_Coding
             GlobalScore += value;
             Debug.Log("Score added : " + value);
 
-            Actions.OnGlobalScoreValueChanged?.Invoke(GlobalScore);
+            Actions.OnGlobalScoreValueChanged?.Invoke(GlobalScore, true);
         }
 
         public void RemoveValueToGlobalScore(int value)
@@ -39,7 +39,7 @@ namespace Khynan_Coding
             GlobalScore -= value;
             Debug.Log("Score removed : " + value);
 
-            Actions.OnGlobalScoreValueChanged?.Invoke(GlobalScore);
+            Actions.OnGlobalScoreValueChanged?.Invoke(GlobalScore, false);
         }
     }
 }

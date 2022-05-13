@@ -2196,10 +2196,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scoreDatas:
   - _name: On Hit
-    type: 1
+    _scoreRelatedActionName: 1
     value: 10
   - _name: On Death
-    type: 2
+    _scoreRelatedActionName: 2
     value: 75
 --- !u!114 &5712917504184886480
 MonoBehaviour:

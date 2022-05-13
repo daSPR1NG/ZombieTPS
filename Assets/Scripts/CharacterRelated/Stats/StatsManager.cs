@@ -219,7 +219,7 @@ namespace Khynan_Coding
             if (_defaultController) { PlayOnDeathSound(_defaultController.AudioSource); }
 
             ScoreGiver scoreGiver = transform.GetComponent<ScoreGiver>();
-            scoreGiver.GiveScoreToTarget(killer, scoreGiver.GetScoreData(ScoreDataType.OnDeath));
+            scoreGiver.GiveScoreToTarget(killer, scoreGiver.GetScoreData(ScoreRelatedActionName.OnDeath));
 
             DefaultController defaultController = GetComponent<DefaultController>();
             defaultController.SwitchState(defaultController.Death());

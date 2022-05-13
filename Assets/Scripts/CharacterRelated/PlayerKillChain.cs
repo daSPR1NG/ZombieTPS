@@ -57,15 +57,12 @@ namespace Khynan_Coding
 
         void SetKillChain()
         {
+            if (_killCount == 0) { Actions.OnKillChainStarted?.Invoke(_killChainDuration); }
+
             AddToKillCount();
 
             // Update kill count
             UpdateKillCount(_killCount);
-
-            // Refresh timer
-            RefreshKillChainTimer();
-
-            HandleKillChainStep();
         }
 
         void ResetKillChain()
@@ -103,7 +100,7 @@ namespace Khynan_Coding
             _killCount = 0;
 
             // Update the associated UI
-            Actions.OnKillCountValueChanged?.Invoke(_killCount);
+            Actions.OnKillCountValueChanged?.Invoke(_killCount, 0);
         }
 
         void AddToKillCount()
@@ -117,8 +114,13 @@ namespace Khynan_Coding
 
             Debug.Log("KILL COUNT = " + _killCount);
 
+            // Refresh timer
+            RefreshKillChainTimer();
+
+            HandleKillChainStep();
+
             // Update the associated UI
-            Actions.OnKillCountValueChanged?.Invoke(_killCount); 
+            Actions.OnKillCountValueChanged?.Invoke(_killCount, _killChainDuration); 
         }
         #endregion
     }
