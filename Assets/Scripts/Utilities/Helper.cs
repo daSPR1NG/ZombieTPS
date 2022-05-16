@@ -174,6 +174,8 @@ namespace Khynan_Coding
 
         public static void ResetAgentDestination(NavMeshAgent navMeshAgent)
         {
+            if (navMeshAgent.Equals(null) || !navMeshAgent.enabled) { return; }
+
             navMeshAgent.isStopped = true;
 
             navMeshAgent.path.ClearCorners();

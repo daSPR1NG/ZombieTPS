@@ -8,9 +8,6 @@ namespace Khynan_Coding
         [SerializeField] private GameObject weaponBoxPrefab;
         [SerializeField] private List<WeaponBox> weaponBoxes = new();
 
-        private UIThirdPersonManager _UIThirdPersonManager;
-        public UIThirdPersonManager UIThirdPersonManager { get => _UIThirdPersonManager; private set => _UIThirdPersonManager = value; }
-
         private void Awake() => Init();
 
         #region OnEnable / OnDisable
@@ -25,21 +22,18 @@ namespace Khynan_Coding
         }
         #endregion
 
-        private void Init()
-        {
-            UIThirdPersonManager = transform.parent.GetComponent<UIThirdPersonManager>();
-
-            InitWeaponBoxes();
-        }
+        private void Init() => InitWeaponBoxes();
 
         private void InitWeaponBoxes()
         {
-            for (int i = 0; i < UIThirdPersonManager.LinkedWeaponSystem.Weapons.Count; i++)
+            WeaponSystem WeaponSystem = transform.parent.parent.GetComponent<WeaponSystem>();
+
+            for (int i = 0; i < WeaponSystem.Weapons.Count; i++)
             {
                 CreateAWeaponBox();
             }
 
-            SetWeaponInAllWeaponBoxes(UIThirdPersonManager.LinkedWeaponSystem);
+            SetWeaponInAllWeaponBoxes(WeaponSystem);
             DeselectEachWeaponBoxes();
         }
 

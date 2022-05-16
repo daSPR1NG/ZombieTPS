@@ -39,6 +39,8 @@ namespace Khynan_Coding
             GlobalScore -= value;
             Debug.Log("Score removed : " + value);
 
+            GlobalScore = Mathf.Clamp(GlobalScore, 0, GlobalScore);
+
             Actions.OnGlobalScoreValueChanged?.Invoke(GlobalScore, false);
         }
     }

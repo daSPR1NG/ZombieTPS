@@ -13,17 +13,15 @@ namespace Khynan_Coding
 
         public void GiveScoreToTarget(Transform target, ScoreData scoreData)
         {
-            int scoreValue = 0;
-
-            ScoreManager scoreManager = target.GetComponent<ScoreManager>();
+            int scoreValue;
 
             scoreValue = Mathf.CeilToInt(scoreData.Value * GameManager.Instance.ScoreMultiplier);
-            scoreManager.AddValueToGlobalScore(scoreValue);
 
             Debug.Log("Score added : " + scoreValue);
 
             // Call event that sends message to UI handling the score
             Actions.OnAddingScore?.Invoke(scoreValue);
+            Actions.OnScoreNotificationNeed?.Invoke(scoreData);
         }
 
         public ScoreData GetScoreData(ScoreRelatedActionName scoreDataType)

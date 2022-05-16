@@ -129,6 +129,8 @@ namespace Khynan_Coding
 			SetDefaultStateAtStart(Idle());
 
 			SetSensitivity(LookingSensitivity);
+
+			NavMeshAgent.enabled = false;
 		}
 
         protected virtual void AssignAnimationIDs()

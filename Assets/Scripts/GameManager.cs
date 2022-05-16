@@ -78,6 +78,20 @@ namespace Khynan_Coding
             SetGameStateToPlayingMod();
         }
 
+        private void Update()
+        {
+            // DEBUG
+            if (Input.GetKeyDown(KeyCode.A))
+            {
+                Debug.Log("DEBUG ADD SCORE");
+                _playerInputReference.GetComponent<ScoreManager>().AddValueToGlobalScore(500);
+            }
+            if (Input.GetKeyDown(KeyCode.Z))
+            {
+                _playerInputReference.GetComponent<ScoreManager>().RemoveValueToGlobalScore(500);
+            }
+        }
+
         #region Game states methods
         private void ToggleGameState()
         {
@@ -165,11 +179,13 @@ namespace Khynan_Coding
         public void ResetScoreMultiplierValue()
         {
             ScoreMultiplier = 1;
+            Actions.OnScoreMultiplierValueChanged?.Invoke(ScoreMultiplier);
         }
 
         public void UpdateScoreMultiplierValue(float value)
         {
             ScoreMultiplier = value;
+            Actions.OnScoreMultiplierValueChanged?.Invoke(ScoreMultiplier);
         }
         #endregion
 

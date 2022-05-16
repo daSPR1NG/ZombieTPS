@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 8932368470658184116}
   - component: {fileID: 6332302474165010499}
   - component: {fileID: 5881784510701156786}
-  m_Layer: 2
+  m_Layer: 1
   m_Name: Renderer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -110,7 +110,7 @@ GameObject:
   - component: {fileID: 4974453963120927320}
   - component: {fileID: 4974453963120927321}
   - component: {fileID: 4688648453924929465}
-  m_Layer: 2
+  m_Layer: 1
   m_Name: Bullet_Riffle_Default
   m_TagString: Untagged
   m_Icon: {fileID: 0}

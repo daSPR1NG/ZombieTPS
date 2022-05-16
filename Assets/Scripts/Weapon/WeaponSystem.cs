@@ -259,7 +259,7 @@ namespace Khynan_Coding
             float damageToApply = 0;
 
             TPSCollider tpsColliderFound = raycastHit.collider.GetComponent<TPSCollider>();
-            //Debug.Log("Body part touched : " + hitCollider.ColliderBodyPart.ToString());
+            //Debug.Log("Body part touched : " + tpsColliderFound.ColliderType.ToString());
 
             if (tpsColliderFound)
             {
@@ -443,7 +443,7 @@ namespace Khynan_Coding
 
             float evolvingValue = Mathf.Lerp(
                     _rigBuilderHelper.GetRigData(RigBodyPart.HeldObject_Shoot_Aim).GetRigWeight(),
-                    1, aimingRigTransitionDuration * Time.deltaTime);
+                    1, Time.deltaTime * aimingRigTransitionDuration);
 
             if (IsAiming) 
             {
@@ -463,7 +463,7 @@ namespace Khynan_Coding
                 _thirdPersonController.RotateCharacterTowardsTargetRotation(transform, Quaternion.Euler(0, _thirdPersonController.CinemachineTargetYaw, 0));
 
                 _rigBuilderHelper.GetRigData(RigBodyPart.HeldObject_Shoot_NoAim).GetMultiAimConstraint().weight = 1;
-                _rigBuilderHelper.GetRigData(RigBodyPart.Head).GetMultiAimConstraint().weight = 1;
+                _rigBuilderHelper.GetRigData(RigBodyPart.Head).GetMultiAimConstraint().weight = .5f;
 
                 return;
             }

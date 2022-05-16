@@ -23,12 +23,15 @@ namespace Khynan_Coding
         public static Action<int> OnAddingScore;
         public static Action<int> OnRemovingScore;
 
+        public static Action<ScoreData> OnScoreNotificationNeed;
+
         public static Action OnHittingValidTarget;
         public static Action OnEnemyDeath;
 
         public static Action<float> OnKillChainStarted;
         public static Action<int, float> OnKillCountValueChanged;
         public static Action OnKillCountStepReached;
+        public static Action<float> OnScoreMultiplierValueChanged;
 
         public static Action<int, bool> OnGlobalScoreValueChanged;
 
