@@ -14,7 +14,7 @@ namespace Khynan_Coding
         //Store each variable that might be needed for this state, here.
         public override void Init(StateManager stateManager)
         {
-            _controller = stateManager.CharacterController;
+            _controller = stateManager.DefaultController;
             _interactionHandler = _controller.InteractionHandler;
             _statsManager = _controller.CharacterStats;
 
@@ -31,7 +31,7 @@ namespace Khynan_Coding
             _interactionHandler.CurrentTarget = null;
             Helper.ResetAgentDestination(_controller.NavMeshAgent);
 
-            AnimatorHelper.PlayThisAnimationOnThisLayer(_controller.Animator, 1, 1f, "IsDead", true);
+            AnimatorHelper.HandleThisAnimation(_controller.Animator, "IsDead", true, 1, 1);
 
             DisableColliders(stateManager.transform);
 

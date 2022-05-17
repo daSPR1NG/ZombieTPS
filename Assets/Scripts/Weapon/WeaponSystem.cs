@@ -184,11 +184,8 @@ namespace Khynan_Coding
         {
             // Notes : The pause state is already handled directly in Update.
 
-            if (!_canShoot || IsReloading || !_shoot.IsPressed() || !_autoReload && EquippedWeapon.GetCurrentAmmo() <= 0) 
-            {
-                return; 
-            }
-
+            if (!_canShoot || IsReloading || !_shoot.IsPressed() || _thirdPersonController.IsRolling()) { return; }
+                
             // Auto reload is enabled + no ammo left in magazine
             if (_autoReload && EquippedWeapon.GetCurrentAmmo() <= 0)
             {
@@ -400,9 +397,11 @@ namespace Khynan_Coding
         #endregion
 
         #region Aiming - Aim / Cancel
-        private void Aim()
+        public void Aim()
         {
-            if (!GameManager.Instance.PlayerCanUseActions()) { return; }
+            bool canAim = GameManager.Instance.PlayerCanUseActions() && !_thirdPersonController.IsRolling();
+
+            if (!canAim) { return; }
 
             Debug.Log("Aim");
 
@@ -419,7 +418,7 @@ namespace Khynan_Coding
             PlayAimSound();
         }
 
-        private void CancelAim(bool playSFX = false)
+        public void CancelAim(bool playSFX = false)
         {
             if (!GameManager.Instance.PlayerCanUseActions()) { return; }
 
@@ -456,7 +455,7 @@ namespace Khynan_Coding
 
         private void HandleShootingWithoutAimingRigWeight()
         {
-            if (!GameManager.Instance.PlayerCanUseActions() || IsReloading) { return; }
+            if (!GameManager.Instance.PlayerCanUseActions() || IsReloading || _thirdPersonController.IsRolling()) { return; }
 
             if (_shoot.IsPressed() && !IsAiming)
             {
@@ -575,7 +574,9 @@ namespace Khynan_Coding
         #region Reloading
         private void Reload()
         {
-            if (!GameManager.Instance.PlayerCanUseActions()) { return; }
+            bool canReload = GameManager.Instance.PlayerCanUseActions() || !_thirdPersonController.IsRolling();
+
+            if (!canReload) { return; }
 
             if (EquippedWeapon.GetMaxAmmo() == 0) { PlayNoAmmoLeftSound(); }
 
@@ -616,7 +617,9 @@ namespace Khynan_Coding
             Actions.OnReloadStartedSetWeaponData?.Invoke(EquippedWeapon);
         }
 
-        private void CancelReloading()
+        // NOTES : Add a threshold in which the player still manage to reload event by canceling the reload animation...
+        // ... The UI Gauge Image color resets to white.
+        public void CancelReloading()
         {
             // Reset shoot sound pitch value if it has been decreased before.
             AudioHelper.SetPitch(
@@ -644,6 +647,8 @@ namespace Khynan_Coding
             _rigBuilderHelper.SetRigWeight(RigBodyPart.HeldObject_Shoot_NoAim, 1);
         }
 
+        // NOTES : When reaching a certain threshold the UI Gauge representing the timer...
+        // ... changes its color to something else meaning that the reload can be canceled while being valid. 
         private void ProcessReloading()
         {
             if (!IsReloading) { return; }
@@ -675,7 +680,7 @@ namespace Khynan_Coding
             reloadAnimationSpeed = Mathf.Round(reloadAnimationSpeed * 10.00f) * 0.1f;
 
             //_rigAnimator.speed = reloadAnimationSpeed;
-            AnimatorHelper.SetAnimatorFloatParameter(_rigAnimator, "ReloadingSpeed", reloadAnimationSpeed);
+            AnimatorHelper.SetAnimatorFloat(_rigAnimator, "ReloadingSpeed", reloadAnimationSpeed);
 
             _rigAnimator.Play("Character_Reloading_Rifle", 0);
         }
@@ -821,5 +826,7 @@ namespace Khynan_Coding
         {
             _rigAnimator.SetFloat(_animationIDRecoilApplicationSpeed, EquippedWeapon.GetRecoilForce());
         }
+
+        public bool IsAimInputPressed() { return _aim.IsPressed(); }
     }
 }

@@ -18,7 +18,7 @@ namespace Khynan_Coding
         #endregion
 
         #region Boolean - Get/Set
-        public static bool GetAnimatorBooleanParameter(Animator animator, string booleanName)
+        public static bool GetAnimatorBoolean(Animator animator, string booleanName)
         {
             if (!animator)
             {
@@ -29,7 +29,7 @@ namespace Khynan_Coding
             return animator.GetBool(booleanName);
         }
 
-        public static void SetAnimatorBooleanParameter(Animator animator, string booleanName, bool value)
+        public static void SetAnimatorBoolean(Animator animator, string booleanName, bool value)
         {
             if (!animator)
             {
@@ -42,7 +42,7 @@ namespace Khynan_Coding
         #endregion
 
         #region Float - Get/Set
-        public static float GetAnimatorFloatParameter(Animator animator, string floatParameterName)
+        public static float GetAnimatorFloat(Animator animator, string floatParameterName)
         {
             if (!animator)
             {
@@ -53,7 +53,7 @@ namespace Khynan_Coding
             return animator.GetFloat(floatParameterName);
         }
 
-        public static void SetAnimatorFloatParameter(Animator animator, string floatParameterName, float value, float dampTime = 0)
+        public static void SetAnimatorFloat(Animator animator, string floatParameterName, float value, float dampTime = 0)
         {
             if (!animator)
             {
@@ -66,7 +66,7 @@ namespace Khynan_Coding
         #endregion
 
         #region Integer - Get/Set
-        public static int GetAnimatorIntParameter(Animator animator, string intParameterName)
+        public static int GetAnimatorInt(Animator animator, string intParameterName)
         {
             if (!animator)
             {
@@ -77,7 +77,7 @@ namespace Khynan_Coding
             return animator.GetInteger(intParameterName);
         }
 
-        public static void SetAnimatorIntParameter(Animator animator, string intParameterName, int value)
+        public static void SetAnimatorInt(Animator animator, string intParameterName, int value)
         {
             if (!animator)
             {
@@ -120,10 +120,10 @@ namespace Khynan_Coding
         }
         #endregion
 
-        public static void PlayThisAnimationOnThisLayer(Animator animator, int layerIndex, float layerWeight, string booleanName, bool value)
+        public static void HandleThisAnimation(Animator animator, string booleanName, bool value, int layerIndex = 0, float layerWeight = 1)
         {
             SetAnimatorActiveLayer(animator, layerIndex, layerWeight);
-            SetAnimatorBooleanParameter(animator, booleanName, value);
+            SetAnimatorBoolean(animator, booleanName, value);
         }
 
         public static bool HasParameter(Animator animator, string paramName)

@@ -76,24 +76,32 @@ namespace Khynan_Coding
         }
 
         #region Enable / Disable - multiple
-        public void EnableAllRigLayers()
+        public void EnablePrincipalRigLayers()
         {
-            for (int i = 0; i < _rigBuilder.layers.Count; i++)
-            {
-                if (_rigBuilder.layers[i].active) { continue; }
+            _rigBuilder.layers[1].active = true;
+            _rigBuilder.layers[2].active = true;
+            _rigBuilder.layers[3].active = true;
 
-                _rigBuilder.layers[i].active = true;
-            }
+            //for (int i = 0; i < _rigBuilder.layers.Count; i++)
+            //{
+            //    if (_rigBuilder.layers[i].active) { continue; }
+
+            //    _rigBuilder.layers[i].active = true;
+            //}
         }
 
-        public void DisableAllRigLayers()
+        public void DisablePrincipalRigLayers()
         {
-            for (int i = 0; i < _rigBuilder.layers.Count; i++)
-            {
-                if (!_rigBuilder.layers[i].active) { continue; }
+            _rigBuilder.layers[1].active = false;
+            _rigBuilder.layers[2].active = false;
+            _rigBuilder.layers[3].active = false;
 
-                _rigBuilder.layers[i].active = false;
-            }
+            //for (int i = 0; i < _rigBuilder.layers.Count; i++)
+            //{
+            //    if (!_rigBuilder.layers[i].active) { continue; }
+
+            //    _rigBuilder.layers[i].active = false;
+            //}
         }
         #endregion
 
@@ -166,9 +174,40 @@ namespace Khynan_Coding
             GetRigData(rigBodyPart).SetRigWeight(weight);
         }
 
-        public Animator GetAnimator()
+        public Animator GetAnimator() { return _animator; }
+
+        private bool HoldingRigIsDisabled()
         {
-            return _animator;
+            if (!GetRigData(RigBodyPart.L_Hand).GetRig().enabled && !GetRigData(RigBodyPart.R_Hand).GetRig().enabled)
+            {
+                return true;
+            }
+
+            return false;
         }
+
+        #region Rig Handle
+        public void FreeHandsWhileInAir(bool hideHands)
+        {
+            if (!hideHands) { return; }
+
+            // Set the hand free state
+            DisablePrincipalRigLayers();
+            HideHeldObject();
+
+            Debug.Log("FreeHandsWhileInAir");
+        }
+
+        public void ReAssignHandsOnTouchingGround()
+        {
+            if (HoldingRigIsDisabled()) { return; }
+
+            // Display and re-enable the holding weapon state
+            EnablePrincipalRigLayers();
+            DisplayHeldObject();
+
+            Debug.Log("ReAssignHandsOnTouchingGround");
+        }
+        #endregion
     }
 }

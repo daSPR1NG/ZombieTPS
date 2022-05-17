@@ -32,7 +32,7 @@ namespace Khynan_Coding
         #region Public references
         public IAInteractionHandler InteractionHandler => GetComponent<IAInteractionHandler>();
         public NavMeshAgent NavMeshAgent => GetComponent<NavMeshAgent>();
-        public DefaultController CharacterController => GetComponent<DefaultController>();
+        public DefaultController DefaultController => GetComponent<DefaultController>();
         public bool CharacterIsMoving { get => _characterIsMoving; set => _characterIsMoving = value; }
         public bool CharacterIsRunning { get => _characterIsRunning; set => _characterIsRunning = value; }
         #endregion

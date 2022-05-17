@@ -7,7 +7,7 @@ namespace Khynan_Coding
         //Store each variable that might be needed for this state, here.
         public override void Init(StateManager stateManager)
         {
-            _controller = stateManager.CharacterController;
+            _controller = stateManager.DefaultController;
         }
 
         public override void EnterState(StateManager stateManager)

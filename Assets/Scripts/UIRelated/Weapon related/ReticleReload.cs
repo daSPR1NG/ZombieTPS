@@ -5,14 +5,23 @@ namespace Khynan_Coding
 {
     public class ReticleReload : MonoBehaviour
     {
+        [Header("DEPENDENCIES")]
         [SerializeField] private Image reloadCircle;
 
         private float _maxValue;
         private float _currentTimer = 0;
 
-        #region Public References
+        private void OnEnable()
+        {
+            Actions.OnReloadValidThresholdReached += ChangeReloadCircleColor;
+        }
 
-        #endregion
+        private void OnDisable() 
+        {
+            Actions.OnReloadValidThresholdReached -= ChangeReloadCircleColor;
+
+            reloadCircle.color = Color.white; 
+        }
 
         void Update() => ProcessReloadTimer();
 
@@ -29,6 +38,11 @@ namespace Khynan_Coding
             _currentTimer -= Time.deltaTime;
 
             reloadCircle.fillAmount = _currentTimer / _maxValue;
+        }
+
+        private void ChangeReloadCircleColor(Color color)
+        {
+            reloadCircle.color = color;
         }
     }
 }

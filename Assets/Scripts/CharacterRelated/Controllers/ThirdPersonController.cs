@@ -48,6 +48,10 @@ namespace Khynan_Coding
 		float _targetSpeed;
 		bool _sprintInputPerformed;
 
+		// Flags
+		private bool _isRolling = false;
+		private bool _isJumping = false;
+
 		private Vector2 _inputMovement;
 		private float _speed;
 		private float _targetRotation = 0.0f;
@@ -59,9 +63,12 @@ namespace Khynan_Coding
 		private int _animIDMotionSpeed;
 
 		private StatsManager _statsManager;
-		private CharacterController _controller;
+		private CharacterController _characterController;
 		private PlayerInteractionHandler _playerInteractionHandler;
 		private GameObject _mainCamera;
+		private RigBuilderHelper _rigBuilderHelper;
+
+		private PlayerRoll _playerRoll;
 
 		private PlayerInput _input;
 		private InputAction _sprint;
@@ -117,9 +124,12 @@ namespace Khynan_Coding
         #region Initialisation
         private void Init()
         {
+			_playerRoll = GetComponent<PlayerRoll>();
+
 			_playerInteractionHandler = GetComponent<PlayerInteractionHandler>();
 			_statsManager = GetComponent<StatsManager>();
-			_controller = GetComponent<CharacterController>();
+			_characterController = GetComponent<CharacterController>();
+			_rigBuilderHelper = GetComponent<GlobalCharacterParameters>().GetRigBuilderHelper();
 
 			AssignAnimationIDs();
 
@@ -144,6 +154,8 @@ namespace Khynan_Coding
 		#region Movement + speed value
 		private void Move()
 		{
+			if (_isRolling) { return; }
+
 			// Check input movement value
 			_inputMovement = _input.actions["Move"].ReadValue<Vector2>();
 
@@ -162,7 +174,7 @@ namespace Khynan_Coding
 			}
 
 			// a reference to the players current horizontal velocity
-			float currentHorizontalSpeed = new Vector3(_controller.velocity.x, 0.0f, _controller.velocity.z).magnitude;
+			float currentHorizontalSpeed = new Vector3(_characterController.velocity.x, 0.0f, _characterController.velocity.z).magnitude;
 
 			float speedOffset = 0.1f;
 			float inputMagnitude = AnalogMovement ? _inputMovement.magnitude : 1f;
@@ -207,7 +219,7 @@ namespace Khynan_Coding
 			Vector3 targetDirection = Quaternion.Euler(0.0f, _targetRotation, 0.0f) * Vector3.forward;
 
 			// move the player
-			_controller.Move(
+			_characterController.Move(
 			targetDirection.normalized * (_speed * Time.deltaTime) + new Vector3(0.0f, VerticalVelocityValue, 0.0f) * Time.deltaTime);
 
 			// update animator if using character
@@ -316,5 +328,23 @@ namespace Khynan_Coding
 			affectedTransform.rotation = Quaternion.RotateTowards(affectedTransform.rotation, rotation, angle);
 		}
 		#endregion
+
+		#region Controller Flags - Get / Set
+		public bool IsJumping() { return _isJumping; }
+		public bool IsRolling() { return _isRolling; }
+
+		public void SetJumpingState(bool value) { _isJumping = value; }
+		public void SetRollingState(bool value) { _isRolling = value; }
+		#endregion
+
+		public CharacterController GetCharacterController()
+        {
+			return _characterController;
+        }
+
+		public RigBuilderHelper GetRigBuilderHelper()
+		{
+			return _rigBuilderHelper;
+		}
 	}
 }

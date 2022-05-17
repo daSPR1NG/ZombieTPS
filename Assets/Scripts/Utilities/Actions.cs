@@ -17,6 +17,7 @@ namespace Khynan_Coding
         public static Action<Weapon> OnReloadStartedSetWeaponData;
         public static Action<Weapon> OnReloadEndedSetWeaponData;
         public static Action OnReloadEnded;
+        public static Action<Color> OnReloadValidThresholdReached;
 
         public static Action<CharacterType> OnAimingInteractable;
 

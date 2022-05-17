@@ -11,7 +11,7 @@ namespace Khynan_Coding
         //Store each variable that might be needed for this state, here.
         public override void Init(StateManager stateManager)
         {
-            _controller = stateManager.CharacterController;
+            _controller = stateManager.DefaultController;
             _interactionHandler = stateManager.GetComponent<IAInteractionHandler>();
             _combatSystem = stateManager.GetComponent<CombatSystem>();
         }
@@ -28,7 +28,7 @@ namespace Khynan_Coding
 
         public override void ExitState(StateManager stateManager)
         {
-            AnimatorHelper.SetAnimatorBooleanParameter(_controller.Animator, "Attack", false);
+            AnimatorHelper.SetAnimatorBoolean(_controller.Animator, "Attack", false);
             _combatSystem.ResetAttackState();
 
             Helper.DebugMessage("Exiting <ATTACK> state", stateManager.transform);

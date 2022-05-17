@@ -25,8 +25,8 @@ namespace Khynan_Coding
 
             Actions.OnShooting += UpdateGaugeFillAmount;
 
-            Actions.OnReloadStarted += HideGaugeImage;
-            Actions.OnReloadEnded += DisplayGaugeImage;
+            Actions.OnReloadStarted += HideAmmoGaugeImage;
+            Actions.OnReloadEnded += DisplayAmmoGaugeImage;
 
             Actions.OnReloadEndedSetWeaponData += UpdateGaugeFillAmount;
         }
@@ -37,8 +37,8 @@ namespace Khynan_Coding
 
             Actions.OnShooting -= UpdateGaugeFillAmount;
 
-            Actions.OnReloadStarted -= HideGaugeImage;
-            Actions.OnReloadEnded -= DisplayGaugeImage;
+            Actions.OnReloadStarted -= HideAmmoGaugeImage;
+            Actions.OnReloadEnded -= DisplayAmmoGaugeImage;
 
             Actions.OnReloadEndedSetWeaponData -= UpdateGaugeFillAmount;
         }
@@ -83,7 +83,7 @@ namespace Khynan_Coding
             _gaugeFilledImage.fillAmount = current / max;
         }
 
-        private void DisplayGaugeImage()
+        private void DisplayAmmoGaugeImage()
         {
             for (int i = _childrenGos.Count - 1; i >= 0; i--)
             {
@@ -91,7 +91,7 @@ namespace Khynan_Coding
             }
         }
 
-        private void HideGaugeImage()
+        private void HideAmmoGaugeImage()
         {
             for (int i = _childrenGos.Count - 1; i >= 0; i--)
             {

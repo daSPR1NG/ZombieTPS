@@ -21,7 +21,7 @@ namespace Khynan_Coding
 
         public void SetAttackBooleanToFalse()
         {
-            AnimatorHelper.SetAnimatorBooleanParameter(_animator, "Attack", false);
+            AnimatorHelper.SetAnimatorBoolean(_animator, "Attack", false);
         }
 
         public void ApplyDamageInAnimation()

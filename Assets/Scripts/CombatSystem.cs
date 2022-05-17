@@ -51,7 +51,7 @@ namespace Khynan_Coding
             _attackRecover = _attackAnimationDuration + _attackAnimationTransitionOffset;
             _attackCooldown = _attackRecover;
 
-            AnimatorHelper.PlayThisAnimationOnThisLayer(_IAController.Animator, 1, 1, "Attack", true);
+            AnimatorHelper.HandleThisAnimation(_IAController.Animator, "Attack", true, 1, 1);
 
             _canAttack = false;
         }
