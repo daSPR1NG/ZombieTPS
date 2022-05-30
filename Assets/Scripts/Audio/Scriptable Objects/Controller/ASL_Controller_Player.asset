@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: ASL_Controller_Player
   m_EditorClassIdentifier: 
   _controllerAudioSettings:
-  - _name: Controller - Player
+  - _name: Death Sound
     _audioClip: {fileID: 0}
     _pitchMinValue: 1
     _pitchMaxValue: 1
-    _volumeMinValue: 0.5
-    _volumeMaxValue: 0.5
+    _volumeMinValue: 0
+    _volumeMaxValue: 1
     _relatedControllerAction: 1

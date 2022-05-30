@@ -12,6 +12,9 @@ namespace Khynan_Coding
         [SerializeField] private float _jumpHeight = 5f;
         [SerializeField] private float _speedInAir = 5f;
 
+        [Header("AUDIO")]
+        [SerializeField] private ControllerAudioSetting _audioSetting;
+
         private int _animIDJump;
 
         private PlayerInput _input;
@@ -70,6 +73,7 @@ namespace Khynan_Coding
             if (_gravityAppplicator.IsGrounded()) 
             {
                 _thirdPersonController.SetJumpingState(false);
+                
                 return; 
             }
 
@@ -87,7 +91,14 @@ namespace Khynan_Coding
             {
                 _thirdPersonController.SetJumpingState(true);
 
-                _thirdPersonController.GetRigBuilderHelper().FreeHandsWhileInAir(_hideHandsWhileInAir);
+                WeaponSystem weaponSystemReference = _thirdPersonController.GetComponent<WeaponSystem>();
+
+                if (!weaponSystemReference.IsReloading)
+                {
+                    _thirdPersonController.GetRigBuilderHelper().FreeHandsWhileInAir(_hideHandsWhileInAir);
+                }
+
+                PlayJumpSound(GetComponent<AudioSource>());
 
                 // Play the jump animation and apply the jump velocity
                 _thirdPersonController.Animator.SetBool(_animIDJump, true);
@@ -101,6 +112,21 @@ namespace Khynan_Coding
 
                 Debug.Log("JUMP");
             }
+        }
+
+        private void PlayJumpSound(AudioSource audioSource)
+        {
+            if (!audioSource) { return; }
+
+            // Randomize pitch...
+            float pitchOverride = Random.Range(_audioSetting.GetPitchMinValue(), _audioSetting.GetPitchMaxValue());
+            AudioHelper.SetPitch(audioSource, pitchOverride);
+
+            // ... Randomize volume...
+            float randomVolume = Random.Range(_audioSetting.GetVolumeMinValue(), _audioSetting.GetVolumeMaxValue());
+
+            // ... And then play the sound.
+            AudioHelper.PlayOneShot(audioSource, _audioSetting.GetAudioClip(), randomVolume);
         }
     }
 }

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Animations.Rigging;
 
@@ -22,6 +23,9 @@ namespace Khynan_Coding
         [SerializeField] private Transform leftHandTargetAddIK;
         [SerializeField] private Transform leftHandHintAddIK;
 
+        [Header("LOOK ELEMENTS")]
+        [SerializeField] private List<GameObject> _weaponLookElements = new();
+
         #region Public References
         public Transform ShotPoint { get => shotPoint; }
         public AudioSource AudioSource { get => _audioSource; }
@@ -33,6 +37,8 @@ namespace Khynan_Coding
         private void Initialiaze()
         {
             _audioSource = GetComponent<AudioSource>();
+
+            SetWeaponLookElements();
         }
 
         public void InitHoldingIK(TwoBoneIKConstraint rightHoldingIK, TwoBoneIKConstraint leftHoldingIK)
@@ -66,6 +72,21 @@ namespace Khynan_Coding
         {
             twoBoneIKConstraint.data.target = null;
             twoBoneIKConstraint.data.hint = null;
+        }
+
+        private void SetWeaponLookElements()
+        {
+            Transform rendererParent = transform.parent.parent.parent;
+            Weapon weapon = rendererParent.parent.GetComponent<WeaponSystem>().EquippedWeapon;
+
+            // Magazine - 0
+            weapon.SetMagPrefab(_weaponLookElements[0]);
+
+            // Iron Sight - 1
+
+            // Slide - 2
+
+            // Trigger - 3
         }
     }
 }

@@ -46,7 +46,7 @@ namespace Khynan_Coding
             float randomVolume = Random.Range(controllerAudioSetting.GetVolumeMinValue(), controllerAudioSetting.GetVolumeMaxValue());
             AudioHelper.SetVolume(_audioSource, randomVolume);
 
-            AudioHelper.PlaySound(_audioSource, controllerAudioSetting.GetAudioClip());
+            AudioHelper.PlayOneShot(_audioSource, controllerAudioSetting.GetAudioClip(), randomVolume);
         }
 
         public void InstantiateHitEffect(Vector3 pos, Quaternion rot)

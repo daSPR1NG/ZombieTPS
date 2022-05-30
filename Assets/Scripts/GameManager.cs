@@ -189,11 +189,11 @@ namespace Khynan_Coding
         }
         #endregion
 
-        private void OnGUI()
-        {
-            if (!Application.isEditor) { return; }
+        //private void OnGUI()
+        //{
+        //    if (!Application.isEditor) { return; }
 
-            GUI.Label(new Rect(5, 15, 75, 25), GameState.ToString());
-        }
+        //    GUI.Label(new Rect(5, 15, 75, 25), GameState.ToString());
+        //}
     }
 }

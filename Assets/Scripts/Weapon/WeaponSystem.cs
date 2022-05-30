@@ -16,6 +16,7 @@ namespace Khynan_Coding
 
         [Header("DEPENDENCIES")]
         [SerializeField] private Transform weaponPivot;
+        [SerializeField] private float _offset = 5f;
         [SerializeField] private int _weaponLimit = 3;
         [SerializeField] private List<Weapon> _weapons = new();
         private WeaponHelper _weaponHelper = null;
@@ -34,8 +35,15 @@ namespace Khynan_Coding
         private int _burstRoundLeft = 0;
         private int _currentAmmo = 0;
 
+        [Header("RANDOM SHOOTING SETTINGS")]
+        [SerializeField] private Vector3 _minRandomDirection;
+        [SerializeField] private Vector3 _maxRandomDirection;
+
         [Header("RIG SETTINGS")]
         [Range(10, 100)][SerializeField] private float aimingRigTransitionDuration = 1.25f;
+        
+        [Header("DEBUG")]
+        [SerializeField] private GameObject _debugDecalPf;
 
         #region Inputs
         private PlayerInput _playerInput;
@@ -218,16 +226,34 @@ namespace Khynan_Coding
             if (IsAiming) { _rigAnimator.Play("Character_Shoot_Riffle_Aiming", 0); }
             else { _rigAnimator.Play("Character_Shoot_Riffle_NotAiming", 0); }
 
+            Transform shotPointOrigin = _weaponHelper.ShotPoint;
+
+            Ray ray = Helper.GetMainCamera().ViewportPointToRay(Vector3.one * .5f);
+
+            // Random shoot direction application
+            Vector3 direction = IsAiming ? ray.direction : GetShootingDirection(shotPointOrigin);
+
             // Hitting shootables - raycast hit
-            if (Physics.Raycast(Helper.GetMainCamera().transform.position,
-                Helper.GetMainCamera().transform.forward * EquippedWeapon.GetRange(), out RaycastHit hit, float.MaxValue, _shootables))
+            if (Physics.Raycast(ray.origin, direction, out RaycastHit hitInfo, float.MaxValue))
             {
-                Debug.Log("Shot on " + hit.transform.name);
-                _thirdPersonController.RotateCharacterTowardsTargetRotation(transform, Quaternion.Euler(0, _thirdPersonController.CinemachineTargetYaw, 0));
+                if (Physics.Linecast(shotPointOrigin.localPosition, ray.direction, _shootables))
+                {
+                    Debug.Log("Shot on " + hitInfo.transform.name);
 
-                ApplyDamageOnValidTarget(hit.transform, hit);
+                    Debug.DrawRay(ray.origin, ray.direction * 100, Color.red, 2f);
 
-                CreateBulletTrail(hit);
+                    _thirdPersonController.RotateCharacterTowardsTargetRotation(transform, Quaternion.Euler(0, _thirdPersonController.CinemachineTargetYaw, 0));
+
+                    ApplyDamageOnValidTarget(hitInfo.transform, hitInfo);
+
+                    Instantiate(_debugDecalPf, hitInfo.point, Quaternion.LookRotation(hitInfo.normal));
+
+                    CreateBulletTrail(hitInfo.point);
+                }
+            }
+            else
+            {
+                CreateBulletTrail(shotPointOrigin.forward * 50);
             }
 
             // Effects bloc - visual + sound ----------------------------------------------
@@ -236,32 +262,32 @@ namespace Khynan_Coding
             CreateMuzzleFlashFX(EquippedWeapon);
             CreateFiredBullet();
 
-            PlayFireSound(_weaponHelper.AudioSource);
+            if (EquippedWeapon.GetCurrentAmmo() > 0) { PlayFireSound(_weaponHelper.AudioSource); }
             // ----------------------------------------------------------------------------
 
             EquippedWeapon.SetCurrentAmmo(_currentAmmo);
             Actions.OnShooting?.Invoke(EquippedWeapon);
 
-            if (_autoReload && EquippedWeapon.GetCurrentAmmo() <= 0) 
-            {
-                PlayMagEmptySound();
-                Reload(); 
-            }
+            //if (_autoReload && EquippedWeapon.GetCurrentAmmo() <= 0) 
+            //{
+            //    PlayMagEmptySound();
+            //    Reload(); 
+            //}
 
             HandleBurst();
         }
 
-        private void ApplyDamageOnValidTarget(Transform target, RaycastHit raycastHit)
+        private void ApplyDamageOnValidTarget(Transform target, RaycastHit hitInfo)
         {
             float damageToApply = 0;
 
-            TPSCollider tpsColliderFound = raycastHit.collider.GetComponent<TPSCollider>();
+            TPSCollider tpsColliderFound = hitInfo.collider.GetComponent<TPSCollider>();
             //Debug.Log("Body part touched : " + tpsColliderFound.ColliderType.ToString());
 
             if (tpsColliderFound)
             {
                 // Decal
-                tpsColliderFound.InstantiateHitEffect(raycastHit.point, Quaternion.LookRotation(raycastHit.normal));
+                tpsColliderFound.InstantiateHitEffect(hitInfo.point, Quaternion.LookRotation(hitInfo.normal));
 
                 // Play Hit Sound
                 tpsColliderFound.PlayOnHitSound();
@@ -284,6 +310,20 @@ namespace Khynan_Coding
             }
         }
 
+        private Vector3 GetShootingDirection(Transform refPoint)
+        {
+            Vector3 direction = refPoint.forward;
+
+            direction += new Vector3(
+                Random.Range(-_minRandomDirection.x, _maxRandomDirection.x),
+                Random.Range(-_minRandomDirection.y, _maxRandomDirection.y),
+                Random.Range(-_minRandomDirection.z, _maxRandomDirection.z));
+
+            direction.Normalize();
+
+            return direction;
+        }
+
         private void CreateFiredBullet()
         {
             if (!EquippedWeapon.GetBulletPf())
@@ -298,7 +338,7 @@ namespace Khynan_Coding
                 EquippedWeapon.GetBulletPf().transform.rotation);
         }
 
-        private void CreateBulletTrail(RaycastHit hit)
+        private void CreateBulletTrail(Vector3 destination)
         {
             if (!EquippedWeapon.GetBulletTrailPf())
             {
@@ -309,7 +349,7 @@ namespace Khynan_Coding
             GameObject bulletTrailInstance = Instantiate(EquippedWeapon.GetBulletTrailPf(), _weaponHelper.ShotPoint.position, _weaponHelper.ShotPoint.localRotation);
 
             BulletTrail bulletTrail = bulletTrailInstance.GetComponent<BulletTrail>();
-            bulletTrail.Setup(_weaponHelper.ShotPoint.position, hit.point);
+            bulletTrail.Setup(_weaponHelper.ShotPoint.position, destination);
             Debug.Log("Setup bullet trail");
         }
 
@@ -375,7 +415,7 @@ namespace Khynan_Coding
 
         private void PlayFireSound(AudioSource audioSource)
         {
-            if (!_weaponHelper.AudioSource) { return; }
+            if (!audioSource) { return; }
 
             WeaponAudioSetting weaponAudioSetting = WeaponAudioSetting.GetWeaponAudioSetting(
                     EquippedWeapon.WeaponAudioSettingList.WeaponAudioSettings, 
@@ -389,10 +429,9 @@ namespace Khynan_Coding
 
             // ... Randomize volume...
             float randomVolume = Mathf.Clamp(ammoPercentage, weaponAudioSetting.GetVolumeMinValue(), weaponAudioSetting.GetVolumeMaxValue());
-            AudioHelper.SetVolume(audioSource, randomVolume);
 
             // ... And then play the sound.
-            AudioHelper.PlayOneShot(audioSource, weaponAudioSetting.GetAudioClip());
+            AudioHelper.PlayOneShot(audioSource, weaponAudioSetting.GetAudioClip(), randomVolume);
         }
         #endregion
 
@@ -416,6 +455,8 @@ namespace Khynan_Coding
             _statsManager.GetStatByType(StatType.MovementSpeed).CurrentValue = _statsManager.GetStatByType(StatType.MovementSpeed).MaxValue / 2.5f;
 
             PlayAimSound();
+
+            Actions.OnAiming?.Invoke();
         }
 
         public void CancelAim(bool playSFX = false)
@@ -434,6 +475,8 @@ namespace Khynan_Coding
             
             _followCamera.Priority = _followCameraPriority;
             _aimCamera.Priority = _aimCameraPriority;
+
+            Actions.OnCancelingAim?.Invoke();
         }
 
         private void HandleAimingRigWeight()
@@ -671,7 +714,7 @@ namespace Khynan_Coding
 
         private void PlayReloadingAnimation(float reloadSpeed)
         {
-            AnimatorHelper.DebugAnimationsDuration(_rigAnimator);
+            //AnimatorHelper.DebugAnimationsDuration(_rigAnimator);
 
             // AnimatorHelper.GetAnimationLength(_rigAnimator, 0) == 1.25f
             float reloadAnimationSpeed = AnimatorHelper.GetAnimationLength(_rigAnimator, 0) + (1 / reloadSpeed);
@@ -699,10 +742,7 @@ namespace Khynan_Coding
             // Set pitch...
             AudioHelper.SetPitch(audioSource, weaponAudioSetting.GetPitchMaxValue());
 
-            // Set volume
-            AudioHelper.SetVolume(audioSource, weaponAudioSetting.GetVolumeMaxValue());
-
-            AudioHelper.PlaySound(audioSource, weaponAudioSetting.GetAudioClip());
+            AudioHelper.PlayOneShot(audioSource, weaponAudioSetting.GetAudioClip(), weaponAudioSetting.GetVolumeMaxValue());
         }
 
         private void PlayMagEmptySound()
@@ -719,10 +759,7 @@ namespace Khynan_Coding
             // Set pitch...
             AudioHelper.SetPitch(audioSource, weaponAudioSetting.GetPitchMaxValue());
 
-            // Set volume
-            AudioHelper.SetVolume(audioSource, weaponAudioSetting.GetVolumeMaxValue());
-
-            AudioHelper.PlayOneShot(audioSource, weaponAudioSetting.GetAudioClip());
+            AudioHelper.PlayOneShot(audioSource, weaponAudioSetting.GetAudioClip(), weaponAudioSetting.GetVolumeMaxValue());
         }
 
         private void SetReloadingStateRigIKs(bool isReloading)
@@ -734,12 +771,15 @@ namespace Khynan_Coding
                 _rigBuilderHelper.EnableThisRigLayer(0, _rigBuilderHelper.GetRigData(RigBodyPart.L_Hand_Reload).GetRig());
                 _rigBuilderHelper.GetRigData(RigBodyPart.L_Hand_Reload).GetTwoBoneIKConstraint().CreateJob(_rigBuilderHelper.GetAnimator());
 
+                _rigBuilderHelper.DisablePrincipalRigLayers(false);
+
                 return;
             }
 
             _rigBuilderHelper.DisableThisLayer(0);
             _rigBuilderHelper.GetRigData(RigBodyPart.L_Hand).GetTwoBoneIKConstraint().weight = 1;
             _rigBuilderHelper.DisableThisLayer(0, _rigBuilderHelper.GetRigData(RigBodyPart.L_Hand_Reload).GetRig());
+            _rigBuilderHelper.EnablePrincipalRigLayers();
         }
         #endregion
 
@@ -804,10 +844,7 @@ namespace Khynan_Coding
             // Set pitch...
             AudioHelper.SetPitch(audioSource, weaponAudioSetting.GetPitchMaxValue());
 
-            // Set volume
-            AudioHelper.SetVolume(audioSource, weaponAudioSetting.GetVolumeMaxValue());
-
-            AudioHelper.PlaySound(audioSource, weaponAudioSetting.GetAudioClip());
+            AudioHelper.PlayOneShot(audioSource, weaponAudioSetting.GetAudioClip(), weaponAudioSetting.GetVolumeMaxValue());
         }
         #endregion
 

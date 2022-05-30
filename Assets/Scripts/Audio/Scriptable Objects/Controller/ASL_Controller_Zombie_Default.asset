@@ -13,10 +13,38 @@ MonoBehaviour:
   m_Name: ASL_Controller_Zombie_Default
   m_EditorClassIdentifier: 
   _controllerAudioSettings:
-  - _name: Controller - Zombie - Default
-    _audioClip: {fileID: 0}
+  - _name: Idle Sound
+    _audioClip: {fileID: 8300000, guid: 228e7054f6ea44f488b3c36c2cfd6826, type: 3}
+    _pitchMinValue: 0.925
+    _pitchMaxValue: 1.05
+    _volumeMinValue: 0.85
+    _volumeMaxValue: 1
+    _relatedControllerAction: 9
+  - _name: Attack Sound
+    _audioClip: {fileID: 8300000, guid: 228e7054f6ea44f488b3c36c2cfd6826, type: 3}
+    _pitchMinValue: 0.925
+    _pitchMaxValue: 1.05
+    _volumeMinValue: 0.85
+    _volumeMaxValue: 1
+    _relatedControllerAction: 4
+  - _name: Walking Sound
+    _audioClip: {fileID: 8300000, guid: 228e7054f6ea44f488b3c36c2cfd6826, type: 3}
+    _pitchMinValue: 0.925
+    _pitchMaxValue: 1.05
+    _volumeMinValue: 0.85
+    _volumeMaxValue: 1
+    _relatedControllerAction: 7
+  - _name: Running Sound
+    _audioClip: {fileID: 8300000, guid: 228e7054f6ea44f488b3c36c2cfd6826, type: 3}
+    _pitchMinValue: 0.925
+    _pitchMaxValue: 1.05
+    _volumeMinValue: 0.85
+    _volumeMaxValue: 1
+    _relatedControllerAction: 8
+  - _name: Death Sound
+    _audioClip: {fileID: 8300000, guid: 228e7054f6ea44f488b3c36c2cfd6826, type: 3}
     _pitchMinValue: 1
     _pitchMaxValue: 1
-    _volumeMinValue: 0.5
-    _volumeMaxValue: 0.5
+    _volumeMinValue: 0
+    _volumeMaxValue: 1
     _relatedControllerAction: 1

@@ -12,16 +12,17 @@ namespace Khynan_Coding
     public class ReticleManager : MonoBehaviour
     {
         [Header("DEPENDENCIES")]
-        [SerializeField] private Image reticleImage;
-        [SerializeField] private GameObject reticleReloadGO;
+        [SerializeField] private GameObject _uiReticleGO;
 
         [Header("RELOAD")]
-        [SerializeField] private GameObject reticleIconHolderGO;
-        [SerializeField] private GameObject reticleComponentsHolderGO;
+        [SerializeField] private GameObject _reloadIconHolderGO;
+        [SerializeField] private GameObject _dotIconHolderGO;
+        [SerializeField] private GameObject _reticleComponentsHolderGO;
 
         [Header("HIT MARKER")]
-        [SerializeField] private float hitMarkerLifetime = .25f;
-        [SerializeField] private GameObject reticleHitMarkerGO;
+        [SerializeField] private float _hitMarkerLifetime = .25f;
+        [SerializeField] private GameObject _hitMarkerGO;
+        [SerializeField] private Color _hitMarkerColor;
         private float _currentLifetimeTimer = 0;
 
         [Header("RETICLE SETTINGS")]
@@ -38,22 +39,15 @@ namespace Khynan_Coding
             [SerializeField] private string _name = "New Setting";
             [SerializeField] private ReticleType _type = ReticleType.Unassigned;
             [SerializeField] private Color color = Color.white;
-            //[SerializeField] private Sprite look = null;
             [Range(5f, 100f)][SerializeField] private float height = 25;
             [Range(5f, 100f)] [SerializeField] private float width = 25;
             [Range(0f, 360f)] [SerializeField] private float rotation = 0;
 
             public ReticleType Type { get => _type; }
             public Color Color { get => color; }
-            //public Sprite Look { get => look; private set => look = value; }
             public float Height { get => height; }
             public float Width { get => width; }
             public float Rotation { get => rotation; }
-
-            //public void SetLook(Sprite newSprite)
-            //{
-            //    Look = newSprite;
-            //}
         }
 
         private void OnEnable()
@@ -61,9 +55,7 @@ namespace Khynan_Coding
             Actions.OnGamePaused += SetDefaultReticle;
 
             Actions.OnAimingInteractable += SetContextualReticle;
-            //Actions.OnEquippingWeapon += SetAimingReticleLookOnEquipping; // old method
 
-            //Actions.OnReloadStarted += SetReloadReticle; // old method
             Actions.OnReloadStarted += DisplayReloadReticle;
 
             Actions.OnReloadStartedSetWeaponData += DisplayReloadFeedback;
@@ -72,6 +64,9 @@ namespace Khynan_Coding
             Actions.OnReloadEnded += HideReloadReticle;
 
             Actions.OnHittingValidTarget += DisplayHitMarker;
+
+            Actions.OnAiming += DisplayCrosshairReticleComponents;
+            Actions.OnCancelingAim += HideCrosshairReticleComponents;
         }
 
         private void OnDisable()
@@ -79,9 +74,7 @@ namespace Khynan_Coding
             Actions.OnGamePaused -= SetDefaultReticle;
 
             Actions.OnAimingInteractable -= SetContextualReticle;
-            //Actions.OnEquippingWeapon -= SetAimingReticleLookOnEquipping; // old method
 
-            //Actions.OnReloadStarted -= SetReloadReticle; // old method
             Actions.OnReloadStarted -= DisplayReloadReticle;
 
             Actions.OnReloadStartedSetWeaponData -= DisplayReloadFeedback;
@@ -90,6 +83,9 @@ namespace Khynan_Coding
             Actions.OnReloadEnded -= HideReloadReticle;
 
             Actions.OnHittingValidTarget -= DisplayHitMarker;
+
+            Actions.OnAiming -= DisplayCrosshairReticleComponents;
+            Actions.OnCancelingAim -= HideCrosshairReticleComponents;
         }
 
         void Start() => Init();
@@ -103,6 +99,8 @@ namespace Khynan_Coding
             HideHitMarker();
             HideReloadFeedback();
             HideReloadReticle();
+
+            //HideCrosshairReticleComponents();
         }
 
         private void SetDefaultReticle()
@@ -114,23 +112,10 @@ namespace Khynan_Coding
 
         private void SetReticle(ReticleSetting reticleSetting)
         {
-            Transform reticleIconParent = reticleImage.transform.parent;
-
-            // Set sprite // old method
-            //reticleImage.sprite = reticleSetting.Look;
-
-            // Set size & rotation // old method
-            //RectTransform rect = reticleImage.GetComponent<RectTransform>();
-            //rect.sizeDelta = new Vector2(reticleSetting.Height, reticleSetting.Width);
-            //rect.localEulerAngles = new(0, 0, reticleSetting.Rotation);
-
-            // Set color // old method
-            //reticleImage.color = reticleSetting.Color; 
-
-            Image dotIcon = reticleIconParent.GetChild(1).GetComponent<Image>();
+            Image dotIcon = _dotIconHolderGO.GetComponent<Image>();
             dotIcon.color = reticleSetting.Color;
 
-            ReticleComponentsHandler reticleComponentsHandler = reticleComponentsHolderGO.GetComponent<ReticleComponentsHandler>();
+            ReticleComponentsHandler reticleComponentsHandler = _reticleComponentsHolderGO.GetComponent<ReticleComponentsHandler>();
             reticleComponentsHandler.SetComponentsColor(reticleSetting.Color);
 
             _currentUsedReticleSetting = reticleSetting;
@@ -161,13 +146,6 @@ namespace Khynan_Coding
             }
         }
 
-        private void SetAimingReticleLookOnEquipping(Weapon weapon, int index)
-        {
-            //reticleSettings[0].SetLook(weapon.ReticleSprite);
-            //reticleSettings[1].SetLook(weapon.ReticleSprite);
-            //reticleSettings[2].SetLook(weapon.ReticleSprite);
-        }
-
         private ReticleSetting GetReticleSetting(ReticleType reticleType)
         {
             if (reticleSettings.Count == 0) { return null; }
@@ -185,18 +163,21 @@ namespace Khynan_Coding
         #region Hit marker
         private void DisplayHitMarker()
         {
-            reticleHitMarkerGO.SetActive(true);
-            _currentLifetimeTimer = hitMarkerLifetime;
+            _hitMarkerGO.SetActive(true);
+            _currentLifetimeTimer = _hitMarkerLifetime;
+
+            Image hitMarkerIcon = _hitMarkerGO.transform.GetChild(0).GetComponent<Image>();
+            hitMarkerIcon.color = _hitMarkerColor;
         }
 
         private void HideHitMarker()
         {
-            reticleHitMarkerGO.SetActive(false);
+            _hitMarkerGO.SetActive(false);
         }
 
         private void ProcessHitMarkerLifetime()
         {
-            if (!reticleHitMarkerGO.activeInHierarchy) { return; }
+            if (!_hitMarkerGO.activeInHierarchy) { return; }
 
             _currentLifetimeTimer -= Time.deltaTime;
 
@@ -213,35 +194,43 @@ namespace Khynan_Coding
         {
             HideHitMarker();
 
-            reticleReloadGO.SetActive(true);
+            _uiReticleGO.SetActive(true);
 
-            ReticleReload reticleReload = reticleReloadGO.GetComponent<ReticleReload>();
+            ReticleReload reticleReload = _uiReticleGO.GetComponent<ReticleReload>();
             reticleReload.Init(weapon.GetReloadingTimer());
         }
 
         private void HideReloadFeedback()
         {
-            reticleReloadGO.SetActive(false);
-        }
-
-        private void SetReloadReticle()
-        {
-            Debug.Log("Set reload reticle.");
-
-            if (_currentUsedReticleSetting == GetReticleSetting(ReticleType.Reload)) { return; }
-            SetReticle(GetReticleSetting(ReticleType.Reload));
+            _uiReticleGO.SetActive(false);
         }
 
         private void DisplayReloadReticle()
         {
-            reticleComponentsHolderGO.SetActive(false);
-            reticleIconHolderGO.SetActive(true);
+            _reloadIconHolderGO.SetActive(true);
+
+            HideCrosshairReticleComponents();
+            _dotIconHolderGO.SetActive(false);
         }
 
         private void HideReloadReticle()
         {
-            reticleIconHolderGO.SetActive(false);
-            reticleComponentsHolderGO.SetActive(true);
+            _reloadIconHolderGO.SetActive(false);
+
+            //DisplayCrosshairReticleComponents();
+            _dotIconHolderGO.SetActive(true);
+        }
+        #endregion
+
+        #region Crosshair reticle components - Display / Hide
+        private void DisplayCrosshairReticleComponents()
+        {
+            _reticleComponentsHolderGO.SetActive(true);
+        }
+
+        private void HideCrosshairReticleComponents()
+        {
+            _reticleComponentsHolderGO.SetActive(false);
         }
         #endregion
     }

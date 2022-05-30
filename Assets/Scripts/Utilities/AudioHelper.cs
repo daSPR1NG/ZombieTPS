@@ -27,25 +27,29 @@ namespace Khynan_Coding
         #endregion
 
         #region AudioSource - Play
-        public static void PlaySound(AudioSource audioSource, AudioClip audioClip)
+        public static void PlaySound(AudioSource audioSource, AudioClip audioClip, float volume)
         {
-            if (!audioSource) { return; }
+            if (!audioSource || !audioClip) { return; }
 
-            if (!audioSource.clip) { audioSource.clip = audioClip; }
+            audioSource.clip = audioClip;
+
+            SetVolume(audioSource, volume);
 
             audioSource.Play();
         }
 
-        public static void PlayOneShot(AudioSource audioSource, AudioClip audioClip, float volume = 1)
+        public static void PlayOneShot(AudioSource audioSource, AudioClip audioClip, float volume)
         {
-            if (!audioSource) { return; }
+            if (!audioSource || !audioClip) { return; }
 
-            audioSource.PlayOneShot(audioClip, volume);
+            SetVolume(audioSource, volume);
+
+            audioSource.PlayOneShot(audioClip);
         }
 
         public static void PlayWithDelay(AudioSource audioSource, AudioClip audioClip, float delay)
         {
-            if (!audioSource) { return; }
+            if (!audioSource || !audioClip) { return; }
 
             if (!audioSource.clip) { audioSource.clip = audioClip; }
 

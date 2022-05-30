@@ -38,6 +38,11 @@ namespace Khynan_Coding
 		[Tooltip("For locking the camera position on all axis")]
 		public bool LockCameraPosition = false;
 
+		[Header("DAMPING SETTINGS")]
+		public Vector3 RunDamping = new(0.1f, 0.25f, 0.25f);
+		public Vector3 SprintDamping = new(0.1f, 0.25f, 0.65f);
+		public Vector3 RollDamping = new(0.1f, 0.25f, 0f);
+
 		// cinemachine
 		private float _cinemachineTargetYaw;
 		private float _cinemachineTargetPitch;
@@ -154,7 +159,15 @@ namespace Khynan_Coding
 		#region Movement + speed value
 		private void Move()
 		{
-			if (_isRolling) { return; }
+			if (_isRolling) 
+			{ 
+				ResetSettingsToRunningState();
+				if (GetActiveCamera3rdPersonFollow().Damping != RollDamping) 
+				{ 
+					GetActiveCamera3rdPersonFollow().Damping = RollDamping; 
+				}
+				return; 
+			}
 
 			// Check input movement value
 			_inputMovement = _input.actions["Move"].ReadValue<Vector2>();
@@ -232,7 +245,7 @@ namespace Khynan_Coding
 				Animator.SetFloat(_animIDMotionSpeed, Mathf.Clamp(overridenInputMagnitude, 0.75f, 1));
 			}
 
-			Debug.Log("Target speed " + _targetSpeed);
+			//Debug.Log("Target speed " + _targetSpeed);
 		}
 
 		private void HandleSprintInputAction()
@@ -254,14 +267,18 @@ namespace Khynan_Coding
 			bool inputMovementHasCorrectValueToSprint = _inputMovement.y > 0f && _inputMovement.x >= -.65f && _inputMovement.x <= .65f;
 			//Debug.Log("inputMovementHasCorrectValueToSprint : " + inputMovementHasCorrectValueToSprint);
 
-			CinemachineBrain cinemachineBrain = Helper.GetMainCamera().GetComponent<CinemachineBrain>();
-			CinemachineVirtualCamera virtualCamera = cinemachineBrain.ActiveVirtualCamera.VirtualCameraGameObject.GetComponent<CinemachineVirtualCamera>();
+			WeaponSystem weaponSystem = GetComponent<WeaponSystem>();
 
-			Cinemachine3rdPersonFollow cinemachine3RdPersonFollow = virtualCamera.GetCinemachineComponent<Cinemachine3rdPersonFollow>();
-			Vector3 runDamping = new (0.1f, 0.25f, 0.25f);
-			Vector3 sprintDamping = new (0.1f, 0.25f, 0.65f);
+			if (weaponSystem && weaponSystem.IsAiming 
+				&& GetActiveCamera3rdPersonFollow().Damping != RunDamping)
+            {
+                Debug.Log("Sprint while rolling " + _isRolling);
 
-			cinemachine3RdPersonFollow.Damping = _targetSpeed == _sprintSpeed ? sprintDamping : runDamping;
+                ResetSettingsToRunningState();
+                return;
+            }
+
+            GetActiveCamera3rdPersonFollow().Damping = _targetSpeed == _sprintSpeed ? SprintDamping : RunDamping;
 
 			// Set target speed based on move speed, sprint speed and if sprint is pressed
 			if (HoldToSprint)
@@ -273,10 +290,24 @@ namespace Khynan_Coding
 			_targetSpeed = _sprintInputPerformed ? _sprintSpeed : _runSpeed;
 		}
 
-		public Vector2 GetInputMovementValue()
+        private void ResetSettingsToRunningState()
+        {
+            GetActiveCamera3rdPersonFollow().Damping = RunDamping;
+            _targetSpeed = _runSpeed;
+        }
+
+        public Vector2 GetInputMovementValue()
         {
 			return _inputMovement;
         }
+
+		private Cinemachine3rdPersonFollow GetActiveCamera3rdPersonFollow()
+        {
+			CinemachineBrain cinemachineBrain = Helper.GetMainCamera().GetComponent<CinemachineBrain>();
+			CinemachineVirtualCamera virtualCamera = cinemachineBrain.ActiveVirtualCamera.VirtualCameraGameObject.GetComponent<CinemachineVirtualCamera>();
+
+			return virtualCamera.GetCinemachineComponent<Cinemachine3rdPersonFollow>();
+		}
 		#endregion
 
 		#region Camera + character transform rotations

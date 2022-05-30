@@ -15,6 +15,7 @@ namespace Khynan_Coding
     {
         [SerializeField] private List<Material> _materials = new();
         [SerializeField] private List<AspectCombination> _aspectCombinations = new();
+        [SerializeField] private List<AnimatorOverrideController> _animatorOverriders = new();
 
         private SkinnedMeshRenderer _skinnedMesh;
 
@@ -32,18 +33,10 @@ namespace Khynan_Coding
 
             SetRandomAspectCombination();
             SetRandomMaterial();
+            SetAnimatorOverrideController();
         }
 
-        void SetRandomMaterial()
-        {
-            if (_materials.Count == 0) { return; }
-
-            int random = Random.Range(0, _materials.Count);
-
-            _skinnedMesh.material = null;
-            _skinnedMesh.material = _materials[random];
-        }
-
+        #region Random Aspect
         void SetRandomAspectCombination()
         {
             if (_aspectCombinations.Count == 0) { return; }
@@ -84,6 +77,18 @@ namespace Khynan_Coding
 
             return null;
         }
+        #endregion
+
+        #region Material Handle
+        void SetRandomMaterial()
+        {
+            if (_materials.Count == 0) { return; }
+
+            int random = Random.Range(0, _materials.Count);
+
+            _skinnedMesh.material = null;
+            _skinnedMesh.material = _materials[random];
+        }
 
         private void GetAspectDefaultMaterials()
         {
@@ -123,5 +128,18 @@ namespace Khynan_Coding
                 meshRenderer.material = material;
             }
         }
+        #endregion
+
+        #region 
+        private void SetAnimatorOverrideController()
+        {
+            if (_animatorOverriders.Count == 0) { return; }
+
+            int random = Random.Range(0, _animatorOverriders.Count);
+
+            Animator animator = transform.GetChild(0).GetComponent<Animator>();
+            animator.runtimeAnimatorController = _animatorOverriders[random];
+        }
+        #endregion
     }
 }

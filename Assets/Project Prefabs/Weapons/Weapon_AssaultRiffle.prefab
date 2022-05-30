@@ -41,7 +41,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8333933525518549956}
   m_Layer: 0
-  m_Name: Holding IK
+  m_Name: Holding IK - Right Hand
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -262,6 +262,11 @@ MonoBehaviour:
   leftHandHintIK: {fileID: 4174830589639249284}
   leftHandTargetAddIK: {fileID: 6823119112645610085}
   leftHandHintAddIK: {fileID: 71805635773239296}
+  _weaponLookElements:
+  - {fileID: 2267550548203968556}
+  - {fileID: 2734379166888494828}
+  - {fileID: 2267274502760959070}
+  - {fileID: 2265806065916146190}
 --- !u!82 &3804734146928167707
 AudioSource:
   m_ObjectHideFlags: 0
@@ -271,7 +276,7 @@ AudioSource:
   m_GameObject: {fileID: 2266614924684990292}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 24300002, guid: 42541f75e5aa07e4ba4027401613ccb9,
+  OutputAudioMixerGroup: {fileID: -7299730364764669944, guid: 42541f75e5aa07e4ba4027401613ccb9,
     type: 2}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
@@ -468,7 +473,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2267550548203968556}
   m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.000057001173, y: -0.004625143, z: 0.16781718}
+  m_LocalPosition: {x: -0.000057001173, y: 0.0036, z: 0.16781718}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

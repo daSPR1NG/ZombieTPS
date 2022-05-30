@@ -14,14 +14,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _name: Assault Riffle
   _type: 2
-  _damage: 50
+  _damage: 5
   _ammoFiredPerShot: 1
   _fireRate: 0.075
   _range: 15
   _aimSpeed: 0.1
   _maxAmmo: 150
-  _magAmount: 6
-  _timeToReload: 2.5
+  _magAmount: 12
+  _timeToReload: 1.25
   _recoilForce: 10
   _impulseForce: 0.25
   _prefab: {fileID: 2266614924684990292, guid: c952687555fccac47b2e2394553fc362, type: 3}
@@ -32,6 +32,7 @@ MonoBehaviour:
     type: 3}
   _bulletPf: {fileID: 4974453963120927326, guid: 9dceb17467781e644a34a5cd63eee64a,
     type: 3}
+  _magPf: {fileID: 0}
   EmitsSound: 1
   <WeaponAudioSettingList>k__BackingField: {fileID: 11400000, guid: e8b943fdeb8505f4fa0844ab15b8c83c,
     type: 2}

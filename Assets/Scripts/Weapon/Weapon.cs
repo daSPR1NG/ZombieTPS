@@ -40,7 +40,7 @@ namespace Khynan_Coding
         [Header("LOOK")]
         [SerializeField] private GameObject _prefab;
         [SerializeField] private Sprite _icon;
-        [SerializeField] private GameObject _muzzleFlashPf, _bulletTrailPf, _bulletPf;
+        [SerializeField] private GameObject _muzzleFlashPf, _bulletTrailPf, _bulletPf, _magPf;
 
         [Header("SOUND")]
         public bool EmitsSound = true;
@@ -189,6 +189,16 @@ namespace Khynan_Coding
         public void SetBulletPf(GameObject gameObject)
         {
             _bulletPf = gameObject;
+        }
+        #endregion
+
+        #region Mag Prefab - Get/Set
+        public GameObject GetMagPrefab() { return _magPf; }
+        public void SetMagPrefab(GameObject gameObject) 
+        { 
+            if (_magPf == gameObject) { return; }
+
+            _magPf = gameObject; 
         }
         #endregion
     }

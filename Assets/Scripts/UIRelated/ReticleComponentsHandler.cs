@@ -6,6 +6,9 @@ namespace Khynan_Coding
 {
     public class ReticleComponentsHandler : MonoBehaviour
     {
+        [Header("SETTINGS")]
+        [SerializeField] private bool _hidesCrosshairOnStart = false;
+
         [Header("SPACING SETTINGS")]
         [Range(0, 100)][SerializeField] private float _spacing = 0f;
         [SerializeField] private float _spacingIncreaseSpeedMultiplier = 5f;
@@ -44,6 +47,8 @@ namespace Khynan_Coding
             SetComponentsPosition();
 
             _startingSpacing = _spacing;
+
+            if (_hidesCrosshairOnStart) { gameObject.SetActive(false); } 
         }
 
         #region Components settings

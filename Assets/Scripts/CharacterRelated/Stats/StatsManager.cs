@@ -27,7 +27,7 @@ namespace Khynan_Coding
 
         [Header("AUDIO")]
         [SerializeField] private bool _emitsDeathSound = true;
-        [SerializeField] private ControllerAudioSettingList controllerAudioSettingList;
+        [SerializeField] private ControllerAudioSettingList _controllerAudioSettingList;
 
         private float _healthPercentage = 0;
 
@@ -246,17 +246,17 @@ namespace Khynan_Coding
         #endregion
 
         #region Audio
+        public ControllerAudioSettingList GetControllerAudioSetting() { return _controllerAudioSettingList; }
+
         private void PlayOnDeathSound(AudioSource audioSource)
         {
             if (!_emitsDeathSound) { return; }
 
             ControllerAudioSetting controllerAudioSetting = ControllerAudioSetting.GetControllerAudioSetting(
-                controllerAudioSettingList.ControllerAudioSettings, 
+                _controllerAudioSettingList.ControllerAudioSettings, 
                 RelatedControllerAction.OnDeath);
 
-            AudioHelper.SetVolume(audioSource, controllerAudioSetting.GetVolumeMaxValue());
-
-            AudioHelper.PlaySound(audioSource, controllerAudioSetting.GetAudioClip());
+            AudioHelper.PlayOneShot(audioSource, controllerAudioSetting.GetAudioClip(), controllerAudioSetting.GetVolumeMaxValue());
         }
         #endregion
 

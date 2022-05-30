@@ -78,8 +78,13 @@ namespace Khynan_Coding
         #region Enable / Disable - multiple
         public void EnablePrincipalRigLayers()
         {
+            // Weapon Aim
             _rigBuilder.layers[1].active = true;
+
+            // Hand hold
             _rigBuilder.layers[2].active = true;
+
+            // Weapon shoot no Aim
             _rigBuilder.layers[3].active = true;
 
             //for (int i = 0; i < _rigBuilder.layers.Count; i++)
@@ -90,11 +95,16 @@ namespace Khynan_Coding
             //}
         }
 
-        public void DisablePrincipalRigLayers()
+        public void DisablePrincipalRigLayers(bool disableHoldingRig)
         {
+            // Weapon Aim
             _rigBuilder.layers[1].active = false;
+
+            // Hand hold
             _rigBuilder.layers[2].active = false;
-            _rigBuilder.layers[3].active = false;
+
+            // Weapon shoot no Aim
+            if (disableHoldingRig) { _rigBuilder.layers[3].active = false; }
 
             //for (int i = 0; i < _rigBuilder.layers.Count; i++)
             //{
@@ -176,7 +186,7 @@ namespace Khynan_Coding
 
         public Animator GetAnimator() { return _animator; }
 
-        private bool HoldingRigIsDisabled()
+        private bool IsHoldingRigDisabled()
         {
             if (!GetRigData(RigBodyPart.L_Hand).GetRig().enabled && !GetRigData(RigBodyPart.R_Hand).GetRig().enabled)
             {
@@ -186,27 +196,48 @@ namespace Khynan_Coding
             return false;
         }
 
-        #region Rig Handle
-        public void FreeHandsWhileInAir(bool hideHands)
+        private bool IsHeldObjectAimPoseDisabled()
         {
-            if (!hideHands) { return; }
+            if (!GetRigData(RigBodyPart.HeldObject_Shoot_Aim).GetRig().enabled)
+            {
+                return true;
+            }
 
-            // Set the hand free state
-            DisablePrincipalRigLayers();
-            HideHeldObject();
-
-            Debug.Log("FreeHandsWhileInAir");
+            return false;
         }
 
-        public void ReAssignHandsOnTouchingGround()
+        private bool IsHeldObjectShootPoseDisabled()
         {
-            if (HoldingRigIsDisabled()) { return; }
+            if (!GetRigData(RigBodyPart.HeldObject_Shoot_NoAim).GetRig().enabled)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        #region Rig Handle
+        public void FreeHandsWhileInAir(bool hideHeldObject)
+        {
+            // Set the hand free state
+            DisablePrincipalRigLayers(hideHeldObject);
+
+            if (!hideHeldObject) { return; }
+
+            HideHeldObject();
+
+            //Debug.Log("FreeHandsWhileInAir");
+        }
+
+        public void ReAssignHoldingPoseOnTouchingGround()
+        {
+            if (/*IsHoldingRigDisabled() ||*/ IsHeldObjectAimPoseDisabled() && IsHeldObjectShootPoseDisabled()) { return; }
 
             // Display and re-enable the holding weapon state
             EnablePrincipalRigLayers();
             DisplayHeldObject();
 
-            Debug.Log("ReAssignHandsOnTouchingGround");
+            //Debug.Log("ReAssignHandsOnTouchingGround : " + IsHeldObjectAimPoseDisabled() + " | " + IsHeldObjectShootPoseDisabled());
         }
         #endregion
     }

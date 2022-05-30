@@ -249,15 +249,15 @@ AnimationClip:
       - serializedVersion: 3
         time: 0.33333334
         value: {x: -0.6172629, y: -0.3587612, z: 0.34487316}
-        inSlope: {x: 0, y: 0, z: -3.012}
-        outSlope: {x: 0, y: 0, z: -3.012}
+        inSlope: {x: 0, y: 0, z: -3.3720005}
+        outSlope: {x: 0, y: 0, z: -3.3720005}
         tangentMode: 0
         weightedMode: 0
         inWeight: {x: 0.33333334, y: 0.33333334, z: 0.33333334}
         outWeight: {x: 0.33333334, y: 0.33333334, z: 0.33333334}
       - serializedVersion: 3
         time: 0.41666666
-        value: {x: -0.598, y: -0.326, z: 0.071}
+        value: {x: -0.539, y: -0.327, z: 0.011}
         inSlope: {x: 0, y: 0, z: 0}
         outSlope: {x: 0, y: 0, z: 0}
         tangentMode: 0
@@ -267,8 +267,8 @@ AnimationClip:
       - serializedVersion: 3
         time: 0.5
         value: {x: -0.6172629, y: -0.3587612, z: 0.34487316}
-        inSlope: {x: 0, y: 0, z: 3.012}
-        outSlope: {x: 0, y: 0, z: 3.012}
+        inSlope: {x: 0, y: 0, z: 3.3720005}
+        outSlope: {x: 0, y: 0, z: 3.3720005}
         tangentMode: 0
         weightedMode: 0
         inWeight: {x: 0.33333334, y: 0.33333334, z: 0.33333334}
@@ -1157,7 +1157,7 @@ AnimationClip:
         outWeight: 0.33333334
       - serializedVersion: 3
         time: 0.41666666
-        value: -0.598
+        value: -0.539
         inSlope: 0
         outSlope: 0
         tangentMode: 136
@@ -1329,7 +1329,7 @@ AnimationClip:
         outWeight: 0.33333334
       - serializedVersion: 3
         time: 0.41666666
-        value: -0.326
+        value: -0.327
         inSlope: 0
         outSlope: 0
         tangentMode: 136
@@ -1493,15 +1493,15 @@ AnimationClip:
       - serializedVersion: 3
         time: 0.33333334
         value: 0.34487316
-        inSlope: -3.012
-        outSlope: -3.012
+        inSlope: -3.3720005
+        outSlope: -3.3720005
         tangentMode: 136
         weightedMode: 0
         inWeight: 0.33333334
         outWeight: 0.33333334
       - serializedVersion: 3
         time: 0.41666666
-        value: 0.071
+        value: 0.011
         inSlope: 0
         outSlope: 0
         tangentMode: 136
@@ -1511,8 +1511,8 @@ AnimationClip:
       - serializedVersion: 3
         time: 0.5
         value: 0.34487316
-        inSlope: 3.012
-        outSlope: 3.012
+        inSlope: 3.3720005
+        outSlope: 3.3720005
         tangentMode: 136
         weightedMode: 0
         inWeight: 0.33333334
@@ -1878,4 +1878,53 @@ AnimationClip:
     script: {fileID: 0}
   m_HasGenericRootTransform: 0
   m_HasMotionFloatCurves: 0
-  m_Events: []
+  m_Events:
+  - time: 0.16666667
+    functionName: GrabMagazine
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 0
+    messageOptions: 0
+  - time: 0.18333334
+    functionName: PlayReloadStateSound
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 0
+    messageOptions: 0
+  - time: 0.33333334
+    functionName: ReleaseMagazine
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 0
+    messageOptions: 0
+  - time: 0.41666666
+    functionName: PlayReloadStateSound
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 3
+    messageOptions: 0
+  - time: 0.6666667
+    functionName: PlayReloadStateSound
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 1
+    messageOptions: 0
+  - time: 0.9166667
+    functionName: PlayReloadStateSound
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 2
+    messageOptions: 0
+  - time: 1.0833334
+    functionName: PlayReloadStateSound
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 4
+    messageOptions: 0

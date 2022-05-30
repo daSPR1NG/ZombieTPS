@@ -13,6 +13,9 @@ namespace Khynan_Coding
 
         public static Action<Weapon> OnShooting;
 
+        public static Action OnAiming;
+        public static Action OnCancelingAim;
+
         public static Action OnReloadStarted;
         public static Action<Weapon> OnReloadStartedSetWeaponData;
         public static Action<Weapon> OnReloadEndedSetWeaponData;

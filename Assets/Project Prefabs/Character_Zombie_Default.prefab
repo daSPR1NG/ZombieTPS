@@ -827,6 +827,7 @@ Transform:
   - {fileID: 1118705276301354353}
   - {fileID: 7888843424806935554}
   - {fileID: 1375036255924824412}
+  - {fileID: 8896895339395641243}
   m_Father: {fileID: 1118705276462998897}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1615,7 +1616,6 @@ Transform:
   - {fileID: 1118705276475425405}
   - {fileID: 1118705277055172615}
   - {fileID: 4494040611314905992}
-  - {fileID: 8896895339395641243}
   m_Father: {fileID: 1118705277658923948}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -2029,7 +2029,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 1
   m_Interpolate: 0
-  m_Constraints: 0
+  m_Constraints: 16
   m_CollisionDetection: 0
 --- !u!136 &1118705277658923938
 CapsuleCollider:
@@ -2149,7 +2149,7 @@ MonoBehaviour:
   _deathVFX: {fileID: 0}
   _healVFX: {fileID: 0}
   _emitsDeathSound: 1
-  controllerAudioSettingList: {fileID: 11400000, guid: 1ececaea3ce4f1e4593b3f3879b17a80,
+  _controllerAudioSettingList: {fileID: 11400000, guid: 1ececaea3ce4f1e4593b3f3879b17a80,
     type: 2}
   _usesHitEffect: 1
   _hitEffectRendererGo: {fileID: 295874960559466657}
@@ -2288,6 +2288,8 @@ MonoBehaviour:
     - {fileID: 1923026488323336463}
     - {fileID: 6360733307751583773}
     - {fileID: 1962822051614580572}
+  _animatorOverriders:
+  - {fileID: 22100000, guid: 4328edaad4bf6a248876d6654bfa5eac, type: 2}
 --- !u!114 &3189577253249495297
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2315,7 +2317,7 @@ AudioSource:
   m_GameObject: {fileID: 1118705277658923931}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 24300002, guid: 42541f75e5aa07e4ba4027401613ccb9,
+  OutputAudioMixerGroup: {fileID: -7299730364764669944, guid: 42541f75e5aa07e4ba4027401613ccb9,
     type: 2}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
@@ -3295,7 +3297,7 @@ GameObject:
   - component: {fileID: 6943236728243368033}
   - component: {fileID: 319557268821718867}
   - component: {fileID: 3407715919629543714}
-  m_Layer: 7
+  m_Layer: 9
   m_Name: R Arm Collider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5855,7 +5857,7 @@ GameObject:
   - component: {fileID: 8350757117597826774}
   - component: {fileID: 8096239830483945164}
   - component: {fileID: 8216899500788404757}
-  m_Layer: 7
+  m_Layer: 9
   m_Name: R Forearm Collider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6184,7 +6186,7 @@ GameObject:
   - component: {fileID: 2286548194788190892}
   - component: {fileID: 1378640832708445030}
   - component: {fileID: 4674311613820887766}
-  m_Layer: 7
+  m_Layer: 9
   m_Name: Head Collider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6198,13 +6200,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6051835072380147574}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.625, z: 0}
+  m_LocalRotation: {x: -0.00000008940696, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.055887602, z: 0.0048395973}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1118705277233691561}
-  m_RootOrder: 3
+  m_Father: {fileID: 1118705276271825384}
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!135 &6067184273822161316
 SphereCollider:
@@ -7597,7 +7599,7 @@ GameObject:
   - component: {fileID: 7419286281657617691}
   - component: {fileID: 4894422960032036992}
   - component: {fileID: 5427286350074055946}
-  m_Layer: 7
+  m_Layer: 9
   m_Name: R Forearm Collider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -7903,7 +7905,7 @@ GameObject:
   - component: {fileID: 5435164246178342965}
   - component: {fileID: 2293615431969134835}
   - component: {fileID: 805982551155171410}
-  m_Layer: 7
+  m_Layer: 9
   m_Name: R Arm Collider
   m_TagString: Untagged
   m_Icon: {fileID: 0}

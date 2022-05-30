@@ -16,6 +16,8 @@ namespace Khynan_Coding
 
         private Vector3 _verticalVelocity;
 
+        private bool _rigHaveBeenReassigned = false;
+
         private int _animIDGrounded;
         private int _animIDJump;
         private int _animIDFreeFall;
@@ -62,8 +64,13 @@ namespace Khynan_Coding
                 _thirdPersonController.Animator.SetBool(_animIDJump, false);
                 _thirdPersonController.Animator.SetBool(_animIDFreeFall, false);
 
-                if (!_thirdPersonController.IsRolling()) 
-                        { _thirdPersonController.GetRigBuilderHelper().ReAssignHandsOnTouchingGround(); }
+                WeaponSystem weaponSystemReference = _thirdPersonController.GetComponent<WeaponSystem>();
+
+                if ((!_thirdPersonController.IsRolling() || !weaponSystemReference.IsReloading) && !_rigHaveBeenReassigned)
+                {
+                    _thirdPersonController.GetRigBuilderHelper().ReAssignHoldingPoseOnTouchingGround();
+                    _rigHaveBeenReassigned = true;
+                }
 
                 SetVerticalVelocity(0, -2, 0);
                 _thirdPersonController.VerticalVelocityValue = _verticalVelocity.y;
@@ -72,6 +79,7 @@ namespace Khynan_Coding
 
             // In the air
             _thirdPersonController.Animator.SetBool(_animIDGrounded, false);
+            _rigHaveBeenReassigned = false;
 
             if (_thirdPersonController.Animator.GetBool("Jump") && _verticalVelocity.y < 0 || _verticalVelocity.y < -2f)
             {

@@ -14,6 +14,9 @@ namespace Khynan_Coding
         [SerializeField] private float _rotationUpdateSpeed = 5;
         [SerializeField] private AnimationCurve _rollCurve;
 
+        [Header("AUDIO")]
+        [SerializeField] private ControllerAudioSetting _audioSetting;
+
         private float _rollTimer;
 
         private PlayerInput _inputs;
@@ -52,7 +55,7 @@ namespace Khynan_Coding
 
             SetRollCurveLength();
 
-            Debug.Log(_rollTimer);
+            //Debug.Log(_rollTimer);
         }
 
         private IEnumerator Roll()
@@ -71,8 +74,10 @@ namespace Khynan_Coding
 
             SetRollCurveLength();
             AnimatorHelper.HandleThisAnimation(_animator, "Roll", true, 0, 1);
+            PlayRollSound(GetComponent<AudioSource>());
 
             _thirdPersonController.GetRigBuilderHelper().FreeHandsWhileInAir(_hideHandsWhileRolling);
+            SetCharacterControllerCollider(new Vector3(0, 0.675f, 0), 0.65f, 1.25f);
 
             float timer = 0;
 
@@ -95,7 +100,7 @@ namespace Khynan_Coding
                 timer += Time.deltaTime;
                 executionPercentage = timer / _rollTimer;
 
-                Debug.Log("ROLL EXECUTION PERCENTAGE : " + executionPercentage);
+                //Debug.Log("ROLL EXECUTION PERCENTAGE : " + executionPercentage);
 
                 if (executionPercentage >= _rollCancelTimer)
                 {
@@ -103,10 +108,12 @@ namespace Khynan_Coding
                     AnimatorHelper.SetAnimatorBoolean(_animator, "Roll", false);
                     if (_weaponSystem.IsAimInputPressed()) { _weaponSystem.Aim(); }
 
+                    SetCharacterControllerCollider(new Vector3(0, 0.93f, 0), 0.15f, 1.8f);
+
                     yield break;
                 }
 
-                _thirdPersonController.GetRigBuilderHelper().ReAssignHandsOnTouchingGround();
+                _thirdPersonController.GetRigBuilderHelper().ReAssignHoldingPoseOnTouchingGround();
 
                 yield return null;
             }
@@ -128,7 +135,36 @@ namespace Khynan_Coding
                 0,
                 _thirdPersonController.GetInputMovementValue().y);
 
-            transform.forward = Helper.GetMainCamera().transform.TransformDirection(inputDirection);
+            //(Helper.GetMainCameraForwardDirection(0) * DirectionToMove.z).normalized
+            //        + (Helper.GetMainCameraRightDirection(0) * DirectionToMove.x).normalized);
+
+            //transform.forward = Helper.GetMainCamera().transform.TransformDirection(inputDirection);
+            transform.forward = 
+                (transform.forward * inputDirection.z) 
+                + (transform.right * inputDirection.x);
+        }
+
+        private void SetCharacterControllerCollider(Vector3 center, float radius, float height)
+        {
+            _thirdPersonController.GetCharacterController().center = center;
+
+            _thirdPersonController.GetCharacterController().radius = radius;
+            _thirdPersonController.GetCharacterController().height = height;
+        }
+
+        private void PlayRollSound(AudioSource audioSource)
+        {
+            if (!audioSource) { return; }
+
+            // Randomize pitch...
+            float pitchOverride = Random.Range(_audioSetting.GetPitchMinValue(), _audioSetting.GetPitchMaxValue());
+            AudioHelper.SetPitch(audioSource, pitchOverride);
+
+            // ... Randomize volume...
+            float randomVolume = Random.Range(_audioSetting.GetVolumeMinValue(), _audioSetting.GetVolumeMaxValue());
+
+            // ... And then play the sound.
+            AudioHelper.PlayOneShot(audioSource, _audioSetting.GetAudioClip(), randomVolume);
         }
     }
 }
