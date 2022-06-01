@@ -1,5 +1,4 @@
 using Cinemachine;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -89,6 +88,7 @@ namespace Khynan_Coding
             _reload.performed += context => Reload();
             _swapWeapon.performed += context => SwapWeapon();
 
+            _shoot.performed += context => CheckRemainingAmmo();
             _shoot.canceled += context => HandleNonAutoWeaponOnInputCanceled();
         }
 
@@ -100,6 +100,7 @@ namespace Khynan_Coding
             _reload.performed -= context => Reload();
             _swapWeapon.performed -= context => SwapWeapon();
 
+            _shoot.performed -= context => CheckRemainingAmmo();
             _shoot.canceled -= context => HandleNonAutoWeaponOnInputCanceled();
         }
         #endregion
@@ -166,6 +167,7 @@ namespace Khynan_Coding
             {
                 _weapons[i].Init();
                 _weapons[i].SetCurrentAmmo(_weapons[i].GetMaxMagAmmo());
+                _weapons[i].SetCurrentMaxAmmo(_weapons[i].GetMaxAmmo());
             }
 
             // On initialization only equip the first weapon in the list by default...
@@ -192,8 +194,13 @@ namespace Khynan_Coding
         {
             // Notes : The pause state is already handled directly in Update.
 
-            if (!_canShoot || IsReloading || !_shoot.IsPressed() || _thirdPersonController.IsRolling()) { return; }
-                
+            if (!_canShoot 
+                || IsReloading 
+                || !_shoot.IsPressed() 
+                || _thirdPersonController.IsRolling()) { return; }
+
+            if (EquippedWeapon.GetCurrentAmmo() == 0 && EquippedWeapon.GetCurrentMaxAmmo() == 0) { return; }
+
             // Auto reload is enabled + no ammo left in magazine
             if (_autoReload && EquippedWeapon.GetCurrentAmmo() <= 0)
             {
@@ -268,11 +275,11 @@ namespace Khynan_Coding
             EquippedWeapon.SetCurrentAmmo(_currentAmmo);
             Actions.OnShooting?.Invoke(EquippedWeapon);
 
-            //if (_autoReload && EquippedWeapon.GetCurrentAmmo() <= 0) 
-            //{
-            //    PlayMagEmptySound();
-            //    Reload(); 
-            //}
+            if (_autoReload && EquippedWeapon.GetCurrentAmmo() <= 0)
+            {
+                PlayMagEmptySound();
+                Reload();
+            }
 
             HandleBurst();
         }
@@ -310,6 +317,55 @@ namespace Khynan_Coding
             }
         }
 
+        private void ProcessShootingCooldown()
+        {
+            if (!GameManager.Instance.PlayerCanUseActions() || _canShoot || IsReloading || !IsWeaponTypeAutomatic()) { return; }
+
+            Debug.Log("Cannot shoot for the moment !");
+
+            _shootingCD -= Time.deltaTime;
+
+            if (_shootingCD <= 0)
+            {
+                _shootingCD = 0;
+                _canShoot = true;
+            }
+        }
+
+        private void HandleBurst()
+        {
+            // If its bursting re shoot
+            if (!_isBursting) { return; }
+
+            Invoke(nameof(FireBullet), EquippedWeapon.GetFireRate());
+            _burstRoundLeft--;
+
+            // CANCEL BURST
+            if (_burstRoundLeft <= 0)
+            {
+                _burstRoundLeft = 0;
+                _isBursting = false;
+            }
+        }
+
+        private void HandleNonAutoWeaponOnInputCanceled()
+        {
+            if (IsWeaponTypeAutomatic()) { return; }
+
+            _canShoot = true;
+        }
+
+        private void CheckRemainingAmmo()
+        {
+            if (EquippedWeapon.GetCurrentAmmo() == 0 && EquippedWeapon.GetCurrentMaxAmmo() == 0)
+            {
+                PlayNoAmmoLeftSound();
+                return;
+            }
+
+            // Add the rule when cAmmo is equal to a certain percentage meaning that player is low in ammo to send feedback
+        }
+
         private Vector3 GetShootingDirection(Transform refPoint)
         {
             Vector3 direction = refPoint.forward;
@@ -324,6 +380,7 @@ namespace Khynan_Coding
             return direction;
         }
 
+        #region VFX - Prefab creation, bullet, trail, muzzle flash
         private void CreateFiredBullet()
         {
             if (!EquippedWeapon.GetBulletPf())
@@ -374,45 +431,9 @@ namespace Khynan_Coding
             // Toggle set active value
             if (_muzzleFlashInstance) { _muzzleFlashInstance.SetActive(true); }
         }
+        #endregion
 
-        private void HandleBurst()
-        {
-            // If its bursting re shoot
-            if (!_isBursting) { return; }
-
-            Invoke(nameof(FireBullet), EquippedWeapon.GetFireRate());
-            _burstRoundLeft--;
-
-            // CANCEL BURST
-            if (_burstRoundLeft <= 0)
-            {
-                _burstRoundLeft = 0;
-                _isBursting = false;
-            }
-        }
-
-        private void ProcessShootingCooldown()
-        {
-            if (!GameManager.Instance.PlayerCanUseActions() || _canShoot || IsReloading || !IsWeaponTypeAutomatic()) { return; }
-
-            Debug.Log("Cannot shoot for the moment !");
-
-            _shootingCD -= Time.deltaTime;
-
-            if (_shootingCD <= 0)
-            {
-                _shootingCD = 0;
-                _canShoot = true;
-            }
-        }
-
-        private void HandleNonAutoWeaponOnInputCanceled()
-        {
-            if (IsWeaponTypeAutomatic()) { return; }
-
-            _canShoot = true;
-        }
-
+        #region SFX - firing
         private void PlayFireSound(AudioSource audioSource)
         {
             if (!audioSource) { return; }
@@ -433,6 +454,7 @@ namespace Khynan_Coding
             // ... And then play the sound.
             AudioHelper.PlayOneShot(audioSource, weaponAudioSetting.GetAudioClip(), randomVolume);
         }
+        #endregion
         #endregion
 
         #region Aiming - Aim / Cancel
@@ -621,7 +643,12 @@ namespace Khynan_Coding
 
             if (!canReload) { return; }
 
-            if (EquippedWeapon.GetMaxAmmo() == 0) { PlayNoAmmoLeftSound(); }
+            if (EquippedWeapon.GetCurrentAmmo() == 0 && EquippedWeapon.GetCurrentMaxAmmo() == 0 
+                || EquippedWeapon.GetCurrentMaxAmmo() == 0) 
+            {
+                PlayNoAmmoLeftSound();
+                return; 
+            }
 
             // If the player is already reloading then return.  
             if (IsReloading) { return; }
@@ -705,11 +732,36 @@ namespace Khynan_Coding
             {
                 _reloadTimer = 0;
 
-                EquippedWeapon.SetCurrentAmmo(EquippedWeapon.GetMaxMagAmmo());
+                HandleAmmoOnReload();
                 _canShoot = true;
 
                 CancelReloading();
             }
+        }
+
+        private void HandleAmmoOnReload()
+        {
+            Debug.Log("HandleAmmoOnReload");
+
+            // Get the remaining
+            int remainingAmmo = EquippedWeapon.GetCurrentAmmo();
+            Debug.Log("Remaining ammo " + remainingAmmo);
+
+            // Push the remaining ammo to the max pool and set cAmmo to 0 (we pushed it).
+            EquippedWeapon.SetCurrentMaxAmmo(remainingAmmo + EquippedWeapon.GetCurrentMaxAmmo()); 
+            EquippedWeapon.SetCurrentAmmo(0);
+
+            int amountToRemove = EquippedWeapon.GetCurrentMaxAmmo() >= EquippedWeapon.GetMaxMagAmmo()
+                ? EquippedWeapon.GetMaxMagAmmo() : EquippedWeapon.GetCurrentMaxAmmo();
+            Debug.Log("Amount to remove " + amountToRemove);
+
+            int maxAmmoNewValue = EquippedWeapon.GetCurrentMaxAmmo() >= EquippedWeapon.GetMaxMagAmmo()
+                ? EquippedWeapon.GetCurrentMaxAmmo() - amountToRemove : 0;
+            Debug.Log("Max Ammo New Value " + maxAmmoNewValue);
+
+            // Set cAmmo to maxMagAmmo and remove the value pushed to cAmmo from maxAmmo.
+            EquippedWeapon.SetCurrentAmmo(amountToRemove); 
+            EquippedWeapon.SetCurrentMaxAmmo(maxAmmoNewValue); 
         }
 
         private void PlayReloadingAnimation(float reloadSpeed)
@@ -752,12 +804,16 @@ namespace Khynan_Coding
             Debug.Log("Play mag empty sound");
 
             AudioSource audioSource = _weaponHelper.AudioSource;
+            audioSource.Stop();
+
             WeaponAudioSetting weaponAudioSetting = WeaponAudioSetting.GetWeaponAudioSetting(
                    EquippedWeapon.WeaponAudioSettingList.WeaponAudioSettings,
                    RelatedWeaponAction.MagEmpty);
 
             // Set pitch...
             AudioHelper.SetPitch(audioSource, weaponAudioSetting.GetPitchMaxValue());
+
+            audioSource.Play();
 
             AudioHelper.PlayOneShot(audioSource, weaponAudioSetting.GetAudioClip(), weaponAudioSetting.GetVolumeMaxValue());
         }

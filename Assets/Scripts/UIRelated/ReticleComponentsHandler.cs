@@ -27,7 +27,11 @@ namespace Khynan_Coding
         private Transform _lowerComponent;
         private Transform _leftComponent;
 
-        private void OnEnable() => Actions.OnShooting += IncreaseSpacing;
+        private void OnEnable()
+        {
+            Actions.OnShooting += IncreaseSpacing;
+        }
+
         private void OnDisable()
         {
             Actions.OnShooting -= IncreaseSpacing;

@@ -47,11 +47,13 @@ namespace Khynan_Coding
             audioSource.PlayOneShot(audioClip);
         }
 
-        public static void PlayWithDelay(AudioSource audioSource, AudioClip audioClip, float delay)
+        public static void PlayWithDelay(AudioSource audioSource, AudioClip audioClip, float delay, float volume)
         {
             if (!audioSource || !audioClip) { return; }
 
-            if (!audioSource.clip) { audioSource.clip = audioClip; }
+            audioSource.clip = audioClip;
+
+            SetVolume(audioSource, volume);
 
             audioSource.PlayDelayed(delay);
         }

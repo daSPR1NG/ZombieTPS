@@ -66,7 +66,7 @@ namespace Khynan_Coding
             Actions.OnHittingValidTarget += DisplayHitMarker;
 
             Actions.OnAiming += DisplayCrosshairReticleComponents;
-            Actions.OnCancelingAim += HideCrosshairReticleComponents;
+            Actions.OnCancelingAim += HideCrosshairReticleComponents; 
         }
 
         private void OnDisable()

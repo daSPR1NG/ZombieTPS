@@ -33,7 +33,7 @@ namespace Khynan_Coding
 
         private void ChangeSeparatorWidth(float width)
         {
-            Debug.Log("ChangeSeparatorWidth");
+            //Debug.Log("ChangeSeparatorWidth");
 
             if (transform.childCount == 0) { return; }
 

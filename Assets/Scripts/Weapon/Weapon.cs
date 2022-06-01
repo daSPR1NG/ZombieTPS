@@ -24,7 +24,7 @@ namespace Khynan_Coding
 
         [Header("AMMO SETTINGS")]
         [SerializeField] private int _maxAmmo = 150;
-        private int _currentAmmo = 0;
+        private int _currentAmmo, _currentMaxAmmo = 0;
 
         [Header("MAG SETTINGS")]
         [SerializeField] private int _magAmount = 6;
@@ -58,11 +58,17 @@ namespace Khynan_Coding
         public void SetWeaponType(WeaponType weaponType) { _type = weaponType; }
         #endregion
 
-        #region Max Ammo - Get / Set
+        #region Max Ammo + Current Max Ammo - Get / Set
         public int GetMaxAmmo() { return _maxAmmo; }
         public void SetMaxAmmo(int value) 
         { 
             _maxAmmo = value; 
+        }
+
+        public int GetCurrentMaxAmmo() { return _currentMaxAmmo; }
+        public void SetCurrentMaxAmmo(int value) 
+        {
+            _currentMaxAmmo = value; 
         }
         #endregion
 

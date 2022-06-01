@@ -47,7 +47,7 @@ namespace Khynan_Coding
             animationIDBreathEffect = Animator.StringToHash("AmmoText_BreathEffect");
 
             weaponIcon.sprite = weapon.GetIcon();
-            weaponCurrentAmmoText.SetText(weapon.GetCurrentAmmo() + " | " + weapon.GetMaxAmmo());
+            weaponCurrentAmmoText.SetText(weapon.GetCurrentAmmo() + " | " + weapon.GetCurrentMaxAmmo());
 
             _weaponReference = weapon;
             _weaponNameText.SetText(_weaponReference.GetName());
@@ -55,7 +55,7 @@ namespace Khynan_Coding
 
         private void InitializeAmmoText(Weapon weapon)
         {
-            SetCurrentAndMaxAmmoTexts(weapon.GetCurrentAmmo().ToString(), /*"| " +*/ weapon.GetMaxAmmo().ToString());
+            SetCurrentAndMaxAmmoTexts(weapon.GetCurrentAmmo().ToString(), /*"| " +*/ weapon.GetCurrentMaxAmmo().ToString());
 
             SetCurrentAmmoTextColor(colorGradient.Evaluate(
                 Helper.GetPercentage(weapon.GetCurrentAmmo(), weapon.GetMaxMagAmmo())));
@@ -65,7 +65,7 @@ namespace Khynan_Coding
         {
             if (weapon != _weaponReference) { return; }
 
-            SetCurrentAndMaxAmmoTexts(weapon.GetCurrentAmmo().ToString(), /*"| " +*/ weapon.GetMaxAmmo().ToString());
+            SetCurrentAndMaxAmmoTexts(weapon.GetCurrentAmmo().ToString(), /*"| " +*/ weapon.GetCurrentMaxAmmo().ToString());
 
             SetCurrentAmmoTextColor(colorGradient.Evaluate(
                 Helper.GetPercentage(weapon.GetCurrentAmmo(), weapon.GetMaxMagAmmo())));
