@@ -6,16 +6,25 @@ namespace Khynan_Coding
     [DisallowMultipleComponent]
     public class FiredBullet : MonoBehaviour
     {
+        [Header("PHYSICS FORCE SETTINGS")]
         [SerializeField] private float _minRandomMass = 0.15f;
         [SerializeField] private float _maxRandomMass = 5f;
         [SerializeField] private float _appliedForce = 2f;
         [SerializeField] private ForceMode _forceMode;
 
+        [Header("ROTATION SETTINGS")]
+        [SerializeField] private float _randomMinXRotation = -90;
+        [SerializeField] private float _randomMaxXRotation = 90;
+
         private Rigidbody _rigidbody;
 
         private void Awake() => Init();
 
-        private void OnEnable() => ApplyForceMode();
+        private void OnEnable()
+        {
+            ApplyForceMode();
+            ApplyRandomRotationOnSpawn();
+        }
 
         void Init()
         {
@@ -36,6 +45,16 @@ namespace Khynan_Coding
             var cameraForward = Helper.GetMainCamera().transform.forward;
 
             _rigidbody.AddRelativeForce(transform.right * _appliedForce/* + cameraRight * _appliedForce*/, _forceMode);
+        }
+
+        private void ApplyRandomRotationOnSpawn()
+        {
+            float randomXRotation = Random.Range(_randomMinXRotation, _randomMaxXRotation);
+
+            transform.eulerAngles = new Vector3(
+                randomXRotation, 
+                transform.rotation.y, 
+                transform.rotation.z);
         }
     }
 }

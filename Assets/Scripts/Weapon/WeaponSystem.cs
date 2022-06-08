@@ -425,7 +425,7 @@ namespace Khynan_Coding
             // If the muzzle flash FX is not instantiated then do it
             if (_weaponHelper.ShotPoint.childCount <= 0) 
             {
-                _muzzleFlashInstance = Instantiate(weapon.GetMuzzleFlash(), _weaponHelper.ShotPoint); ;
+                _muzzleFlashInstance = Instantiate(weapon.GetMuzzleFlash(), _weaponHelper.ShotPoint);
             }
 
             // Toggle set active value
