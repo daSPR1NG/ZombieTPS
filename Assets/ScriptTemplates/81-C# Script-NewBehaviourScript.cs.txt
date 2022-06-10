@@ -1,28 +1,29 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 namespace Khynan_Coding
 {
 	#ROOTNAMESPACEBEGIN#
     public class #SCRIPTNAME# : MonoBehaviour
     {
-        #region Public References
+        // Variables
 
-        #endregion
-
-        void Start()
+        void OnEnable()
         {
-            Init();
+
         }
 
-        void Update()
+        void OnDisable()
         {
-            #NOTRIM#
+
         }
+
+        void Start() => Init();
 
         void Init()
         {
             //Set all datas that need it at the start of the game
         }
     }
-    #ROOTNAMESPACEEND#
+    	#ROOTNAMESPACEEND#
 }

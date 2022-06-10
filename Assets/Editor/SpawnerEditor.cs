@@ -35,11 +35,6 @@ namespace Khynan_Coding
                 Instantiate(go, pos.position, pos.rotation);
             }
         }
-
-        private void AddSpawnPoint()
-        {
-
-        }
     }
 #endif
 }

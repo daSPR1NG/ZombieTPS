@@ -18,6 +18,7 @@ namespace Khynan_Coding
         [SerializeField] private float _offset = 5f;
         [SerializeField] private int _weaponLimit = 3;
         [SerializeField] private List<Weapon> _weapons = new();
+        private GameObject _weaponCreatedInstance;
         private WeaponHelper _weaponHelper = null;
         private Weapon _equippedWeapon = null;
         private int _currentWeaponIndex = 0;
@@ -850,10 +851,11 @@ namespace Khynan_Coding
 
             if (EquippedWeapon.GetPrefab() && weaponPivot.transform.childCount <= 0)
             {
-                GameObject weaponInstance = Instantiate(EquippedWeapon.GetPrefab(), weaponPivot);
+                GameObject wepInstance = Instantiate(EquippedWeapon.GetPrefab(), weaponPivot);
+                _weaponCreatedInstance = wepInstance;
 
                 // Init holding & reloading IKs target and hint.
-                _weaponHelper = weaponInstance.GetComponent<WeaponHelper>();
+                _weaponHelper = _weaponCreatedInstance.GetComponent<WeaponHelper>();
                 _weaponHelper.InitHoldingIK(
                     _rigBuilderHelper.GetRigData(RigBodyPart.R_Hand).GetTwoBoneIKConstraint(),
                     _rigBuilderHelper.GetRigData(RigBodyPart.L_Hand).GetTwoBoneIKConstraint());
@@ -903,6 +905,10 @@ namespace Khynan_Coding
             AudioHelper.PlayOneShot(audioSource, weaponAudioSetting.GetAudioClip(), weaponAudioSetting.GetVolumeMaxValue());
         }
         #endregion
+
+        public GameObject GetEquippedWeapon() { return _weaponCreatedInstance; }
+
+        public WeaponHelper GetEquippedWeaponWeaponHelper() { return _weaponHelper; }
 
         private bool IsWeaponTypeAutomatic()
         {

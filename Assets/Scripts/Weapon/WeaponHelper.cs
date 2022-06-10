@@ -4,6 +4,11 @@ using UnityEngine.Animations.Rigging;
 
 namespace Khynan_Coding
 {
+    public enum WeaponLookElementPart
+    {
+        Unassigned, None, Magazine, IronSight, Slide, Trigger, Handle, //...
+    }
+
     [DisallowMultipleComponent]
     [RequireComponent(typeof(AudioSource))]
     public class WeaponHelper : MonoBehaviour
@@ -24,7 +29,7 @@ namespace Khynan_Coding
         [SerializeField] private Transform leftHandHintAddIK;
 
         [Header("LOOK ELEMENTS")]
-        [SerializeField] private List<GameObject> _weaponLookElements = new();
+        [SerializeField] private List<WeaponLookElement> _weaponLookElements = new();
 
         #region Public References
         public Transform ShotPoint { get => shotPoint; }
@@ -32,9 +37,17 @@ namespace Khynan_Coding
         public Transform BulletExitPoint { get => _bulletExitPoint; }
         #endregion
 
-        private void Start() => Initialiaze();
+        [System.Serializable]
+        private class WeaponLookElement
+        {
+            public GameObject ElementPrefab;
+            public WeaponLookElementPart WeaponLookElementPart = WeaponLookElementPart.Unassigned;
 
-        private void Initialiaze()
+        }
+
+        private void Start() => Init();
+
+        private void Init()
         {
             _audioSource = GetComponent<AudioSource>();
 
@@ -74,13 +87,29 @@ namespace Khynan_Coding
             twoBoneIKConstraint.data.hint = null;
         }
 
+        #region Weapon Look Elements - Get/Set
+        public GameObject GetWeaponLookElements(WeaponLookElementPart weaponLookElementPart)
+        {
+            if (_weaponLookElements.Count == 0) { return null; }
+
+            for (int i = 0; i < _weaponLookElements.Count; i++)
+            {
+                if (_weaponLookElements[i].WeaponLookElementPart != weaponLookElementPart) { continue; }
+
+                return _weaponLookElements[i].ElementPrefab;
+            }
+
+            return null;
+        }
+
+
         private void SetWeaponLookElements()
         {
             Transform rendererParent = transform.parent.parent.parent;
             Weapon weapon = rendererParent.parent.GetComponent<WeaponSystem>().EquippedWeapon;
 
             // Magazine - 0
-            weapon.SetMagPrefab(_weaponLookElements[0]);
+            weapon.SetMagPrefab(GetWeaponLookElements(WeaponLookElementPart.Magazine));
 
             // Iron Sight - 1
 
@@ -88,5 +117,6 @@ namespace Khynan_Coding
 
             // Trigger - 3
         }
+        #endregion
     }
 }

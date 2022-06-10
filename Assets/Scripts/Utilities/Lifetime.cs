@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -8,13 +9,13 @@ namespace Khynan_Coding
     {
         [Header("DEPENDENCIES")]
         [Tooltip("Delay after which the vfx is hidden or destroyed.")]
-        [SerializeField] private float lifetime = 0.2f;
+        [SerializeField] private float lifetime = 1f;
 
         [Tooltip("Determines wether if you want to destroy or hide the vfx that has been created.")]
         [SerializeField] private bool needsToBeDestroyed = false;
 
         private float _currentLifetimeValue = 0;
-
+        
         private void OnEnable() => Initialize();
 
         private void Update() => ProcessLifetimeTimer(needsToBeDestroyed);
@@ -39,6 +40,16 @@ namespace Khynan_Coding
             }
 
             gameObject.SetActive(false);
+        }
+
+        public void SetLifeTime(float delta)
+        {
+            lifetime = delta;
+        }
+        
+        public void SetDestroyState(bool value)
+        {
+            needsToBeDestroyed = value;
         }
     }
 }

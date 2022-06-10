@@ -6,7 +6,7 @@ namespace Khynan_Coding
     {
         [Header("DEPENDENCIES")]
         [SerializeField] private GameObject _muzzleFlashLightGo;
-        private Light _lightComponent;
+        private UnityEngine.Light _lightComponent;
         private float _muzzleFlashIntensity;
 
         [Header("SETTINGS")]

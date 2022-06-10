@@ -21,7 +21,7 @@ MonoBehaviour:
   _aimSpeed: 0.1
   _maxAmmo: 1500
   _magAmount: 2
-  _timeToReload: 1.25
+  _timeToReload: 2.5
   _recoilForce: 10
   _impulseForce: 0.25
   _prefab: {fileID: 2266614924684990292, guid: c952687555fccac47b2e2394553fc362, type: 3}
