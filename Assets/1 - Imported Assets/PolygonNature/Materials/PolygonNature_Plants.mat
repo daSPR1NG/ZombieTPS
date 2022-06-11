@@ -205,8 +205,8 @@ Material:
     - _ZWrite: 1
     - __dirty: 1
     m_Colors:
-    - Color_369F793F: {r: 0, g: 0.39593455, b: 1, a: 0}
-    - Color_FA85148A: {r: 0, g: 0, b: 0, a: 0}
+    - Color_369F793F: {r: 1, g: 1, b: 1, a: 0}
+    - Color_FA85148A: {r: 0.05660379, g: 0.05660379, b: 0.05660379, a: 0}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _ColorTint: {r: 0.7018792, g: 0.7205882, b: 0.6358131, a: 0}
     - _DoubleSidedConstants: {r: 1, g: 1, b: 1, a: 0}

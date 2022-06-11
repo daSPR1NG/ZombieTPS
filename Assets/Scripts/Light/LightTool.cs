@@ -17,7 +17,7 @@ namespace Khynan_Coding
         [Header("LIGHTS SETTINGS")]
         [SerializeField] private Material _lightOnMaterial;
         [SerializeField] private Material _lightOffMaterial;
-        [SerializeField] private List<Light> _lights = new();
+        [SerializeField] private List<LightData> _lightDatas = new();
         [SerializeField] private List<float> _lightMaxIntensityValues = new();
 
         // DEBUG SECTION
@@ -31,6 +31,19 @@ namespace Khynan_Coding
             public bool SwitchON = false;
         }
 
+        [System.Serializable]
+        private class LightData
+        {
+            public Light Light;
+            public bool SwitchON = false;
+
+            public LightData(Light light, bool swicthON)
+            {
+                Light = light;
+                SwitchON = swicthON;
+            }
+        }
+
         private void Start() => Init();
 
         private void LateUpdate() => ProcessFlickeringRateDuration();
@@ -39,6 +52,7 @@ namespace Khynan_Coding
         {
             _currentFlickeringTimer = _flickeringRate;
             _index = 0;
+            ManageLightDataSwitchState();
         }
 
         private void ProcessFlickeringRateDuration()
@@ -57,7 +71,7 @@ namespace Khynan_Coding
         
         void SwitchLight()
         {
-            if (_lights.Count == 0)
+            if (_lightDatas.Count == 0)
             {
                 Debug.LogError("No light found or profile is empty.", transform);
                 return;
@@ -69,9 +83,9 @@ namespace Khynan_Coding
             if (_index >= _flickeringProfile.Count) { _index = 0; }
 
             // Light on or off depending on switchON state.
-            for (int i = 0; i < _lights.Count; i++)
+            for (int i = 0; i < _lightDatas.Count; i++)
             {
-                _lights[i].enabled = switchState;
+                _lightDatas[i].Light.enabled = switchState;
 
                 MeshRenderer meshRenderer = GetComponent<MeshRenderer>();
 
@@ -109,28 +123,63 @@ namespace Khynan_Coding
                     _lightMaxIntensityValues.Add(light.intensity);
                 }
 
-                if (!_lights.Contains(light))
+                LightData newLightData = new(light, true);
+
+                if (_lightDatas.Count == 0 || newLightData.Light != GetLightData(i).Light)
                 {
-                    _lights.Add(light);
+                    _lightDatas.Add(newLightData);
                 }
             }
         }
 
         private void SetupLightsThatFlicker()
         {
-            if (_lights.Count == 0) { return; }
+            if (_lightDatas.Count == 0) { return; }
 
-            for (int i = 0; i < _lights.Count; i++)
+            for (int i = 0; i < _lightDatas.Count; i++)
             {
                 if (_doesFlicker)
                 {
-                    _lights[i].lightmapBakeType = LightmapBakeType.Realtime;
-                    _lights[i].bounceIntensity = 0;
+                    _lightDatas[i].Light.lightmapBakeType = LightmapBakeType.Realtime;
+                    _lightDatas[i].Light.bounceIntensity = 0;
                     continue;
                 }
 
-                _lights[i].lightmapBakeType = LightmapBakeType.Mixed;
-                _lights[i].bounceIntensity = 1;
+                _lightDatas[i].Light.lightmapBakeType = LightmapBakeType.Mixed;
+                _lightDatas[i].Light.bounceIntensity = 1;
+            }
+        }
+
+        private LightData GetLightData(int index)
+        {
+            if (_lightDatas.Count == 0) { return null; }
+
+            return _lightDatas[index];
+        }
+
+        private void ManageLightDataSwitchState()
+        {
+            if (_lightDatas.Count == 0) { return; }
+
+            MeshRenderer meshRenderer = GetComponent<MeshRenderer>();
+
+            for (int i = 0; i < _lightDatas.Count; i++)
+            {
+                switch (_lightDatas[i].SwitchON)
+                {
+                    case true:
+                        if (_lightDatas[i].Light.enabled) { continue; }
+
+                        _lightDatas[i].Light.enabled = true;
+                        ModifyMeshRendererMaterial(meshRenderer, _lightOnMaterial);
+                        break;
+                    case false:
+                        if (!_lightDatas[i].Light.enabled) { continue; }
+
+                        _lightDatas[i].Light.enabled = false;
+                        ModifyMeshRendererMaterial(meshRenderer, _lightOffMaterial);
+                        break;
+                }
             }
         }
 
@@ -138,6 +187,7 @@ namespace Khynan_Coding
         {
             GetAllLightsInObject();
             SetupLightsThatFlicker();
+            ManageLightDataSwitchState();
         }
     }
 }

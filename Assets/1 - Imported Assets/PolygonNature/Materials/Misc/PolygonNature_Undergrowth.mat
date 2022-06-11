@@ -222,7 +222,7 @@ Material:
     - __dirty: 1
     m_Colors:
     - Color_369F793F: {r: 1, g: 1, b: 1, a: 0}
-    - Color_FA85148A: {r: 0.16037738, g: 0.16037738, b: 0.16037738, a: 0}
+    - Color_FA85148A: {r: 0.05490196, g: 0.05490196, b: 0.05490196, a: 0}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _ColorTint: {r: 1, g: 1, b: 1, a: 0}
     - _DoubleSidedConstants: {r: 1, g: 1, b: 1, a: 0}

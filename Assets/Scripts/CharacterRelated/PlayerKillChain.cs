@@ -6,6 +6,7 @@ namespace Khynan_Coding
     public class PlayerKillChain : MonoBehaviour
     {
         [Header("DEPENDENCIES")]
+        [SerializeField] private bool _isKillChainEnabled = false;
         [SerializeField] private int _killCount = 0;
         [SerializeField] private float _killChainDuration = 5f;
 
@@ -25,12 +26,12 @@ namespace Khynan_Coding
 
         private void OnEnable()
         {
-            Actions.OnEnemyDeath += SetKillChain;
+            if (_isKillChainEnabled) { Actions.OnEnemyDeath += SetKillChain; }
         }
 
         private void OnDisable()
         {
-            Actions.OnEnemyDeath -= SetKillChain;
+            if (_isKillChainEnabled) { Actions.OnEnemyDeath -= SetKillChain; }
         }
 
         void Start() => Init();
@@ -44,7 +45,7 @@ namespace Khynan_Coding
 
         void ProcessKillChainTimer()
         {
-            if(_killCount == 0) { return; }
+            if(!_isKillChainEnabled || _killCount == 0) { return; }
 
             _currentKillChainTimer -= Time.deltaTime;
 

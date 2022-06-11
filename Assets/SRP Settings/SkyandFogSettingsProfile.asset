@@ -109,7 +109,7 @@ MonoBehaviour:
     m_Value: 0.45
   toeLength:
     m_OverrideState: 1
-    m_Value: 0.46
+    m_Value: 0.25
   shoulderStrength:
     m_OverrideState: 1
     m_Value: 0
