@@ -14,13 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _name: Assault Riffle
   _type: 2
-  _damage: 5
+  _damage: 500
   _ammoFiredPerShot: 1
-  _fireRate: 0.075
+  _fireRate: 0.2
   _range: 15
   _aimSpeed: 0.1
-  _maxAmmo: 1500
-  _magAmount: 2
+  _maxAmmo: 350
+  _magAmount: 7
   _timeToReload: 2.5
   _recoilForce: 10
   _impulseForce: 0.25

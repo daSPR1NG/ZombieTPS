@@ -24,16 +24,12 @@ namespace Khynan_Coding
         {
             Actions.OnKillChainStarted += InitTimer;
             Actions.OnKillCountValueChanged += SetTimer;
-
-            //Actions.OnKillCountStepReached += ;
         }
 
         private void OnDisable()
         {
             Actions.OnKillChainStarted -= InitTimer;
             Actions.OnKillCountValueChanged -= SetTimer;
-
-            //Actions.OnKillCountStepReached -= ;
         }
 
         void Start() => Init();

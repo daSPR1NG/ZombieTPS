@@ -3,9 +3,15 @@ using UnityEngine;
 
 namespace Khynan_Coding
 {
-    public enum StatType
+    public enum StatAttribute
     {
-        Unassigned, MovementSpeed, Health, AttackSpeed, AttackDamage
+        Unassigned, 
+        MovementSpeed, 
+        Health, 
+        AttackSpeed, AttackDamage,
+        ElementalDamage,
+        ReloadSpeed, FireRate, MaxAmmoBonus, MaxAmmoPerMag, AmmoFiredPerShotBonus,
+        CriticalChance, CriticalDamage,
     }
 
     public enum HealthInteraction
@@ -18,10 +24,10 @@ namespace Khynan_Coding
     {
         [Header("DEPENDENCIES")]
         [SerializeField] private bool _isInvulnerable = false;
-        [SerializeField] private List<Stat> stats = new();
+        [SerializeField] private List<Stat> _stats = new();
 
         [Header("LOOK")]
-        [SerializeField] private GameObject popupPrefab;
+        [SerializeField] private GameObject _popupPrefab;
         [SerializeField] private GameObject _deathVFX;
         [SerializeField] private GameObject _healVFX;
 
@@ -35,13 +41,14 @@ namespace Khynan_Coding
         GlobalCharacterParameters _globalCharacterParameters;
 
         #region Public references
-        public List<Stat> Stats { get => stats; set => stats = value; }
+        public List<Stat> Stats { get => _stats; set => _stats = value; }
         #endregion
 
         private void Awake() => Init();
 
         private void Start() => InitHealth();
 
+        #region Debug
         protected virtual void Update()
         {
             if (Input.GetKeyDown(KeyCode.T))
@@ -54,25 +61,31 @@ namespace Khynan_Coding
                 HealTarget(transform, transform, 15);
             }
         }
+        #endregion
 
         #region Stats methods - Init, Getter, IsNullCheck
         protected virtual void Init()
         {
             _defaultController = GetComponent<DefaultController>();
             _globalCharacterParameters = GetComponent<GlobalCharacterParameters>();
+            InitStats();
+        }
 
+        private void InitStats()
+        {
             if (Stats.Count == 0) { return; }
 
             for (int i = 0; i < Stats.Count; i++)
             {
-                if (Stats[i].Type == StatType.Unassigned) { continue; }
+                if (Stats[i].GetAttribute() == StatAttribute.Unassigned) { continue; }
 
-                Stats[i].SetStatName(Stats[i].Type.ToString());
+                Stats[i].SetStatName(Stats[i].GetAttribute().ToString());
                 Stats[i].MatchCurrentValueWithBaseValue();
             }
 
             InitNavMeshAgent();
             CalculateHealthPercentage();
+
             if (_healVFX) { _healVFX.SetActive(false); }
         }
 
@@ -82,7 +95,7 @@ namespace Khynan_Coding
             {
                 case CharacterType.Player:
                     Actions.OnPlayerHealthValueInitialized?.Invoke(
-                    GetStatByType(StatType.Health).CurrentValue, GetStatByType(StatType.Health).MaxValue);
+                    GetStat(StatAttribute.Health).GetCurrentValue(), GetStat(StatAttribute.Health).GetMaxValue());
                     break;
                 case CharacterType.IA_Enemy:
                     break;
@@ -96,13 +109,13 @@ namespace Khynan_Coding
         {
             if (TryGetComponent(out UnityEngine.AI.NavMeshAgent navMeshAgent))
             {
-                if (!DoesThisStatTypeExists(StatType.MovementSpeed) || navMeshAgent.speed == GetStatByType(StatType.MovementSpeed).CurrentValue) { return; }
+                if (!DoesThisStatTypeExists(StatAttribute.MovementSpeed) || navMeshAgent.speed == GetStat(StatAttribute.MovementSpeed).GetCurrentValue()) { return; }
 
-                navMeshAgent.speed = GetStatByType(StatType.MovementSpeed).CurrentValue;
+                navMeshAgent.speed = GetStat(StatAttribute.MovementSpeed).GetCurrentValue();
             }
         }
 
-        public Stat GetStatByType(StatType statType)
+        public Stat GetStat(StatAttribute statType)
         {
             if (Stats.Count == 0 || !DoesThisStatTypeExists(statType)) 
             { 
@@ -112,7 +125,7 @@ namespace Khynan_Coding
 
             for (int i = 0; i < Stats.Count; i++)
             {
-                if (Stats[i].Type == statType)
+                if (Stats[i].GetAttribute() == statType)
                 {
                     return Stats[i];
                 }
@@ -122,7 +135,7 @@ namespace Khynan_Coding
             return null;
         }
 
-        public bool DoesThisStatTypeExists(StatType statType)
+        public bool DoesThisStatTypeExists(StatAttribute statType)
         {
             if (Stats.Count == 0)
             {
@@ -132,7 +145,7 @@ namespace Khynan_Coding
 
             for (int i = 0; i < Stats.Count; i++)
             {
-                if (Stats[i].Type == statType)
+                if (Stats[i].GetAttribute() == statType)
                 {
                     return true;
                 }
@@ -151,26 +164,31 @@ namespace Khynan_Coding
             {
                 Debug.Log("Target is invulnerable so we create a damage popup with invulnerable string value.");
 
-                DamagePopup.CreateDamagePopup(popupPrefab, target, 0, PopupType.Invulnerable);
+                DamagePopup.CreateDamagePopup(_popupPrefab, target, 0, PopupType.Invulnerable);
                 return;
             }
 
             StatsManager statsManager = target.GetComponent<StatsManager>();
 
-            if (!statsManager || !statsManager.DoesThisStatTypeExists(StatType.Health))
+            if (!statsManager || !statsManager.DoesThisStatTypeExists(StatAttribute.Health))
             {
                 Debug.Log("Stats manager is not present on this object or it is not using health", transform);
             }
 
-            statsManager.GetStatByType(StatType.Health).CurrentValue -= damageAmount;
-            DamagePopup.CreateDamagePopup(popupPrefab, target, damageAmount, PopupType.Damage);
+            float newHealthValue = statsManager.GetStat(StatAttribute.Health).GetCurrentValue() - damageAmount;
+            statsManager.GetStat(StatAttribute.Health).SetCurrentValue(newHealthValue);
+
+            DamagePopup.CreateDamagePopup(_popupPrefab, target, damageAmount, PopupType.Damage);
 
             if (_globalCharacterParameters.CharacterType == CharacterType.Player)
             {
-                Actions.OnPlayerHealthValueChanged?.Invoke(GetStatByType(StatType.Health).CurrentValue, GetStatByType(StatType.Health).MaxValue, HealthInteraction.Damage);
+                Actions.OnPlayerHealthValueChanged?.Invoke(
+                    GetStat(StatAttribute.Health).GetCurrentValue(), 
+                    GetStat(StatAttribute.Health).GetMaxValue(), 
+                    HealthInteraction.Damage);
             }
 
-            if (statsManager.GetStatByType(StatType.Health).CurrentValue <= 0)
+            if (statsManager.GetStat(StatAttribute.Health).GetCurrentValue() <= 0)
             {
                 Debug.Log("Character is dead.");
                 OnDeath(provider);
@@ -185,30 +203,36 @@ namespace Khynan_Coding
 
             StatsManager statsManager = target.GetComponent<StatsManager>();
 
-            if (!statsManager || !statsManager.DoesThisStatTypeExists(StatType.Health))
+            if (!statsManager || !statsManager.DoesThisStatTypeExists(StatAttribute.Health))
             {
                 Debug.Log("Stats manager is not present on this object or it is not using health", transform);
             }
 
-            statsManager.GetStatByType(StatType.Health).CurrentValue += healAmount;
+            float newHealthValue = statsManager.GetStat(StatAttribute.Health).GetCurrentValue() + healAmount;
+            statsManager.GetStat(StatAttribute.Health).SetCurrentValue(newHealthValue);
 
             if (_globalCharacterParameters.CharacterType == CharacterType.Player)
             {
-                Actions.OnPlayerHealthValueChanged?.Invoke(GetStatByType(StatType.Health).CurrentValue, GetStatByType(StatType.Health).MaxValue, HealthInteraction.Heal);
+                Actions.OnPlayerHealthValueChanged?.Invoke(
+                    GetStat(StatAttribute.Health).GetCurrentValue(), 
+                    GetStat(StatAttribute.Health).GetMaxValue(), 
+                    HealthInteraction.Heal);
             }
 
             if (_healVFX) { _healVFX.SetActive(true); }
 
-            DamagePopup.CreateDamagePopup(popupPrefab, target, healAmount, PopupType.Heal);
+            DamagePopup.CreateDamagePopup(_popupPrefab, target, healAmount, PopupType.Heal);
 
             CalculateHealthPercentage();
         }
 
         private void CalculateHealthPercentage()
         {
-            if (!DoesThisStatTypeExists(StatType.Health)) { return; }
+            if (!DoesThisStatTypeExists(StatAttribute.Health)) { return; }
 
-            _healthPercentage = Helper.GetPercentage(GetStatByType(StatType.Health).CurrentValue, GetStatByType(StatType.Health).MaxValue, 100);
+            _healthPercentage = Helper.GetPercentage(
+                GetStat(StatAttribute.Health).GetCurrentValue(), 
+                GetStat(StatAttribute.Health).GetMaxValue(), 100);
         }
 
         #region OnDeath
@@ -229,7 +253,7 @@ namespace Khynan_Coding
 
         public bool IsCharacterDead()
         {
-            if (DoesThisStatTypeExists(StatType.Health) && GetStatByType(StatType.Health).CurrentValue <= 0)
+            if (DoesThisStatTypeExists(StatAttribute.Health) && GetStat(StatAttribute.Health).GetCurrentValue() <= 0)
             {
                 return true;
             }

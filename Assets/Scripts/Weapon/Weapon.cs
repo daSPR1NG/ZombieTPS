@@ -122,7 +122,7 @@ namespace Khynan_Coding
         #region Reloading Timer - Get / Set
         public float GetReloadingTimer() { return _timeToReload; }
 
-        public void SetReloadingTimer(float value)
+        public void SetReloadingSpeed(float value)
         {
             _timeToReload = value;
         }

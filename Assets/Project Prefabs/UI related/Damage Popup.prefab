@@ -136,23 +136,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 0.75
-  maxYDistance: 1.25
-  minXDistance: -2
-  maxXDistance: 2
+  maxYDistance: 2
+  minXDistance: -3
+  maxXDistance: 3
   PopupTextSettings:
   - Name: Damage
     FontSize: 0.3
     Type: 1
     Color: {r: 1, g: 1, b: 1, a: 1}
-    IsBold: 0
-    IsUpperCase: 0
+    IsBold: 1
+    IsUpperCase: 1
     Offset: {x: 0, y: 0, z: 0}
   - Name: Heal
     FontSize: 0.3
     Type: 2
     Color: {r: 0.117647074, g: 0.85882354, b: 0.23783301, a: 1}
-    IsBold: 0
-    IsUpperCase: 0
+    IsBold: 1
+    IsUpperCase: 1
     Offset: {x: 0, y: 0, z: 0}
   - Name: Critic
     FontSize: 0.125
@@ -167,7 +167,7 @@ MonoBehaviour:
     Color: {r: 1, g: 1, b: 1, a: 1}
     IsBold: 1
     IsUpperCase: 1
-    Offset: {x: 0, y: 1, z: 0}
+    Offset: {x: 0, y: 0, z: 0}
 --- !u!114 &-8667153415277597174
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -277,7 +277,7 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
+    rgba: 2164260863
   m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3

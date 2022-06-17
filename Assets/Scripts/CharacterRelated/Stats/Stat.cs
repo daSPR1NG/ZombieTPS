@@ -6,110 +6,138 @@ namespace Khynan_Coding
     [System.Serializable]
     public class Stat
     {
-        [Header("SETUP")]
-        [SerializeField] private string m_Name = "[TYPE HERE]";
-        [SerializeField] private StatType type = StatType.Unassigned;
+        //[Header("SETUP")]
+        [SerializeField] private string _name = "[TYPE HERE]";
+        [SerializeField] private StatAttribute _attribute = StatAttribute.Unassigned;
 
-        [Space][Header("VALUES")]
-        [SerializeField] private bool needsToMatchBaseValueAtStart = true;
-        [SerializeField] private float baseValue = 0;
-        [SerializeField] private float maxValue = 0;
-        [SerializeField] private float minMaxValue = 0;
-        [SerializeField] private List<StatModifier> statModifiers = new();
-        public float currentValue = 0;
+        //[Space(2), Header("VALUES")]
+        [SerializeField] private bool _needsToMatchBaseValueAtStart = true;
+        [SerializeField, Min(0)] private float _baseValue = 0;
+        [SerializeField, Min(0)] private float _maxValue = 0;
+        public float _currentValue = 0;
 
-        [Space][Header("CONDITIONNAL SETTINGS")]
-        [Range(0, 100)] [SerializeField] private float criticalThresholdValue = 30;
+        //[Space(2), Header("LIMITS")]
+        [SerializeField, Min(0)] private float _minLimit = 0;
+        [SerializeField, Min(0)] private float _maxLimit = 0;
 
-        public string Name { get => m_Name; private set => m_Name = value; }
-        public StatType Type { get => type; }
+        [Space(2), Header("STATS")]
+        [SerializeField] private List<StatModifier> _statModifiers = new();
 
-        #region Public references
-        public float BaseValue { get => baseValue; }
-        public float CurrentValue { get => currentValue; set => currentValue = Mathf.Clamp(value, 0, MaxValue); }
-        public float MaxValue { get => maxValue; set => maxValue = Mathf.Clamp(value, minMaxValue, value); }
-        public float CriticalThresholdValue { get => criticalThresholdValue; }
-        #endregion
+        //[Space(2), Header("CONDITIONNAL SETTINGS")]
+        [SerializeField, Range(0, 100)] private float _criticalThresholdValue = 30;
 
         public void SetStatName(string stringValue)
         {
-            if (m_Name == stringValue) { return; }
+            if (_name == stringValue) { return; }
 
-            m_Name = stringValue;
+            _name = stringValue;
         }
 
         public void MatchCurrentValueWithBaseValue()
         {
-            if (CurrentValue == BaseValue || !needsToMatchBaseValueAtStart) { return; }
+            if (_currentValue == _baseValue || !_needsToMatchBaseValueAtStart) { return; }
 
-            MaxValue = BaseValue;
-            CurrentValue = BaseValue;
+            _currentValue = _baseValue >= _maxLimit && _maxLimit > 0 ? _currentValue = _maxLimit : _currentValue = _baseValue;
+            _maxValue = _baseValue >= _maxLimit && _maxLimit > 0 ? _maxValue = _maxLimit : _maxValue = _baseValue;
         }
 
         public float CalculateCurrentValue()
         {
-            float value = BaseValue;
+            float calculatedValue = _baseValue;
 
-            //No modifier at all return the value
-            if (statModifiers.Count == 0)
+            // No modifier at all, return the value here.
+            if (_statModifiers.Count == 0)
             {
-                return value;
+                return calculatedValue;
             }
 
-            //Modifiers are present, add them then return the correct value
-            for (int i = statModifiers.Count - 1; i >= 0; i--)
+            // Modifiers are present, add them then return the correct value.
+            for (int i = _statModifiers.Count - 1; i >= 0; i--)
             {
-                StatModifier modifier = statModifiers[i];
+                StatModifier modifier = _statModifiers[i];
 
-                switch (statModifiers[i].ModifierType)
+                switch (_statModifiers[i].ModifierType)
                 {
                     case ModifierType.Flat:
-                        value += modifier.ModifierValue;
+                        calculatedValue += modifier.ModifierValue;
                         break;
                     case ModifierType.Percentage:
-                        value += 1 * (modifier.ModifierValue / 100);
+                        calculatedValue += 1 * (modifier.ModifierValue / 100);
                         break;
                 }
             }
 
-            if (value <= minMaxValue)
+            if (calculatedValue <= _minLimit)
             {
-                return minMaxValue;
+                return _minLimit;
             }
 
             //Set the max value corresponding to : Base value (+ modifiers)(if present)
-            MaxValue = value;
+            _maxValue = calculatedValue;
 
-            return value;
+            return (float)Mathf.Round(calculatedValue);
         }
 
         #region Stat modifiers methods
         public void AddModifier(StatModifier modifier)
         {
-            statModifiers.Add(modifier);
+            _statModifiers.Add(modifier);
 
             //Recalculate the value after adding a modifier
-            CurrentValue = CalculateCurrentValue();
+            _currentValue = CalculateCurrentValue();
         }
 
         public void RemoveSourceModifier(object source)
         {
-            if (statModifiers.Count == 0)
+            if (_statModifiers.Count == 0)
             {
-                Debug.LogError("This stat " + m_Name + " has no stat modifiers.");
+                Debug.LogError("This stat " + _name + " has no stat modifiers.");
             }
 
-            for (int i = 0; i < statModifiers.Count; i++)
+            for (int i = 0; i < _statModifiers.Count; i++)
             {
-                if (statModifiers[i].ModifierSource != source) { continue; }
+                if (_statModifiers[i].ModifierSource != source) { continue; }
 
-                Debug.Log("Remove stat modifier " + statModifiers[i].ModifiedStatType.ToString() + " from " + statModifiers[i].ModifierSource);
-                statModifiers.RemoveAt(i);
+                Debug.Log("Remove stat modifier " + _statModifiers[i].ModifiedStatType.ToString() + " from " + _statModifiers[i].ModifierSource);
+                _statModifiers.RemoveAt(i);
 
                 //Recalculate the value after removing all modifiers from a source
-                CurrentValue = CalculateCurrentValue();
-                MaxValue = CurrentValue;
+                _currentValue = CalculateCurrentValue();
+                _maxValue = _currentValue;
             }
+        }
+        #endregion
+
+        #region Getter
+        public StatAttribute GetAttribute() { return _attribute; }
+        public float GetBaseValue() { return _baseValue; }
+        public float GetCurrentValue() 
+        {
+            _currentValue = Mathf.Clamp(_currentValue, 0, _maxValue);
+
+            return _currentValue; 
+        }
+        public float GetMaxValue()
+        {
+            _maxValue = _maxLimit > 0 ?
+                _maxValue = Mathf.Clamp(_maxValue, _minLimit, _maxLimit) : _maxValue = Mathf.Clamp(_maxValue, _minLimit, _maxValue);
+
+            return _maxValue;
+        }
+        public float GetCriticalThreshold() { return _criticalThresholdValue; }
+        #endregion
+
+        #region Setter
+        public void SetCurrentValue(float value)
+        {
+            _currentValue = value;
+            _currentValue = Mathf.Clamp(_currentValue, 0, _maxValue);
+        }
+        public void SetMaxValue(float value)
+        {
+            _maxValue = value;
+            _maxValue = _maxLimit > 0 ?
+                _maxValue = Mathf.Clamp(_maxValue, _minLimit, _maxLimit) : _maxValue = Mathf.Clamp(_maxValue, _minLimit, _maxValue);
         }
         #endregion
     }

@@ -37,9 +37,9 @@ namespace Khynan_Coding
 
         public void SetCurrentMSValue(float value)
         {
-            if (!CharacterStats.DoesThisStatTypeExists(StatType.MovementSpeed)) { return; }
+            if (!CharacterStats.DoesThisStatTypeExists(StatAttribute.MovementSpeed)) { return; }
 
-            CharacterStats.GetStatByType(StatType.MovementSpeed).CurrentValue = value;
+            CharacterStats.GetStat(StatAttribute.MovementSpeed).SetCurrentValue(value);
 
             if (!NavMeshAgent) { return; }
 

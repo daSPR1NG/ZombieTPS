@@ -116,6 +116,8 @@ namespace Khynan_Coding
             _swapWeapon = _playerInput.actions["Swap Weapon"];
             #endregion
 
+            _statsManager = GetComponent<StatsManager>();
+
             InitialiazeWeapons();
         }
 
@@ -139,7 +141,6 @@ namespace Khynan_Coding
         #region Initialization
         void Init()
         {
-            _statsManager = GetComponent<StatsManager>();
             _thirdPersonController = GetComponent<ThirdPersonController>();
 
             _impulseSource = GetComponent<CinemachineImpulseSource>();
@@ -168,7 +169,9 @@ namespace Khynan_Coding
             {
                 _weapons[i].Init();
                 _weapons[i].SetCurrentAmmo(_weapons[i].GetMaxMagAmmo());
-                _weapons[i].SetCurrentMaxAmmo(_weapons[i].GetMaxAmmo());
+                _weapons[i].SetCurrentMaxAmmo(_weapons[i].GetMaxAmmo() - _weapons[i].GetMaxMagAmmo());
+
+                SetWeaponStats(_weapons[i]);
             }
 
             // On initialization only equip the first weapon in the list by default...
@@ -182,6 +185,16 @@ namespace Khynan_Coding
             SetAimCameraTransitionSpeed(EquippedWeapon.GetAimSpeed());
 
             Actions.OnInitializingWeapon?.Invoke(EquippedWeapon);
+        }
+
+        private void SetWeaponStats(Weapon weapon)
+        {
+            weapon.SetDamage((int)_statsManager.GetStat(StatAttribute.AttackDamage).GetCurrentValue());
+
+            weapon.SetReloadingSpeed(_statsManager.GetStat(StatAttribute.ReloadSpeed).GetCurrentValue());
+            weapon.SetFireRate(_statsManager.GetStat(StatAttribute.FireRate).GetCurrentValue());
+
+            weapon.SetAmountOfAmmoFiredPerShot((int)_statsManager.GetStat(StatAttribute.AmmoFiredPerShotBonus).GetCurrentValue());
         }
 
         private void AssignAnimationIDs()
@@ -475,7 +488,8 @@ namespace Khynan_Coding
             _followCamera.Priority = 9;
             _aimCamera.Priority = 12;
 
-            _statsManager.GetStatByType(StatType.MovementSpeed).CurrentValue = _statsManager.GetStatByType(StatType.MovementSpeed).MaxValue / 2.5f;
+            _statsManager.GetStat(StatAttribute.MovementSpeed).SetCurrentValue(
+                _statsManager.GetStat(StatAttribute.MovementSpeed).GetMaxValue() / 2.5f);
 
             PlayAimSound();
 

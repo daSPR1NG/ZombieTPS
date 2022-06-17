@@ -4,13 +4,16 @@ namespace Khynan_Coding
 {
     public class CombatSystem : MonoBehaviour
     {
+        [Header("SETTINGS")]
+        [SerializeField] private float _attackAnimationTransitionOffset = .15f;
+        [SerializeField] private float _attackAnimationReductionSpeed = 1.25f;
+
         private float _attackRecover = 2;
 
         private float _attackCooldown;
         private bool _canAttack = true;
 
         float _attackAnimationDuration;
-        float _attackAnimationTransitionOffset = .15f;
 
         // Animation IDs
         private int _animIDAttackSpeed;
@@ -42,13 +45,15 @@ namespace Khynan_Coding
 
             Debug.Log("Combat System : Attack on " + target.name);
 
-            _IAController.Animator.SetFloat(_animIDAttackSpeed, _statsManager.GetStatByType(StatType.AttackSpeed).CurrentValue);
+            float attackAnimationSpeed = _statsManager.GetStat(StatAttribute.AttackSpeed).GetCurrentValue() / _attackAnimationReductionSpeed;
+
+            _IAController.Animator.SetFloat(_animIDAttackSpeed, attackAnimationSpeed);
 
             _attackAnimationDuration = 
-                AnimatorHelper.GetAnimationLength(_IAController.Animator, 2) * 1 / _statsManager.GetStatByType(StatType.AttackSpeed).CurrentValue;
+                (AnimatorHelper.GetAnimationLength(_IAController.Animator, 2)) * 1 / _statsManager.GetStat(StatAttribute.AttackSpeed).GetCurrentValue();
 
             //Set cooldown
-            _attackRecover = _attackAnimationDuration + _attackAnimationTransitionOffset;
+            _attackRecover = _attackAnimationDuration - _attackAnimationTransitionOffset;
             _attackCooldown = _attackRecover;
 
             AnimatorHelper.HandleThisAnimation(_IAController.Animator, "Attack", true, 1, 1);
@@ -75,7 +80,9 @@ namespace Khynan_Coding
             //Attack
             StatsManager targetStats = _interactionHandler.CurrentTarget.GetComponent<StatsManager>();
             targetStats.ApplyDamageToTarget(
-                transform, _interactionHandler.CurrentTarget, _statsManager.GetStatByType(StatType.AttackDamage).CurrentValue);
+                transform, 
+                _interactionHandler.CurrentTarget, 
+                _statsManager.GetStat(StatAttribute.AttackDamage).GetCurrentValue());
         }
 
         public void ResetAttackState()

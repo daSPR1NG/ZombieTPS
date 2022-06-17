@@ -4,25 +4,25 @@ using System.Collections;
 
 namespace Khynan_Coding
 {
+    [ExecuteInEditMode]
     public class LightTool : MonoBehaviour
     {
         [Header("FLICKERING SETTINGS")]
         [SerializeField] private bool _doesFlicker = false;
-        [SerializeField] private float _flickeringRate = .05f;
+        [SerializeField] private float _flickeringDefaultRate = .05f;
         [Tooltip("Values alternate between 0 & 1 => 0 means lights are off, 1 lights are on.")]
         [SerializeField] private List<FlickeringProperty> _flickeringProfile = new();
         private float _currentFlickeringTimer;
         int _index = 0;
 
-        [Header("LIGHTS SETTINGS")]
+        [Space(2), Header("LIGHTS SETTINGS")]
         [SerializeField] private Material _lightOnMaterial;
         [SerializeField] private Material _lightOffMaterial;
         [SerializeField] private List<LightData> _lightDatas = new();
         [SerializeField] private List<float> _lightMaxIntensityValues = new();
 
-        // DEBUG SECTION
-        private Coroutine _testCoroutine = null;
-        private bool _testFlickering = false;
+        [Space(2), Header("DEBUG SETTINGS")]
+        public bool TestFlickering = false;
 
         [System.Serializable]
         private class FlickeringProperty
@@ -50,7 +50,7 @@ namespace Khynan_Coding
 
         void Init()
         {
-            _currentFlickeringTimer = _flickeringRate;
+            _currentFlickeringTimer = _flickeringDefaultRate;
             _index = 0;
             ManageLightDataSwitchState();
         }
@@ -63,7 +63,7 @@ namespace Khynan_Coding
 
             if (_currentFlickeringTimer <= 0)
             {
-                _currentFlickeringTimer = _flickeringRate;
+                _currentFlickeringTimer = _flickeringDefaultRate;
                 _currentFlickeringTimer = _flickeringProfile[_index].FlickeringDelay;
                 SwitchLight();
             }
@@ -189,5 +189,39 @@ namespace Khynan_Coding
             SetupLightsThatFlicker();
             ManageLightDataSwitchState();
         }
+
+        private void ResetTestingState()
+        {
+            if (_index != 0) { _index = 0; }
+
+            if (_currentFlickeringTimer != _flickeringDefaultRate) { _currentFlickeringTimer = _flickeringDefaultRate; }
+
+            ManageLightDataSwitchState();
+            UnityEditor.SceneView.RepaintAll();
+        }
+
+        private void OnDrawGizmos()
+        {
+#if UNITY_EDITOR
+            if (!Application.isEditor || Application.isPlaying) { return; }
+
+            if (UnityEditor.Selection.activeObject != gameObject)
+            {
+                ResetTestingState();
+                TestFlickering = false;
+                return;
+            }
+
+            if (TestFlickering)
+            {
+                UnityEditor.EditorApplication.QueuePlayerLoopUpdate();
+                UnityEditor.SceneView.RepaintAll();
+                return;
+            }
+
+            ResetTestingState();
+#endif
+        }
+
     }
 }

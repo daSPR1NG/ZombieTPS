@@ -2107,44 +2107,48 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _isInvulnerable: 0
-  stats:
-  - m_Name: Health
-    type: 2
-    needsToMatchBaseValueAtStart: 1
-    baseValue: 150
-    maxValue: 150
-    minMaxValue: 0
-    statModifiers: []
-    currentValue: 150
-    criticalThresholdValue: 20
-  - m_Name: MovementSpeed
-    type: 1
-    needsToMatchBaseValueAtStart: 1
-    baseValue: 0.35
-    maxValue: 0.35
-    minMaxValue: 0
-    statModifiers: []
-    currentValue: 0.35
-    criticalThresholdValue: 0
-  - m_Name: AttackDamage
-    type: 4
-    needsToMatchBaseValueAtStart: 1
-    baseValue: 10
-    maxValue: 10
-    minMaxValue: 0
-    statModifiers: []
-    currentValue: 10
-    criticalThresholdValue: 0
-  - m_Name: AttackSpeed
-    type: 3
-    needsToMatchBaseValueAtStart: 1
-    baseValue: 0.625
-    maxValue: 0.625
-    minMaxValue: 0.35
-    statModifiers: []
-    currentValue: 0.625
-    criticalThresholdValue: 0
-  popupPrefab: {fileID: 3869969381968861476, guid: 191a2e11d38d66943880ea27edeeb7eb,
+  _stats:
+  - _name: MovementSpeed
+    _attribute: 1
+    _needsToMatchBaseValueAtStart: 1
+    _baseValue: 0.35
+    _maxValue: 0.35
+    _currentValue: 0.35
+    _minLimit: 0.1
+    _maxLimit: 0.95
+    _statModifiers: []
+    _criticalThresholdValue: 0
+  - _name: Health
+    _attribute: 2
+    _needsToMatchBaseValueAtStart: 1
+    _baseValue: 150
+    _maxValue: 150
+    _currentValue: 150
+    _minLimit: 0
+    _maxLimit: 0
+    _statModifiers: []
+    _criticalThresholdValue: 20
+  - _name: AttackSpeed
+    _attribute: 3
+    _needsToMatchBaseValueAtStart: 1
+    _baseValue: 0.625
+    _maxValue: 0.625
+    _currentValue: 0.625
+    _minLimit: 0.1
+    _maxLimit: 3
+    _statModifiers: []
+    _criticalThresholdValue: 0
+  - _name: AttackDamage
+    _attribute: 4
+    _needsToMatchBaseValueAtStart: 1
+    _baseValue: 15
+    _maxValue: 15
+    _currentValue: 15
+    _minLimit: 0
+    _maxLimit: 0
+    _statModifiers: []
+    _criticalThresholdValue: 0
+  _popupPrefab: {fileID: 3869969381968861476, guid: 191a2e11d38d66943880ea27edeeb7eb,
     type: 3}
   _deathVFX: {fileID: 0}
   _healVFX: {fileID: 0}
@@ -2167,6 +2171,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4bc56898d01524c4195ebe054a2ed5a1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _attackAnimationTransitionOffset: 0.05
+  _attackAnimationReductionSpeed: 1.25
 --- !u!114 &297732522007661727
 MonoBehaviour:
   m_ObjectHideFlags: 0

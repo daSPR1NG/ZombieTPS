@@ -138,8 +138,8 @@ namespace Khynan_Coding
 
 			AssignAnimationIDs();
 
-			_runSpeed = _statsManager.GetStatByType(StatType.MovementSpeed).MaxValue / 1.75f;
-			_sprintSpeed = _statsManager.GetStatByType(StatType.MovementSpeed).MaxValue;
+			_runSpeed = _statsManager.GetStat(StatAttribute.MovementSpeed).GetMaxValue() / 1.75f;
+			_sprintSpeed = _statsManager.GetStat(StatAttribute.MovementSpeed).GetMaxValue();
 
 			SetDefaultStateAtStart(Idle());
 
@@ -182,7 +182,7 @@ namespace Khynan_Coding
 			if (_inputMovement == Vector2.zero)
 			{
 				if (!_playerInteractionHandler.IsInteracting) { SwitchState(Idle()); }
-				_statsManager.GetStatByType(StatType.MovementSpeed).CurrentValue = 0.0f;
+				_statsManager.GetStat(StatAttribute.MovementSpeed).SetCurrentValue(0.0f);
 				_targetSpeed = 0.0f;
 			}
 
@@ -198,17 +198,18 @@ namespace Khynan_Coding
 				// creates curved result rather than a linear one giving a more organic speed change
 				// note T in Lerp is clamped, so we don't need to clamp our speed
 				_speed = Mathf.Lerp(currentHorizontalSpeed, _targetSpeed * inputMagnitude, Time.deltaTime * SpeedChangeRate);
-				_statsManager.GetStatByType(StatType.MovementSpeed).CurrentValue = 
-					Mathf.Lerp(currentHorizontalSpeed, _targetSpeed * inputMagnitude, Time.deltaTime * SpeedChangeRate);
+
+				_statsManager.GetStat(StatAttribute.MovementSpeed).SetCurrentValue(
+					Mathf.Lerp(currentHorizontalSpeed, _targetSpeed * inputMagnitude, Time.deltaTime * SpeedChangeRate));
 
 				// round speed to 3 decimal places
 				_speed = Mathf.Round(_speed * 1000f) / 1000f;
-				_statsManager.GetStatByType(StatType.MovementSpeed).CurrentValue = Mathf.Round(_speed * 1000f) / 1000f;
+				_statsManager.GetStat(StatAttribute.MovementSpeed).SetCurrentValue(Mathf.Round(_speed * 1000f) / 1000f);
 			}
 			else
 			{
 				_speed = _targetSpeed;
-				_statsManager.GetStatByType(StatType.MovementSpeed).CurrentValue = _targetSpeed;
+				_statsManager.GetStat(StatAttribute.MovementSpeed).SetCurrentValue(_targetSpeed);
 			}
 
 			// normalise input direction

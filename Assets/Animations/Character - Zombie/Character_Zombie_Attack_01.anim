@@ -65873,7 +65873,7 @@ AnimationClip:
     floatParameter: 0
     intParameter: 0
     messageOptions: 0
-  - time: 2.1333334
+  - time: 1.8666667
     functionName: SetAttackBooleanToFalse
     data: 
     objectReferenceParameter: {fileID: 0}

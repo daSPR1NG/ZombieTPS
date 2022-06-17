@@ -10,7 +10,7 @@ namespace Khynan_Coding
         [SerializeField] private bool _hideHandsWhileRolling = false;
         [SerializeField] private float _rollForce = 5;
         [SerializeField] private float _rollSpeed = 1;
-        [SerializeField] private float _rollCancelTimer = 0.75f;
+        [SerializeField, Max(5)] private float _rollCancelTimer = 0.75f;
         [SerializeField] private float _rotationUpdateSpeed = 5;
         [SerializeField] private AnimationCurve _rollCurve;
 
