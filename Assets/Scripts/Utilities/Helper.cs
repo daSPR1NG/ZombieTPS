@@ -215,28 +215,29 @@ namespace Khynan_Coding
             image.sprite = sprite;
         }
 
-        public static void DisplayUIWindow(GameObject window)
+        public static void CreateUIParent(Transform parentRef, Transform newParent)
         {
-            if (!window || window.activeInHierarchy) { return; }
-
-            window.SetActive(true);
-        }
-
-        public static void HideUIWindow(GameObject window)
-        {
-            if (!window || !window.activeInHierarchy) { return; }
-
-            window.SetActive(false);
-        }
-
-        public static bool IsThisUIWindowDisplayed(GameObject component)
-        {
-            if (component.activeInHierarchy)
+            if (!parentRef)
             {
-                return true;
-            }
+                GameObject go = new();
+                go.name = "Effect parent";
 
-            return false;
+                go.transform.SetParent(newParent);
+                go.transform.SetAsLastSibling();
+
+                RectTransform rT = go.AddComponent<RectTransform>();
+
+                rT.pivot = new Vector2(0.5f, 0.5f);
+
+                rT.anchorMin = new Vector2(0, 0);
+                rT.anchorMax = new Vector2(1, 1);
+
+                rT.localScale = new Vector3(1, 1, 1);
+                rT.localPosition = new Vector3(0, 0, 0);
+                rT.sizeDelta = new Vector2(0, 0);
+
+                parentRef = go.transform;
+            }
         }
         #endregion
 
@@ -251,6 +252,29 @@ namespace Khynan_Coding
             }
 
             return default;
+        }
+        #endregion
+
+        #region GameObject - Active state handle
+        public static void DisplayGO(GameObject go)
+        {
+            if (!go || go.activeInHierarchy) { return; }
+
+            go.SetActive(true);
+        }
+
+        public static void HideGO(GameObject go)
+        {
+            if (!go || !go.activeInHierarchy) { return; }
+
+            go.SetActive(false);
+        }
+
+        public static bool IsThisGOActive(GameObject go)
+        {
+            if (go.activeInHierarchy) { return true; }
+
+            return false;
         }
         #endregion
 

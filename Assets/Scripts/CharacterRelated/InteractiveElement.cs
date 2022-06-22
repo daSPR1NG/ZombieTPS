@@ -33,14 +33,14 @@ namespace Khynan_Coding
         {
             Debug.Log("Display Interaction UI");
 
-            Helper.DisplayUIWindow(_interactionCanvas);
+            Helper.DisplayGO(_interactionCanvas);
         }
 
         public void HideInteractionUI()
         {
             Debug.Log("Hide Interaction UI");
 
-            Helper.HideUIWindow(_interactionCanvas);
+            Helper.HideGO(_interactionCanvas);
         }
     }
 }

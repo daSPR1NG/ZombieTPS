@@ -3,6 +3,17 @@ using UnityEngine;
 
 namespace Khynan_Coding
 {
+    public enum StatAttribute
+    {
+        Unassigned,
+        MovementSpeed,
+        Health,
+        AttackSpeed, AttackDamage,
+        ElementalDamage,
+        ReloadSpeed, FireRate, MaxAmmoBonus, MaxAmmoPerMag, AmmoFiredPerShotBonus,
+        CriticalChance, CriticalDamage,
+    }
+
     [System.Serializable]
     public class Stat
     {

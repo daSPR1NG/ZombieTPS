@@ -3,17 +3,6 @@ using UnityEngine;
 
 namespace Khynan_Coding
 {
-    public enum StatAttribute
-    {
-        Unassigned, 
-        MovementSpeed, 
-        Health, 
-        AttackSpeed, AttackDamage,
-        ElementalDamage,
-        ReloadSpeed, FireRate, MaxAmmoBonus, MaxAmmoPerMag, AmmoFiredPerShotBonus,
-        CriticalChance, CriticalDamage,
-    }
-
     public enum HealthInteraction
     {
         None, Damage, Heal
@@ -49,6 +38,7 @@ namespace Khynan_Coding
         private void Start() => InitHealth();
 
         #region Debug
+#if UNITY_EDITOR
         protected virtual void Update()
         {
             if (Input.GetKeyDown(KeyCode.T))
@@ -61,7 +51,8 @@ namespace Khynan_Coding
                 HealTarget(transform, transform, 15);
             }
         }
-        #endregion
+#endif
+    #endregion
 
         #region Stats methods - Init, Getter, IsNullCheck
         protected virtual void Init()

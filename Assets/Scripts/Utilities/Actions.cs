@@ -50,5 +50,9 @@ namespace Khynan_Coding
 
         public static Action<Transform, InteractionData> OnPlayerInteractionPossible;
         public static Action OnPlayerInteractionImpossible;
+
+        public static Action<Effect> OnAddingEffect;
+        public static Action<Effect> OnRemovingEffect;
+        public static Action<Effect> OnModifyingEffect;
     }
 }

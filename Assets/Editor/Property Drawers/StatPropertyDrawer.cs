@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEditor;
-using System;
 
 namespace Khynan_Coding
 {
@@ -9,9 +8,6 @@ namespace Khynan_Coding
     {
         private SerializedProperty _attribute, _needsToMatchBaseValueAtStart, 
             _baseValue, _maxValue, _currentValue, _minLimit, _maxLimit, _criticalThresholdValue;
-
-        private float xMinPosOffset = 12.5f;
-        private float xMaxPosOffset = 125f;
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
@@ -27,8 +23,8 @@ namespace Khynan_Coding
             _maxValue = property.FindPropertyRelative("_maxValue");
             _currentValue = property.FindPropertyRelative("_currentValue");
 
-            _minLimit = property.FindPropertyRelative("_currentValue");
-            _maxLimit = property.FindPropertyRelative("_currentValue");
+            _minLimit = property.FindPropertyRelative("_minLimit");
+            _maxLimit = property.FindPropertyRelative("_maxLimit");
 
             _criticalThresholdValue = property.FindPropertyRelative("_criticalThresholdValue");
             #endregion
@@ -69,7 +65,9 @@ namespace Khynan_Coding
 
         private void DrawAttributeProperty(SerializedProperty property, Rect position)
         {
-            GUIContent content = new GUIContent("Type");
+            GUIContent content = new GUIContent(
+                "Type",
+                "This value represents the stat identity, we use this to find and manipulate the stat of this attribute type.");
 
             SetLabelWidth(content.text, 5);
 
@@ -86,7 +84,9 @@ namespace Khynan_Coding
 
         private void DrawMatchValueAtStartProperty(SerializedProperty property, Rect position)
         {
-            GUIContent content = new GUIContent("Match Value");
+            GUIContent content = new GUIContent(
+                "Match Value", 
+                "Forces current and max values to be equal to this value.");
 
             SetLabelWidth(content.text, 5);
 
@@ -104,7 +104,10 @@ namespace Khynan_Coding
         #region Draw Base, Current, Max Values
         private void DrawBaseValueProperty(SerializedProperty property, Rect position)
         {
-            GUIContent content = new GUIContent("Current Value");
+            GUIContent content = new GUIContent(
+                "Base Value",
+                "The value set & used at start." + '\n' +
+                "If -match value at start- is true, current and max values are equal to this value.");
 
             SetLabelWidth(content.text, 5);
 
@@ -112,7 +115,7 @@ namespace Khynan_Coding
 
             float xPos = position.min.x + widthOffset;
             float yPos = position.min.y + YOffset(2, 7);
-            float width = position.size.x * .4f - widthOffset;
+            float width = position.size.x * .35f - widthOffset;
             float height = EditorGUIUtility.singleLineHeight;
 
             Rect drawArea = new(xPos, yPos, width, height);
@@ -121,15 +124,17 @@ namespace Khynan_Coding
 
         private void DrawMaxValueProperty(SerializedProperty property, Rect position)
         {
-            GUIContent content = new GUIContent("Max Value");
+            GUIContent content = new GUIContent(
+                "Max Value", 
+                "The current value cannot exceed this value.");
 
             SetLabelWidth(content.text, 5);
 
             float widthOffset = 6;
 
-            float xPos = position.min.x + position.width * .4f + widthOffset;
+            float xPos = position.min.x + position.width * .35f + widthOffset;
             float yPos = position.min.y + YOffset(2, 7);
-            float width = position.size.x * .2f - widthOffset;
+            float width = position.size.x * .3f - widthOffset;
             float height = EditorGUIUtility.singleLineHeight;
 
             Rect drawArea = new(xPos, yPos, width, height);
@@ -138,15 +143,17 @@ namespace Khynan_Coding
 
         private void DrawCurrentValueProperty(SerializedProperty property, Rect position)
         {
-            GUIContent content = new GUIContent("Max Value");
+            GUIContent content = new GUIContent(
+                "Current Value", 
+                "The actual value of this attribute.");
 
             SetLabelWidth(content.text, 5);
 
             float widthOffset = 6;
 
-            float xPos = position.min.x + position.width * .6f + widthOffset;
+            float xPos = position.min.x + position.width * .65f + widthOffset;
             float yPos = position.min.y + YOffset(2, 7);
-            float width = position.size.x * .4f - widthOffset;
+            float width = position.size.x * .35f - widthOffset;
             float height = EditorGUIUtility.singleLineHeight;
 
             Rect drawArea = new(xPos, yPos, width, height);
@@ -157,7 +164,9 @@ namespace Khynan_Coding
         #region Draw Min & Max Limits
         private void DrawMinLimitValueProperty(SerializedProperty property, Rect position)
         {
-            GUIContent content = new GUIContent("Min Limit Value");
+            GUIContent content = new GUIContent(
+                "Min Limit Value", 
+                "Current & max values cannot be lower than this value.");
 
             SetLabelWidth(content.text, 5);
 
@@ -174,7 +183,9 @@ namespace Khynan_Coding
 
         private void DrawMaxLimitValueProperty(SerializedProperty property, Rect position)
         {
-            GUIContent content = new GUIContent("Max Limit Value");
+            GUIContent content = new GUIContent(
+                "Max Limit Value",
+                "Current & max values cannot be greater than this value.");
 
             SetLabelWidth(content.text, 5);
 
@@ -192,9 +203,11 @@ namespace Khynan_Coding
 
         private void DrawCriticalThresholdValueProperty(SerializedProperty property, Rect position)
         {
-            GUIContent content = new GUIContent("Critical Threshold Value");
+            GUIContent content = new GUIContent(
+                "Critical Threshold Value",
+                "We use this to call action(s) when the stat reaches this percentage value.");
 
-            SetLabelWidth(content.text, 5);
+            SetLabelWidth(content.text, 7);
 
             float widthOffset = 6;
 

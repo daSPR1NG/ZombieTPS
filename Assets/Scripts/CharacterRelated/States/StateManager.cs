@@ -4,7 +4,7 @@ using UnityEngine.AI;
 
 namespace Khynan_Coding
 {
-    public enum StateName
+    public enum StateType
     {
         Idle, Moving, Interaction, Attack, Death
     }
@@ -12,15 +12,15 @@ namespace Khynan_Coding
     [RequireComponent(typeof(NavMeshAgent))]
     public class StateManager : MonoBehaviour
     {
-        Dictionary<StateName, CharacterState> _states = new();
+        readonly Dictionary<StateType, CharacterState> _states = new();
 
         public StateManager()
         {
-            _states[StateName.Idle] = new Character_IdleState();
-            _states[StateName.Moving] = new Character_MovingState();
-            _states[StateName.Interaction] = new Character_InteractionState();
-            _states[StateName.Attack] = new Character_AttackState();
-            _states[StateName.Death] = new Character_DeathState();
+            _states[StateType.Idle] = new Character_IdleState();
+            _states[StateType.Moving] = new Character_MovingState();
+            _states[StateType.Interaction] = new Character_InteractionState();
+            _states[StateType.Attack] = new Character_AttackState();
+            _states[StateType.Death] = new Character_DeathState();
         }
 
         private bool _characterIsMoving = false;
@@ -62,27 +62,27 @@ namespace Khynan_Coding
         #region States - Get
         public CharacterState Idle()
         {
-            return _states[StateName.Idle];
+            return _states[StateType.Idle];
         }
 
         public CharacterState Moving()
         {
-            return _states[StateName.Moving];
+            return _states[StateType.Moving];
         }
 
         public CharacterState Interaction()
         {
-            return _states[StateName.Interaction];
+            return _states[StateType.Interaction];
         }
 
         public CharacterState Attack()
         {
-            return _states[StateName.Attack];
+            return _states[StateType.Attack];
         }
 
         public CharacterState Death()
         {
-            return _states[StateName.Death];
+            return _states[StateType.Death];
         }
         #endregion
     }

@@ -1,12 +1,18 @@
-using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace Khynan_Coding
 {
+    // NOTES : CREATE AN EDITOR PROPERTY DRAWER TO MASK VARIABLES 
+
+    [DisallowMultipleComponent]
+    [RequireComponent(typeof(Animator))]
     public class UIHealthBar : MonoBehaviour
     {
+        [Header("SETTINGS")]
+        [SerializeField] private bool _displaysTextInfos = false;
+
         [Header("DEPENDENCIES")]
         [SerializeField] private TMP_Text _healthValueText;
         [SerializeField] private Image _healthIconImage;
@@ -16,7 +22,7 @@ namespace Khynan_Coding
         [SerializeField] private Image _healthFillImage;
         [SerializeField] private Image _damagedFillImage;
 
-        [Header("SETTINGS")]
+        [Header("FILL SPEED SETTINGS")]
         [SerializeField] private float _damagedFillBarUpdateDelay = .5f;
         [SerializeField] private float _damagedFillBarUpdateSpeed = 1.5f;
 
@@ -48,8 +54,11 @@ namespace Khynan_Coding
 
         void Init()
         {
-            _healthIconImage.sprite = _healthIcon;
             _animator = GetComponent<Animator>();
+
+            if (!_displaysTextInfos) { _healthValueText.gameObject.SetActive(false); }
+
+            _healthIconImage.sprite = _healthIcon;
         }
 
         private void InitHealthBarFill(float current, float max)
@@ -57,7 +66,8 @@ namespace Khynan_Coding
             _currentValue = current;
             _maxValue = max;
 
-            _healthValueText.SetText(current.ToString());
+            if (_displaysTextInfos) { _healthValueText.SetText(current.ToString()); }
+            
             //_healthValueText.SetText($"<size=18>{current}</size>" + " / " + $"<size=16><color=grey>{max}</color></size>");
 
             _healthFillImage.fillAmount = current / max;
@@ -71,7 +81,10 @@ namespace Khynan_Coding
             _currentValue = current;
             _maxValue = max;
 
-            _healthValueText.SetText(current.ToString() + " / " + max.ToString());
+            if (_displaysTextInfos)
+            {
+                _healthValueText.SetText(current.ToString() + " / " + max.ToString());
+            }
 
             _healthFillImage.fillAmount = current / max;
 

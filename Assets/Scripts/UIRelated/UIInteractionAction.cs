@@ -36,7 +36,7 @@ namespace Khynan_Coding
         void Init()
         {
             _content = transform.GetChild(0);
-            if (_hideContent) { Helper.HideUIWindow(_content.gameObject); }
+            if (_hideContent) { Helper.HideGO(_content.gameObject); }
         }
 
         private void SetInteractionTextFeedback(Transform target, InteractionData interactionData)
@@ -50,7 +50,7 @@ namespace Khynan_Coding
             Sprite inputIcon = interactionData.GetInputIcon();
             _inputIcon.sprite = inputIcon;
 
-            Helper.DisplayUIWindow(_content.gameObject);
+            Helper.DisplayGO(_content.gameObject);
         }
 
         private void HideContent()
@@ -58,7 +58,7 @@ namespace Khynan_Coding
             _inputActionText.SetText(string.Empty);
 
             _inputIcon.sprite = null;
-            Helper.HideUIWindow(_content.gameObject);
+            Helper.HideGO(_content.gameObject);
         }
     }
 }

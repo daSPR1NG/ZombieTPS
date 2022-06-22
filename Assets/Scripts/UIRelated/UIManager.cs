@@ -42,13 +42,13 @@ namespace Khynan_Coding
 
         private void TogglePauseMenu()
         {
-            if (!Helper.IsThisUIWindowDisplayed(pauseMenuComponent))
+            if (!Helper.IsThisGOActive(pauseMenuComponent))
             {
-                Helper.DisplayUIWindow(pauseMenuComponent);
+                Helper.DisplayGO(pauseMenuComponent);
                 return;
             }
 
-            Helper.HideUIWindow(pauseMenuComponent);
+            Helper.HideGO(pauseMenuComponent);
         }
     }
 }
