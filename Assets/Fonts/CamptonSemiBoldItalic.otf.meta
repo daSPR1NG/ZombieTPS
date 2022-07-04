@@ -1,0 +1,29 @@
+fileFormatVersion: 2
+guid: 13db379e2bdda044d8212c2bf6850e39
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontNames:
+  - Campton
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: a0a251376b2e24345b25723e2ac6f1fd, type: 3}
+  - {fileID: 12800000, guid: 71538c1c3e275b443bf16cdbf107089e, type: 3}
+  - {fileID: 12800000, guid: c00a3fa0d6acb8647b73e030789e7ef7, type: 3}
+  - {fileID: 12800000, guid: 51d1c729195a7e740a18b063a89ed715, type: 3}
+  - {fileID: 12800000, guid: 905e33474a3d1d644ac5ee5917c3535c, type: 3}
+  - {fileID: 12800000, guid: 404ff046cec2bfe49a4e321fef0e7133, type: 3}
+  - {fileID: 12800000, guid: d2ed9072d8d45bd4eb74144e9da66001, type: 3}
+  - {fileID: 12800000, guid: c1d91a06537f128488758dd61bec7af6, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  shouldRoundAdvanceValue: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

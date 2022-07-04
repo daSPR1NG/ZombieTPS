@@ -31,6 +31,8 @@ namespace Khynan_Coding
 
         private void FollowTarget()
         {
+            if ( !_target ) return;
+
             Vector3 pos = _mainCamera.WorldToScreenPoint(_target.position + _offset);
 
             if (transform.position != pos) { transform.position = pos; }

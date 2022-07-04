@@ -35,12 +35,12 @@ namespace Khynan_Coding
 
             DisableColliders(stateManager.transform);
 
-            Helper.DebugMessage("Entering <DEATH> state", stateManager.transform);
+            //Helper.DebugMessage("Entering <DEATH> state", stateManager.transform);
         }
 
         public override void ExitState(StateManager stateManager)
         {
-            Helper.DebugMessage("Exiting <DEATH> state", stateManager.transform);
+            //Helper.DebugMessage("Exiting <DEATH> state", stateManager.transform);
         }
 
         public override void ProcessState(StateManager stateManager)
@@ -49,7 +49,7 @@ namespace Khynan_Coding
 
             HandleDeath();
 
-            Debug.Log(stateManager.name + " is Dead.");
+            //Debug.Log(stateManager.name + " is Dead.");
         }
 
         private void HandleDeath()

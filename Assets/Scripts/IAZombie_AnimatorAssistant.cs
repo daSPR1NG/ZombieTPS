@@ -46,7 +46,9 @@ namespace Khynan_Coding
             float randomPitch = Random.Range(controllerAudioSetting.GetPitchMinValue(), controllerAudioSetting.GetPitchMaxValue());
             AudioHelper.SetPitch(_audioSource, randomPitch);
 
-            Debug.Log("PlayIdleSFX | " + randomPitch);
+            //Debug.Log("PlayIdleSFX | " + randomPitch);
+
+            AudioHelper.Stop(_audioSource);
 
             AudioHelper.PlayOneShot(
                 _audioSource,
@@ -62,7 +64,9 @@ namespace Khynan_Coding
             float randomPitch = Random.Range(controllerAudioSetting.GetPitchMinValue(), controllerAudioSetting.GetPitchMaxValue());
             AudioHelper.SetPitch(_audioSource, randomPitch);
 
-            Debug.Log("PlayAttackSFX | " + randomPitch);
+            //Debug.Log("PlayAttackSFX | " + randomPitch);
+
+            AudioHelper.Stop(_audioSource);
 
             AudioHelper.PlayOneShot(
                 _audioSource, 
@@ -78,7 +82,9 @@ namespace Khynan_Coding
             float randomPitch = Random.Range(controllerAudioSetting.GetPitchMinValue(), controllerAudioSetting.GetPitchMaxValue());
             AudioHelper.SetPitch(_audioSource, randomPitch);
 
-            Debug.Log("PlayWalkingSFX | " + randomPitch);
+            //Debug.Log("PlayWalkingSFX | " + randomPitch);
+
+            AudioHelper.Stop(_audioSource);
 
             AudioHelper.PlayOneShot(
                 _audioSource,
@@ -94,7 +100,9 @@ namespace Khynan_Coding
             float randomPitch = Random.Range(controllerAudioSetting.GetPitchMinValue(), controllerAudioSetting.GetPitchMaxValue());
             AudioHelper.SetPitch(_audioSource, randomPitch);
 
-            Debug.Log("PlayRunningSFX | " + randomPitch);
+            //Debug.Log("PlayRunningSFX | " + randomPitch);
+
+            AudioHelper.Stop(_audioSource);
 
             AudioHelper.PlayOneShot(
                 _audioSource,

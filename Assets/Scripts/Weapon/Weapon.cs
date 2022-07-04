@@ -37,21 +37,39 @@ namespace Khynan_Coding
         [SerializeField] private float _recoilForce = 5f;
         [SerializeField] private float _impulseForce = .25f;
 
-        [Header("LOOK")]
+        [Header("STATIC LOOK ELEMENTS")]
         [SerializeField] private GameObject _prefab;
         [SerializeField] private Sprite _icon;
         [SerializeField] private GameObject _muzzleFlashPf, _bulletTrailPf, _bulletPf, _magPf;
+
+        [Header("ALTERNATE LOOK ELEMENTS")]
+        [SerializeField] private GameObject[] _muzzleFlashes;
+        [SerializeField] private GameObject[] _bulletTrailPfs;
+        [SerializeField] private GameObject[] _bulletPfs;
 
         [Header("SOUND")]
         public bool EmitsSound = true;
         [field: SerializeField] public WeaponAudioSettingList WeaponAudioSettingList { get; private set; }
 
+        private void OnDisable()
+        {
+            SetDefaultLook();
+        }
+
         public void Init()
         {
             SetMaxMagAmmo();
+            SetDefaultLook();
         }
 
         public string GetName() { return _name; }
+
+        private void SetDefaultLook()
+        {
+            SetBulletPf(null, 0);
+            SetBulletTrailPf(null, 0);
+            SetMuzzleFlash(null, 0);
+        }
 
         #region Weapon Type - Get
         public WeaponType GetWeaponType() { return _type; }
@@ -177,23 +195,49 @@ namespace Khynan_Coding
 
         #region Muzzle Flash - Get / Set
         public GameObject GetMuzzleFlash() { return _muzzleFlashPf; }
-        public void SetMuzzleFlash(GameObject gameObject) { _muzzleFlashPf = gameObject; }
+        public GameObject GetMuzzleFlashOtherLook(int index) { return _muzzleFlashes[index]; }
+        public void SetMuzzleFlash(GameObject gameObject, int index = 25000) 
+        {
+            if (index != 25000)
+            {
+                index = Mathf.Clamp(index, 0, _muzzleFlashes.Length);
+
+                _muzzleFlashPf = _muzzleFlashes[index];
+                return;
+            }
+
+            _muzzleFlashPf = gameObject; 
+        }
         #endregion
 
         #region Bullet Trail Prefab - Get / Set
         public GameObject GetBulletTrailPf() { return _bulletTrailPf; }
-
-        public void SetBulletTrailPf(GameObject gameObject)
+        public void SetBulletTrailPf(GameObject gameObject, int index = 25000)
         {
+            if (index != 25000)
+            {
+                index = Mathf.Clamp(index, 0, _bulletTrailPfs.Length);
+
+                _bulletTrailPf = _bulletTrailPfs[index];
+                return;
+            }
+
             _bulletTrailPf = gameObject;
         }
         #endregion
 
         #region Bullet Prefab - Get / Set
         public GameObject GetBulletPf() { return _bulletPf; }
-
-        public void SetBulletPf(GameObject gameObject)
+        public void SetBulletPf(GameObject gameObject, int index = 25000)
         {
+            if (index != 25000)
+            {
+                index = Mathf.Clamp(index, 0, _bulletPfs.Length);
+
+                _bulletPf = _bulletPfs[index];
+                return;
+            }
+
             _bulletPf = gameObject;
         }
         #endregion

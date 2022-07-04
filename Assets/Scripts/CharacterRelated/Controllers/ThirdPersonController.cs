@@ -138,8 +138,7 @@ namespace Khynan_Coding
 
 			AssignAnimationIDs();
 
-			_runSpeed = _statsManager.GetStat(StatAttribute.MovementSpeed).GetMaxValue() / 1.75f;
-			_sprintSpeed = _statsManager.GetStat(StatAttribute.MovementSpeed).GetMaxValue();
+			SetTargetSpeedValues(_statsManager.GetStat(StatAttribute.MovementSpeed).GetMaxValue());
 
 			SetDefaultStateAtStart(Idle());
 
@@ -273,7 +272,7 @@ namespace Khynan_Coding
 			if (weaponSystem && weaponSystem.IsAiming 
 				&& GetActiveCamera3rdPersonFollow().Damping != RunDamping)
             {
-                Debug.Log("Sprint while rolling " + _isRolling);
+                //Debug.Log("Sprint while rolling " + _isRolling);
 
                 ResetSettingsToRunningState();
                 return;
@@ -296,6 +295,12 @@ namespace Khynan_Coding
             GetActiveCamera3rdPersonFollow().Damping = RunDamping;
             _targetSpeed = _runSpeed;
         }
+
+		public void SetTargetSpeedValues(float value)
+        {
+			_runSpeed = value / 1.75f;
+			_sprintSpeed = value;
+		}
 
         public Vector2 GetInputMovementValue()
         {
@@ -342,18 +347,24 @@ namespace Khynan_Coding
 
 		public void SetSensitivity(float value)
 		{
+			if (_currentSensitivity == value) { return; }
+
 			_currentSensitivity = value;
 		}
 
 		public void SetSensitivityOvertime(float value, float multiplier)
 		{
+			if (_currentSensitivity == value) { return; }
+
 			_currentSensitivity = Mathf.Lerp(_currentSensitivity, value, Time.deltaTime * multiplier);
 
-			Debug.Log("Set sensitivity overtime.");
+			//Debug.Log("Set sensitivity overtime.");
 		}
 
 		public void RotateCharacterTowardsTargetRotation(Transform affectedTransform, Quaternion rotation)
 		{
+			if (affectedTransform.rotation == rotation) { return; }
+
 			float angle = Quaternion.Angle(transform.rotation, rotation);
 			//Debug.Log(angle);
 

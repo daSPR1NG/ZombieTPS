@@ -8,7 +8,7 @@ namespace Khynan_Coding
         [SerializeField] private bool _useSeparators = true;
         [SerializeField] private int _separatorToSpawn = 0;
         [SerializeField] private GameObject _separatorIconPf;
-        [SerializeField, Range(2,30)] private float _width = 2;
+        [SerializeField, Range(0,30)] private float _width = 2;
 
         void Start() => Init();
 

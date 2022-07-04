@@ -6,7 +6,7 @@ namespace Khynan_Coding
 {
     public enum InteractionActionType
     {
-        Unassigned, Talk, Look, Interact
+        Unassigned, Talk, Look, Interact, Buy
     }
 
     [System.Serializable]
@@ -71,23 +71,17 @@ namespace Khynan_Coding
 
         private void Interact()
         {
-            if (!_canInteract) {
-                Debug.Log("Can't interact");
-                return; 
-            }
+            if ( !_canInteract || IsInteracting ) return;
 
-            _thirdPersonController.LookAtSomething(_interactiveElement.transform);
+            //_thirdPersonController.LookAtSomething(_interactiveElement.transform);
 
             _interactiveElement.StartInteraction(transform);
             _thirdPersonController.SwitchState(_thirdPersonController.Interaction());
-            Debug.Log("Interact");
+            //Debug.Log("Interact");
         }
 
         public void CancelInteraction()
         {
-            _interactiveElement.GetComponent<InteractiveElement>();
-            _interactiveElement.ExitInteraction();
-
             SetCanInteract(null, InteractionActionType.Unassigned, false);
         }
 
@@ -104,6 +98,7 @@ namespace Khynan_Coding
                     if (_canInteract)
                     {
                         Actions.OnPlayerInteractionPossible?.Invoke(_interactiveElement.transform, GetInteractionData(interactionActionType));
+                        _interactiveElement.DisplayInteractionUI();
                         return;
                     }
 

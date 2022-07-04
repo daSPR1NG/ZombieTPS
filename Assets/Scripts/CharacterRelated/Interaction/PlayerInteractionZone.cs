@@ -4,7 +4,7 @@ namespace Khynan_Coding
 {
     public class PlayerInteractionZone : MonoBehaviour
     {
-        private Transform _interactiveElement;
+        private Transform _interactiveElementTransform;
 
         private PlayerInteractionHandler _playerInteractionHandler;
         private SphereCollider _sphereCollider;
@@ -19,27 +19,27 @@ namespace Khynan_Coding
 
         private void OnTriggerEnter(Collider other)
         {
-            Debug.Log("On trigger enter. " + other.name, transform);
+            Debug.Log( "PlayerInteractionZone > On trigger enter. " + other.name, transform );
 
             InteractiveElement interactiveElement = other.GetComponent<InteractiveElement>();
 
-            if (interactiveElement is not null)
+            if (interactiveElement)
             {
-                _interactiveElement = other.transform;
+                _interactiveElementTransform = other.transform;
                 _playerInteractionHandler.SetCanInteract(interactiveElement, interactiveElement.InteractionActionType, true);
             }
         }
 
         private void OnTriggerExit(Collider other)
         {
-            Debug.Log("On trigger exit. " + other.name, transform);
+            Debug.Log( "PlayerInteractionZone > On trigger exit. " + other.name, transform );
 
-            if (!_interactiveElement) { return; }
+            if (!_interactiveElementTransform) { return; }
 
-            if (_interactiveElement == other.transform || _interactiveElement.Equals(null))
+            if (_interactiveElementTransform == other.transform || _interactiveElementTransform.Equals(null))
             {
                 _playerInteractionHandler.CancelInteraction();
-                _interactiveElement = null;
+                _interactiveElementTransform = null;
             }
         }
 

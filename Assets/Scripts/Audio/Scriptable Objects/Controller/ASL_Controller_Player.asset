@@ -20,3 +20,17 @@ MonoBehaviour:
     _volumeMinValue: 0
     _volumeMaxValue: 1
     _relatedControllerAction: 1
+  - _name: Jump Sound
+    _audioClip: {fileID: 8300000, guid: 574689062a0b02741b405191191b349b, type: 3}
+    _pitchMinValue: 1
+    _pitchMaxValue: 1
+    _volumeMinValue: 0
+    _volumeMaxValue: 1
+    _relatedControllerAction: 2
+  - _name: Roll Sound
+    _audioClip: {fileID: 8300000, guid: 574689062a0b02741b405191191b349b, type: 3}
+    _pitchMinValue: 1
+    _pitchMaxValue: 1
+    _volumeMinValue: 0
+    _volumeMaxValue: 1
+    _relatedControllerAction: 3

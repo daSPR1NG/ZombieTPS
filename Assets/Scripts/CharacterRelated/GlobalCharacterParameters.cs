@@ -11,6 +11,7 @@ namespace Khynan_Coding
     [DisallowMultipleComponent]
     public class GlobalCharacterParameters : MonoBehaviour
     {
+        [SerializeField] private string _name = "";
         [SerializeField] private CharacterType _characterType = CharacterType.Unassigned;
 
         private RigBuilderHelper _rigBuilderHelper;
@@ -33,5 +34,7 @@ namespace Khynan_Coding
         {
             return _rigBuilderHelper;
         }
+
+        public string GetName() { return _name; }
     }
 }

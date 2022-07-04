@@ -31,7 +31,7 @@ namespace Khynan_Coding
         [SerializeField, Min(0)] private float _minLimit = 0;
         [SerializeField, Min(0)] private float _maxLimit = 0;
 
-        [Space(2), Header("STATS")]
+        //[Space(2), Header("STATS")]
         [SerializeField] private List<StatModifier> _statModifiers = new();
 
         //[Space(2), Header("CONDITIONNAL SETTINGS")]
@@ -73,7 +73,8 @@ namespace Khynan_Coding
                         calculatedValue += modifier.ModifierValue;
                         break;
                     case ModifierType.Percentage:
-                        calculatedValue += 1 * (modifier.ModifierValue / 100);
+                        // Stat + Stat * Bonus
+                        calculatedValue += calculatedValue * (modifier.ModifierValue / 100);
                         break;
                 }
             }
@@ -86,7 +87,7 @@ namespace Khynan_Coding
             //Set the max value corresponding to : Base value (+ modifiers)(if present)
             _maxValue = calculatedValue;
 
-            return (float)Mathf.Round(calculatedValue);
+            return calculatedValue;
         }
 
         #region Stat modifiers methods
@@ -114,7 +115,7 @@ namespace Khynan_Coding
 
                 //Recalculate the value after removing all modifiers from a source
                 _currentValue = CalculateCurrentValue();
-                _maxValue = _currentValue;
+                _maxValue = CalculateCurrentValue();
             }
         }
         #endregion

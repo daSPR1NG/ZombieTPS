@@ -6,7 +6,7 @@ namespace Khynan_Coding
 {
     public enum WeaponLookElementPart
     {
-        Unassigned, None, Magazine, IronSight, Slide, Trigger, Handle, //...
+        Unassigned, None, FireElements, FrostElements, //...
     }
 
     [DisallowMultipleComponent]
@@ -50,8 +50,7 @@ namespace Khynan_Coding
         private void Init()
         {
             _audioSource = GetComponent<AudioSource>();
-
-            SetWeaponLookElements();
+            InitWeaponLookElements();
         }
 
         public void InitHoldingIK(TwoBoneIKConstraint rightHoldingIK, TwoBoneIKConstraint leftHoldingIK)
@@ -102,20 +101,31 @@ namespace Khynan_Coding
             return null;
         }
 
-
-        private void SetWeaponLookElements()
+        private void InitWeaponLookElements()
         {
-            Transform rendererParent = transform.parent.parent.parent;
-            Weapon weapon = rendererParent.parent.GetComponent<WeaponSystem>().EquippedWeapon;
+            // Fire Elements + Frost Elements
+            HideAllElementalWeaponLookEffect();
+        }
 
-            // Magazine - 0
-            weapon.SetMagPrefab(GetWeaponLookElements(WeaponLookElementPart.Magazine));
+        public void DisplayLookElement(WeaponLookElementPart weaponLookElementPart)
+        {
+            switch (weaponLookElementPart)
+            {
+                case WeaponLookElementPart.FireElements:
+                    GetWeaponLookElements(WeaponLookElementPart.FrostElements).SetActive(false);
+                    GetWeaponLookElements(WeaponLookElementPart.FireElements).SetActive(true);
+                    break;
+                case WeaponLookElementPart.FrostElements:
+                    GetWeaponLookElements(WeaponLookElementPart.FireElements).SetActive(false);
+                    GetWeaponLookElements(WeaponLookElementPart.FrostElements).SetActive(true);
+                    break;
+            }
+        }
 
-            // Iron Sight - 1
-
-            // Slide - 2
-
-            // Trigger - 3
+        public void HideAllElementalWeaponLookEffect()
+        {
+            GetWeaponLookElements(WeaponLookElementPart.FireElements).SetActive(false);
+            GetWeaponLookElements(WeaponLookElementPart.FrostElements).SetActive(false);
         }
         #endregion
     }

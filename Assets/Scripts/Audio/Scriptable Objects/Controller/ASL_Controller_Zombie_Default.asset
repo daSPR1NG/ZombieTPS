@@ -14,37 +14,37 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _controllerAudioSettings:
   - _name: Idle Sound
-    _audioClip: {fileID: 8300000, guid: 228e7054f6ea44f488b3c36c2cfd6826, type: 3}
-    _pitchMinValue: 0.925
-    _pitchMaxValue: 1.05
-    _volumeMinValue: 0.85
-    _volumeMaxValue: 1
+    _audioClip: {fileID: 8300000, guid: 19d5a8c3ea525954f9952a285fbfe11f, type: 3}
+    _pitchMinValue: 0.65
+    _pitchMaxValue: 0.85
+    _volumeMinValue: 0.15
+    _volumeMaxValue: 0.35
     _relatedControllerAction: 9
   - _name: Attack Sound
-    _audioClip: {fileID: 8300000, guid: 228e7054f6ea44f488b3c36c2cfd6826, type: 3}
-    _pitchMinValue: 0.925
+    _audioClip: {fileID: 8300000, guid: 07f6b99e8fe311d46ad00304514b1b36, type: 3}
+    _pitchMinValue: 0.8
     _pitchMaxValue: 1.05
-    _volumeMinValue: 0.85
-    _volumeMaxValue: 1
+    _volumeMinValue: 0.1
+    _volumeMaxValue: 0.35
     _relatedControllerAction: 4
   - _name: Walking Sound
-    _audioClip: {fileID: 8300000, guid: 228e7054f6ea44f488b3c36c2cfd6826, type: 3}
-    _pitchMinValue: 0.925
-    _pitchMaxValue: 1.05
-    _volumeMinValue: 0.85
-    _volumeMaxValue: 1
+    _audioClip: {fileID: 8300000, guid: 07f6b99e8fe311d46ad00304514b1b36, type: 3}
+    _pitchMinValue: 0.75
+    _pitchMaxValue: 1.15
+    _volumeMinValue: 0.25
+    _volumeMaxValue: 0.5
     _relatedControllerAction: 7
   - _name: Running Sound
-    _audioClip: {fileID: 8300000, guid: 228e7054f6ea44f488b3c36c2cfd6826, type: 3}
+    _audioClip: {fileID: 8300000, guid: 07f6b99e8fe311d46ad00304514b1b36, type: 3}
     _pitchMinValue: 0.925
-    _pitchMaxValue: 1.05
-    _volumeMinValue: 0.85
-    _volumeMaxValue: 1
+    _pitchMaxValue: 1.25
+    _volumeMinValue: 0.01
+    _volumeMaxValue: 0.1
     _relatedControllerAction: 8
   - _name: Death Sound
-    _audioClip: {fileID: 8300000, guid: 228e7054f6ea44f488b3c36c2cfd6826, type: 3}
+    _audioClip: {fileID: 8300000, guid: 03dabc845afe4da439a2964d38826a0e, type: 3}
     _pitchMinValue: 1
     _pitchMaxValue: 1
     _volumeMinValue: 0
-    _volumeMaxValue: 1
+    _volumeMaxValue: 0.25
     _relatedControllerAction: 1

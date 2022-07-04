@@ -28,7 +28,13 @@ namespace Khynan_Coding
         [Header("RETICLE SETTINGS")]
         [SerializeField] private List<ReticleSetting> reticleSettings = new();
 
+        [Header("AMMO FEEDBACKS")]
+        [SerializeField] private float _lowAmmoValue = 15;
+        [SerializeField] private GameObject _lowOnAmmoFeedbackGO;
+        [SerializeField] private GameObject _noAmmoLeftFeedbackGO;
+
         private ReticleSetting _currentUsedReticleSetting;
+        private Weapon _weapon;
 
         [System.Serializable]
         public class ReticleSetting
@@ -66,7 +72,10 @@ namespace Khynan_Coding
             Actions.OnHittingValidTarget += DisplayHitMarker;
 
             Actions.OnAiming += DisplayCrosshairReticleComponents;
-            Actions.OnCancelingAim += HideCrosshairReticleComponents; 
+            Actions.OnCancelingAim += HideCrosshairReticleComponents;
+
+            Actions.OnShooting += ManageAmmoFeedbacks;
+            Actions.OnReloadEnded += HideOrDisplayLowAmmoFeedback;
         }
 
         private void OnDisable()
@@ -86,6 +95,9 @@ namespace Khynan_Coding
 
             Actions.OnAiming -= DisplayCrosshairReticleComponents;
             Actions.OnCancelingAim -= HideCrosshairReticleComponents;
+
+            Actions.OnShooting -= ManageAmmoFeedbacks;
+            Actions.OnReloadEnded -= HideOrDisplayLowAmmoFeedback;
         }
 
         void Start() => Init();
@@ -112,6 +124,8 @@ namespace Khynan_Coding
 
         private void SetReticle(ReticleSetting reticleSetting)
         {
+            if (_currentUsedReticleSetting == reticleSetting) { return; }
+
             Image dotIcon = _dotIconHolderGO.GetComponent<Image>();
             dotIcon.color = reticleSetting.Color;
 
@@ -233,5 +247,36 @@ namespace Khynan_Coding
             _reticleComponentsHolderGO.SetActive(false);
         }
         #endregion
+
+        private void ManageAmmoFeedbacks(Weapon weapon)
+        {
+            if (!_weapon) _weapon = weapon;
+
+            if (weapon.GetCurrentAmmo() == 0 && weapon.GetCurrentMaxAmmo() == 0 && !_noAmmoLeftFeedbackGO.activeInHierarchy)
+            {
+                _noAmmoLeftFeedbackGO.SetActive(true);
+                _lowOnAmmoFeedbackGO.SetActive(false);
+                return;
+            }
+            else if (weapon.GetCurrentAmmo() > 0 || weapon.GetCurrentMaxAmmo() > 0 && _noAmmoLeftFeedbackGO.activeInHierarchy)
+            {
+                _noAmmoLeftFeedbackGO.SetActive(false);
+            }
+
+            HideOrDisplayLowAmmoFeedback();
+        }
+
+        private void HideOrDisplayLowAmmoFeedback()
+        {
+            if (_weapon.GetCurrentAmmo() <= _lowAmmoValue && !_lowOnAmmoFeedbackGO.activeInHierarchy)
+            {
+                _lowOnAmmoFeedbackGO.SetActive(true);
+
+            }
+            else if (_weapon.GetCurrentAmmo() > _lowAmmoValue && _lowOnAmmoFeedbackGO.activeInHierarchy)
+            {
+                _lowOnAmmoFeedbackGO.SetActive(false);
+            }
+        }
     }
 }

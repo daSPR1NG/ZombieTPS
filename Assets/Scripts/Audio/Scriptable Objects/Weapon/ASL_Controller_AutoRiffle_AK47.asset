@@ -56,18 +56,18 @@ MonoBehaviour:
     _volumeMaxValue: 1
     _relatedWeaponAction: 4
   - _name: Mag Empty
-    _audioClip: {fileID: 8300000, guid: b2eba7a2e6364be4bb93325faf056555, type: 3}
-    _pitchMinValue: 1
-    _pitchMaxValue: 1
-    _volumeMinValue: 0.5
-    _volumeMaxValue: 1
+    _audioClip: {fileID: 8300000, guid: 99b20dcb13e527642861c45215ecc669, type: 3}
+    _pitchMinValue: 0.995
+    _pitchMaxValue: 1.025
+    _volumeMinValue: 0.75
+    _volumeMaxValue: 0.75
     _relatedWeaponAction: 5
   - _name: No Ammo Left
     _audioClip: {fileID: 8300000, guid: b2eba7a2e6364be4bb93325faf056555, type: 3}
-    _pitchMinValue: 1
-    _pitchMaxValue: 1
-    _volumeMinValue: 0.5
-    _volumeMaxValue: 1
+    _pitchMinValue: 0.75
+    _pitchMaxValue: 0.75
+    _volumeMinValue: 0.75
+    _volumeMaxValue: 0.75
     _relatedWeaponAction: 6
   - _name: Swap - Equip
     _audioClip: {fileID: 8300000, guid: 97cc681a105798a44916efd675389042, type: 3}

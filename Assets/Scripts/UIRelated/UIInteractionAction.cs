@@ -14,6 +14,7 @@ namespace Khynan_Coding
         [SerializeField] private Image _inputIcon;
 
         Transform _content;
+        Animator _animator;
 
         #region Public References
 
@@ -36,6 +37,7 @@ namespace Khynan_Coding
         void Init()
         {
             _content = transform.GetChild(0);
+            _animator = GetComponent<Animator>();
             if (_hideContent) { Helper.HideGO(_content.gameObject); }
         }
 
@@ -46,11 +48,15 @@ namespace Khynan_Coding
 
             string interactionAction = interactionData.GetInteractionInputAction() + " to " + interactionData.GetInteractionActionType().ToString();
             _inputActionText.SetText(interactionAction);
+            _inputActionText.color = Color.white;
 
             Sprite inputIcon = interactionData.GetInputIcon();
             _inputIcon.sprite = inputIcon;
 
             Helper.DisplayGO(_content.gameObject);
+            _animator.Play( "PlayerActionFeedback" );
+
+            Debug.Log( "SetInteractionTextFeedback in UIINteractionAction" );
         }
 
         private void HideContent()

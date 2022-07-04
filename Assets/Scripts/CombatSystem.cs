@@ -43,7 +43,7 @@ namespace Khynan_Coding
         {
             if (!_canAttack) { return; }
 
-            Debug.Log("Combat System : Attack on " + target.name);
+            //Debug.Log("Combat System : Attack on " + target.name);
 
             float attackAnimationSpeed = _statsManager.GetStat(StatAttribute.AttackSpeed).GetCurrentValue() / _attackAnimationReductionSpeed;
 
@@ -83,6 +83,8 @@ namespace Khynan_Coding
                 transform, 
                 _interactionHandler.CurrentTarget, 
                 _statsManager.GetStat(StatAttribute.AttackDamage).GetCurrentValue());
+
+            _interactionHandler.CurrentTarget.GetComponent<ThirdPersonController>().Animator.SetBool("GotHit", true);
         }
 
         public void ResetAttackState()

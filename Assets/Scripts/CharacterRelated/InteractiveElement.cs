@@ -2,10 +2,12 @@ using UnityEngine;
 
 namespace Khynan_Coding
 {
+    [DisallowMultipleComponent]
+    [RequireComponent(typeof(Collider), typeof(Rigidbody))]
     public abstract class InteractiveElement : MonoBehaviour, IInteractive
     {
         [Header("INTERACTION SETUP")]
-        [SerializeField] private GameObject _interactionCanvas;
+        [SerializeField] protected GameObject _interactionCanvas;
         [SerializeField] private InteractionActionType _interactionActionType = InteractionActionType.Unassigned;
 
         #region Public References
@@ -24,12 +26,12 @@ namespace Khynan_Coding
             Debug.Log("Start interaction");
         }
 
-        public virtual void ExitInteraction()
+        public virtual void ExitInteraction( Transform interactionActor )
         {
             Debug.Log("Exit interaction");
         }
 
-        public void DisplayInteractionUI()
+        public virtual void DisplayInteractionUI()
         {
             Debug.Log("Display Interaction UI");
 

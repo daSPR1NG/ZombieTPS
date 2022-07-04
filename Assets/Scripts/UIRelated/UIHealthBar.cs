@@ -11,37 +11,37 @@ namespace Khynan_Coding
     public class UIHealthBar : MonoBehaviour
     {
         [Header("SETTINGS")]
-        [SerializeField] private bool _displaysTextInfos = false;
+        [SerializeField] protected bool _displaysTextInfos = false;
 
         [Header("DEPENDENCIES")]
-        [SerializeField] private TMP_Text _healthValueText;
-        [SerializeField] private Image _healthIconImage;
-        [SerializeField] private Sprite _healthIcon;
+        [SerializeField] protected TMP_Text _healthValueText;
+        [SerializeField] protected Image _healthIconImage;
+        [SerializeField] protected Sprite _healthIcon;
 
         [Header("FILL BARS")]
-        [SerializeField] private Image _healthFillImage;
-        [SerializeField] private Image _damagedFillImage;
+        [SerializeField] protected Image _healthFillImage;
+        [SerializeField] protected Image _damagedFillImage;
 
         [Header("FILL SPEED SETTINGS")]
-        [SerializeField] private float _damagedFillBarUpdateDelay = .5f;
-        [SerializeField] private float _damagedFillBarUpdateSpeed = 1.5f;
+        [SerializeField] protected float _damagedFillBarUpdateDelay = .5f;
+        [SerializeField] protected float _damagedFillBarUpdateSpeed = 1.5f;
 
-        private bool _canUpdateDamagedFillBar = false;
-        private float _damageUpdateCurrentTimer;
+        protected bool _canUpdateDamagedFillBar = false;
+        protected float _damageUpdateCurrentTimer;
 
-        private float _currentValue;
-        private float _maxValue;
+        protected float _currentValue;
+        protected float _maxValue;
 
-        private Animator _animator;
+        protected Animator _animator;
 
         #region OnEnable / OnDisable
-        private void OnEnable()
+        protected virtual void OnEnable()
         {
             Actions.OnPlayerHealthValueInitialized += InitHealthBarFill;
             Actions.OnPlayerHealthValueChanged += SetHealthBar;
         }
 
-        private void OnDisable()
+        protected virtual void OnDisable()
         {
             Actions.OnPlayerHealthValueInitialized -= InitHealthBarFill;
             Actions.OnPlayerHealthValueChanged -= SetHealthBar;
@@ -58,32 +58,37 @@ namespace Khynan_Coding
 
             if (!_displaysTextInfos) { _healthValueText.gameObject.SetActive(false); }
 
-            _healthIconImage.sprite = _healthIcon;
+            if (_healthIconImage) { _healthIconImage.sprite = _healthIcon; }
         }
 
-        private void InitHealthBarFill(float current, float max)
+        public virtual void InitHealthBarFill(float current, float max)
         {
+            //Debug.Log("InitHealthBarFill");
+
             _currentValue = current;
             _maxValue = max;
 
             if (_displaysTextInfos) { _healthValueText.SetText(current.ToString()); }
-            
-            //_healthValueText.SetText($"<size=18>{current}</size>" + " / " + $"<size=16><color=grey>{max}</color></size>");
+
+            //_healthValueText.SetText($"<size=18>{current}</size>" + " " + $"<size=12><color=grey>{max}</color></size>");
 
             _healthFillImage.fillAmount = current / max;
+
+            //Debug.Log(_healthFillImage.fillAmount + " " + current + " " + max);
+
             _damagedFillImage.fillAmount = current / max;
         }
 
-        private void SetHealthBar(float current, float max, HealthInteraction healthInteraction)
+        public virtual void SetHealthBar(float current, float max, HealthInteraction healthInteraction)
         {
-            Debug.Log("Set health bar.");
+            //Debug.Log("Set health bar.");
 
             _currentValue = current;
             _maxValue = max;
 
             if (_displaysTextInfos)
             {
-                _healthValueText.SetText(current.ToString() + " / " + max.ToString());
+                _healthValueText.SetText(current.ToString()/* + " / " + max.ToString()*/);
             }
 
             _healthFillImage.fillAmount = current / max;
@@ -102,7 +107,7 @@ namespace Khynan_Coding
             }
         }
 
-        private void ProcessTimerBeforeUpdatingDamagedFillBar()
+        protected virtual void ProcessTimerBeforeUpdatingDamagedFillBar()
         {
             if (!_canUpdateDamagedFillBar) { return; }
 
@@ -115,7 +120,7 @@ namespace Khynan_Coding
             }
         }
 
-        private void SetDamagedFillBarOvertime(float current, float max)
+        protected virtual void SetDamagedFillBarOvertime(float current, float max)
         {
             float nextFillValue = current / max;
 
@@ -127,7 +132,7 @@ namespace Khynan_Coding
             _canUpdateDamagedFillBar = false;
         }
 
-        private void SetDamagedFillBarImmediatly(float current, float max)
+        protected virtual void SetDamagedFillBarImmediatly(float current, float max)
         {
             _damagedFillImage.fillAmount = current / max;
         }

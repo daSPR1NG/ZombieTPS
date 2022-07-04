@@ -31,6 +31,11 @@ namespace Khynan_Coding
             return _rigBodyPart;
         }
 
+        public Rig GetRig()
+        {
+            return _rig;
+        }
+
         public float GetRigWeight()
         {
             return _rig.weight;
@@ -38,14 +43,9 @@ namespace Khynan_Coding
 
         public void SetRigWeight(float weight)
         {
-            if (!_rig) { return; }
+            if (!_rig || _rig.weight == weight) { return; }
 
             _rig.weight = weight;
-        }
-
-        public Rig GetRig()
-        {
-            return _rig;
         }
 
         public TwoBoneIKConstraint GetTwoBoneIKConstraint()
@@ -53,9 +53,23 @@ namespace Khynan_Coding
             return _twoBoneIKConstraint;
         }
 
+        public void SetTwoBoneIKConstraintWeight(float weight)
+        {
+            if (!_rig || _twoBoneIKConstraint.weight == weight) { return; }
+
+            _twoBoneIKConstraint.weight = weight;
+        }
+
         public MultiAimConstraint GetMultiAimConstraint()
         {
             return _aimConstraint;
+        }
+
+        public void SetMultiAimConstraintWeight(float weight)
+        {
+            if (!_rig || _aimConstraint.weight == weight) { return; }
+
+            _aimConstraint.weight = weight;
         }
     }
 

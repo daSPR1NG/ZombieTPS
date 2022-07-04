@@ -53,6 +53,10 @@ namespace Khynan_Coding
         private InputAction _swapWeapon;
         #endregion
 
+        private Transform _aimedTarget = null;
+        private StatsManager _targetStats = null;
+        private GlobalCharacterParameters _targetGlobalCharParameters = null;
+
         private bool _isAiming = false;
 
         private bool _canShoot = true;
@@ -68,6 +72,7 @@ namespace Khynan_Coding
         private ThirdPersonController _thirdPersonController; 
         private StatsManager _statsManager; 
         private CinemachineImpulseSource _impulseSource;
+        //private WeaponElement _weaponElement;
 
         private RigBuilderHelper _rigBuilderHelper;
         private Animator _rigAnimator;
@@ -87,7 +92,7 @@ namespace Khynan_Coding
             _aim.canceled += context => CancelAim(true);
 
             _reload.performed += context => Reload();
-            _swapWeapon.performed += context => SwapWeapon();
+           //_swapWeapon.performed += context => SwapWeapon();
 
             _shoot.performed += context => CheckRemainingAmmo();
             _shoot.canceled += context => HandleNonAutoWeaponOnInputCanceled();
@@ -99,7 +104,7 @@ namespace Khynan_Coding
             _aim.canceled -= context => CancelAim(true);
 
             _reload.performed -= context => Reload();
-            _swapWeapon.performed -= context => SwapWeapon();
+            //_swapWeapon.performed -= context => SwapWeapon();
 
             _shoot.performed -= context => CheckRemainingAmmo();
             _shoot.canceled -= context => HandleNonAutoWeaponOnInputCanceled();
@@ -113,7 +118,7 @@ namespace Khynan_Coding
             _shoot = _playerInput.actions["Shoot"];
             _aim = _playerInput.actions["Aim"];
             _reload = _playerInput.actions["Reload"];
-            _swapWeapon = _playerInput.actions["Swap Weapon"];
+            //_swapWeapon = _playerInput.actions["Swap Weapon"];
             #endregion
 
             _statsManager = GetComponent<StatsManager>();
@@ -142,6 +147,7 @@ namespace Khynan_Coding
         void Init()
         {
             _thirdPersonController = GetComponent<ThirdPersonController>();
+            //_weaponElement = GetComponent<WeaponElement>();
 
             _impulseSource = GetComponent<CinemachineImpulseSource>();
 
@@ -225,7 +231,7 @@ namespace Khynan_Coding
 
             _shootingCD = EquippedWeapon.GetFireRate();
 
-            Debug.Log("Shoot");
+            //Debug.Log("Shoot");
 
             // Set bursting infos
             _isBursting = EquippedWeapon.GetAmmoFiredPerShot() > 1;
@@ -259,15 +265,21 @@ namespace Khynan_Coding
             {
                 if (Physics.Linecast(shotPointOrigin.localPosition, ray.direction, _shootables))
                 {
-                    Debug.Log("Shot on " + hitInfo.transform.name);
+                    //Debug.Log("Shot on " + hitInfo.transform.name);
 
-                    Debug.DrawRay(ray.origin, ray.direction * 100, Color.red, 2f);
+                    //Debug.DrawRay(ray.origin, ray.direction * 100, Color.red, 2f);
 
                     _thirdPersonController.RotateCharacterTowardsTargetRotation(transform, Quaternion.Euler(0, _thirdPersonController.CinemachineTargetYaw, 0));
 
-                    ApplyDamageOnValidTarget(hitInfo.transform, hitInfo);
+                    StatsManager statsManager = hitInfo.transform.GetComponent<StatsManager>();
 
-                    Instantiate(_debugDecalPf, hitInfo.point, Quaternion.LookRotation(hitInfo.normal));
+                    if (statsManager && !statsManager.IsCharacterDead())
+                    {
+                        ApplyDamageOnValidTarget(hitInfo.transform, hitInfo);
+                        //_weaponElement.ApplyElementalEffect(hitInfo.transform);
+                    }
+
+                    //Instantiate(_debugDecalPf, hitInfo.point, Quaternion.LookRotation(hitInfo.normal));
 
                     CreateBulletTrail(hitInfo.point);
                 }
@@ -320,7 +332,7 @@ namespace Khynan_Coding
 
             StatsManager targetStats = target.GetComponent<StatsManager>();
 
-            if (targetStats && !targetStats.IsCharacterDead())
+            if (targetStats && targetStats.DoesThisStatTypeExists(StatAttribute.Health) && !targetStats.IsCharacterDead())
             {
                 targetStats.ApplyDamageToTarget(transform, target, damageToApply);
 
@@ -424,7 +436,7 @@ namespace Khynan_Coding
             Debug.Log("Setup bullet trail");
         }
 
-        private void CreateMuzzleFlashFX(Weapon weapon)
+        public void CreateMuzzleFlashFX(Weapon weapon)
         {
             // No muzzle flash on the equipped weapon
             if (!weapon.GetMuzzleFlash()) 
@@ -437,13 +449,46 @@ namespace Khynan_Coding
             if (_muzzleFlashInstance) { _muzzleFlashInstance.SetActive(false); }
 
             // If the muzzle flash FX is not instantiated then do it
-            if (_weaponHelper.ShotPoint.childCount <= 0) 
+            if (_weaponHelper.ShotPoint.childCount < 3) 
             {
-                _muzzleFlashInstance = Instantiate(weapon.GetMuzzleFlash(), _weaponHelper.ShotPoint);
+                _muzzleFlashInstance = Instantiate(weapon.GetMuzzleFlashOtherLook(0), _weaponHelper.ShotPoint);
+                GameObject fireMF = Instantiate(weapon.GetMuzzleFlashOtherLook(1), _weaponHelper.ShotPoint);
+                GameObject frostMF = Instantiate(weapon.GetMuzzleFlashOtherLook(2), _weaponHelper.ShotPoint);
+
+                fireMF.SetActive(false);
+                frostMF.SetActive(false);
             }
 
             // Toggle set active value
             if (_muzzleFlashInstance) { _muzzleFlashInstance.SetActive(true); }
+        }
+
+        public void SetMuzzleFlashInstance(ElementalDamageType elementalDamageType)
+        {
+            if (!_muzzleFlashInstance) { return; }
+
+            switch (elementalDamageType)
+            {
+                case ElementalDamageType.None:
+                    _weaponHelper.ShotPoint.GetChild(1).gameObject.SetActive(false);
+                    _weaponHelper.ShotPoint.GetChild(2).gameObject.SetActive(false);
+
+                    _muzzleFlashInstance = _weaponHelper.ShotPoint.GetChild(0).gameObject;
+                    break;
+                case ElementalDamageType.Fire:
+                    _weaponHelper.ShotPoint.GetChild(0).gameObject.SetActive(false);
+                    _weaponHelper.ShotPoint.GetChild(2).gameObject.SetActive(false);
+
+                    _muzzleFlashInstance = _weaponHelper.ShotPoint.GetChild(1).gameObject;
+                    break;
+                case ElementalDamageType.Frost:
+                    _weaponHelper.ShotPoint.GetChild(0).gameObject.SetActive(false);
+                    _weaponHelper.ShotPoint.GetChild(1).gameObject.SetActive(false);
+
+                    _muzzleFlashInstance = _weaponHelper.ShotPoint.GetChild(2).gameObject;
+                    break;
+            }
+
         }
         #endregion
 
@@ -465,6 +510,8 @@ namespace Khynan_Coding
             // ... Randomize volume...
             float randomVolume = Mathf.Clamp(ammoPercentage, weaponAudioSetting.GetVolumeMinValue(), weaponAudioSetting.GetVolumeMaxValue());
 
+            AudioHelper.Stop(audioSource);
+
             // ... And then play the sound.
             AudioHelper.PlayOneShot(audioSource, weaponAudioSetting.GetAudioClip(), randomVolume);
         }
@@ -478,7 +525,7 @@ namespace Khynan_Coding
 
             if (!canAim) { return; }
 
-            Debug.Log("Aim");
+            //Debug.Log("Aim");
 
             IsAiming = true;
             _rigBuilderHelper.SetRigWeight(RigBodyPart.HeldObject_Shoot_NoAim, 0);
@@ -500,7 +547,7 @@ namespace Khynan_Coding
         {
             if (!GameManager.Instance.PlayerCanUseActions()) { return; }
 
-            Debug.Log("Cancel aiming");
+            //Debug.Log("Cancel aiming");
 
             if (IsAiming && playSFX) { PlayUnAimSound(); }
             IsAiming = false;
@@ -541,14 +588,14 @@ namespace Khynan_Coding
             {
                 _thirdPersonController.RotateCharacterTowardsTargetRotation(transform, Quaternion.Euler(0, _thirdPersonController.CinemachineTargetYaw, 0));
 
-                _rigBuilderHelper.GetRigData(RigBodyPart.HeldObject_Shoot_NoAim).GetMultiAimConstraint().weight = 1;
-                _rigBuilderHelper.GetRigData(RigBodyPart.Head).GetMultiAimConstraint().weight = .5f;
+                _rigBuilderHelper.GetRigData(RigBodyPart.HeldObject_Shoot_NoAim).SetMultiAimConstraintWeight(1);
+                _rigBuilderHelper.GetRigData(RigBodyPart.Head).SetMultiAimConstraintWeight(5);
 
                 return;
             }
 
-            _rigBuilderHelper.GetRigData(RigBodyPart.HeldObject_Shoot_NoAim).GetMultiAimConstraint().weight = 0;
-            _rigBuilderHelper.GetRigData(RigBodyPart.Head).GetMultiAimConstraint().weight = 0;
+            _rigBuilderHelper.GetRigData(RigBodyPart.HeldObject_Shoot_NoAim).SetMultiAimConstraintWeight(0);
+            _rigBuilderHelper.GetRigData(RigBodyPart.Head).SetMultiAimConstraintWeight(0);
         }
 
         private void HandleAimSensitivityAndFeedbackAtRuntime()
@@ -565,13 +612,14 @@ namespace Khynan_Coding
             {
                 //Debug.Log(hit.transform.name);
 
-                GlobalCharacterParameters globalCharacterParameters = hit.transform.GetComponent<GlobalCharacterParameters>();
-
                 if (hit.transform.gameObject.layer == LayerMask.NameToLayer("Interactive element"))
                 {
-                    Actions.OnAimingInteractable?.Invoke(globalCharacterParameters.CharacterType);
+                    _aimedTarget = hit.transform;
+                    _targetGlobalCharParameters = _aimedTarget.GetComponent<GlobalCharacterParameters>();
 
-                    float aimAssist = globalCharacterParameters.CharacterType == CharacterType.IA_Enemy ?
+                    Actions.OnAimingInteractable?.Invoke(_targetGlobalCharParameters.CharacterType);
+
+                    float aimAssist = _targetGlobalCharParameters && _targetGlobalCharParameters.CharacterType == CharacterType.IA_Enemy ?
                         _aimAssist : 1;
 
                     // Reduce the sensitivity when we aim a valid target
@@ -580,7 +628,10 @@ namespace Khynan_Coding
                     //Debug.Log("Hitting a valid target.");
                 }
                 // We call the event here to make sure that if we are still hitting something and the layer is incorect
-                else  { ResetAimingRaycastToDefault(); }
+                else  
+                {
+                    ResetAimingRaycastToDefault(); 
+                }
 
                 return;
             }
@@ -591,7 +642,11 @@ namespace Khynan_Coding
 
         private void ResetAimingRaycastToDefault()
         {
-            Actions.OnAimingInteractable?.Invoke(CharacterType.Unassigned);
+            if (_aimedTarget) 
+            {
+                Actions.OnAimingInteractable?.Invoke(CharacterType.Unassigned);
+                _aimedTarget = null;
+            }
 
             ResetSentisitivityToCorrectValue();
         }
@@ -612,9 +667,9 @@ namespace Khynan_Coding
 
         private void PlayAimSound()
         {
-            if (!_weaponHelper.AudioSource) { return; }
+            if (!_weaponHelper.AudioSource || !_canShoot) { return; }
 
-            Debug.Log("Play aim sound");
+            //Debug.Log("Play aim sound");
 
             AudioSource audioSource = _weaponHelper.AudioSource;
             WeaponAudioSetting weaponAudioSetting = WeaponAudioSetting.GetWeaponAudioSetting(
@@ -627,14 +682,16 @@ namespace Khynan_Coding
             // Set volume
             AudioHelper.SetVolume(audioSource, weaponAudioSetting.GetVolumeMaxValue());
 
-            AudioHelper.PlayOneShot(audioSource, weaponAudioSetting.GetAudioClip(), weaponAudioSetting.GetVolumeMaxValue());
+            //AudioHelper.Stop(audioSource);
+
+            AudioHelper.PlaySound(audioSource, weaponAudioSetting.GetAudioClip(), weaponAudioSetting.GetVolumeMaxValue());
         }
 
         private void PlayUnAimSound()
         {
-            if (!_weaponHelper.AudioSource) { return; }
+            if (!_weaponHelper.AudioSource || !_canShoot) { return; }
 
-            Debug.Log("Play un-aim sound");
+            //Debug.Log("Play un-aim sound");
 
             AudioSource audioSource = _weaponHelper.AudioSource;
             WeaponAudioSetting weaponAudioSetting = WeaponAudioSetting.GetWeaponAudioSetting(
@@ -647,7 +704,9 @@ namespace Khynan_Coding
             // Set volume
             AudioHelper.SetVolume(audioSource, weaponAudioSetting.GetVolumeMaxValue());
 
-            AudioHelper.PlayOneShot(audioSource, weaponAudioSetting.GetAudioClip(), weaponAudioSetting.GetVolumeMaxValue());
+            //AudioHelper.Stop(audioSource);
+
+            AudioHelper.PlaySound(audioSource, weaponAudioSetting.GetAudioClip(), weaponAudioSetting.GetVolumeMaxValue());
         }
         #endregion
 
@@ -675,7 +734,7 @@ namespace Khynan_Coding
 
             Actions.OnReloadStarted?.Invoke();
 
-            Debug.Log("Reload");
+            //Debug.Log("Reload");
 
             // Reset the sensitivy. - notes : it is commented, because we use a method
             // where the sensitivity is reseted overtime in Processreloading() below.
@@ -756,11 +815,11 @@ namespace Khynan_Coding
 
         private void HandleAmmoOnReload()
         {
-            Debug.Log("HandleAmmoOnReload");
+            //Debug.Log("HandleAmmoOnReload");
 
             // Get the remaining
             int remainingAmmo = EquippedWeapon.GetCurrentAmmo();
-            Debug.Log("Remaining ammo " + remainingAmmo);
+            //Debug.Log("Remaining ammo " + remainingAmmo);
 
             // Push the remaining ammo to the max pool and set cAmmo to 0 (we pushed it).
             EquippedWeapon.SetCurrentMaxAmmo(remainingAmmo + EquippedWeapon.GetCurrentMaxAmmo()); 
@@ -768,11 +827,11 @@ namespace Khynan_Coding
 
             int amountToRemove = EquippedWeapon.GetCurrentMaxAmmo() >= EquippedWeapon.GetMaxMagAmmo()
                 ? EquippedWeapon.GetMaxMagAmmo() : EquippedWeapon.GetCurrentMaxAmmo();
-            Debug.Log("Amount to remove " + amountToRemove);
+            //Debug.Log("Amount to remove " + amountToRemove);
 
             int maxAmmoNewValue = EquippedWeapon.GetCurrentMaxAmmo() >= EquippedWeapon.GetMaxMagAmmo()
                 ? EquippedWeapon.GetCurrentMaxAmmo() - amountToRemove : 0;
-            Debug.Log("Max Ammo New Value " + maxAmmoNewValue);
+            //Debug.Log("Max Ammo New Value " + maxAmmoNewValue);
 
             // Set cAmmo to maxMagAmmo and remove the value pushed to cAmmo from maxAmmo.
             EquippedWeapon.SetCurrentAmmo(amountToRemove); 
@@ -799,7 +858,7 @@ namespace Khynan_Coding
         {
             if (!_weaponHelper.AudioSource) { return; }
 
-            Debug.Log("Play no ammo left sound");
+            //Debug.Log("Play no ammo left sound");
 
             AudioSource audioSource = _weaponHelper.AudioSource;
             WeaponAudioSetting weaponAudioSetting = WeaponAudioSetting.GetWeaponAudioSetting(
@@ -809,14 +868,16 @@ namespace Khynan_Coding
             // Set pitch...
             AudioHelper.SetPitch(audioSource, weaponAudioSetting.GetPitchMaxValue());
 
-            AudioHelper.PlayOneShot(audioSource, weaponAudioSetting.GetAudioClip(), weaponAudioSetting.GetVolumeMaxValue());
+            AudioHelper.Stop(audioSource);
+
+            AudioHelper.PlaySound(audioSource, weaponAudioSetting.GetAudioClip(), weaponAudioSetting.GetVolumeMaxValue());
         }
 
         private void PlayMagEmptySound()
         {
             if (!_weaponHelper.AudioSource) { return; }
 
-            Debug.Log("Play mag empty sound");
+            //Debug.Log("Play mag empty sound");
 
             AudioSource audioSource = _weaponHelper.AudioSource;
             audioSource.Stop();
@@ -828,9 +889,9 @@ namespace Khynan_Coding
             // Set pitch...
             AudioHelper.SetPitch(audioSource, weaponAudioSetting.GetPitchMaxValue());
 
-            audioSource.Play();
+            AudioHelper.Stop(audioSource);
 
-            AudioHelper.PlayOneShot(audioSource, weaponAudioSetting.GetAudioClip(), weaponAudioSetting.GetVolumeMaxValue());
+            AudioHelper.PlaySound(audioSource, weaponAudioSetting.GetAudioClip(), weaponAudioSetting.GetVolumeMaxValue());
         }
 
         private void SetReloadingStateRigIKs(bool isReloading)
@@ -915,6 +976,8 @@ namespace Khynan_Coding
 
             // Set pitch...
             AudioHelper.SetPitch(audioSource, weaponAudioSetting.GetPitchMaxValue());
+
+            AudioHelper.Stop(audioSource);
 
             AudioHelper.PlayOneShot(audioSource, weaponAudioSetting.GetAudioClip(), weaponAudioSetting.GetVolumeMaxValue());
         }

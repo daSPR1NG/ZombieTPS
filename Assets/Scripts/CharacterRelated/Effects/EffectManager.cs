@@ -8,9 +8,8 @@ namespace Khynan_Coding
         [SerializeField] private List<Effect> _effects = new ();
 
         [Space(2), Header("DEBUG")]
-        [Min(0), Max(4)] public int Index = 0;
-        public BurningDebuff BurningDebuff = new();
-        public FreezeDebuff FreezeDebuff = new();
+        [Min(0)] public int Stack = 1;
+        public DamageOvertime DamageOvertime = new();
 
         private void OnEnable()
         {
@@ -28,37 +27,30 @@ namespace Khynan_Coding
         {
             if (Input.GetKeyDown(KeyCode.Alpha1)) 
             {
-                //BurningDebuff.ManageEffect();
-                new BurningDebuff("Burning Debuff - Test", false, transform, transform, 7, 5, 2, false, true, 2).ManageEffect();
+                DamageOvertime.Build(/*HasOtherInstance(DamageOvertime)*/);
+
+                Debug.Log("Has other instance : " + HasOtherInstance(DamageOvertime));
             }
 
-            if (Input.GetKeyDown(KeyCode.Alpha2))
-            {
-                //FreezeDebuff.ManageEffect();
-                new FreezeDebuff("Freeze Debuff - Test", true, transform, transform, 7, false, true, 2).ManageEffect();
-            }
+            HandleEffectDuration();
         }
-
-        private void LateUpdate() => HandleEffectDuration();
 
         #region Add / Remove 
         public void AddEffectToList(Effect effect)
         {
-            if (HasEffectStackLimitBeenReached(effect))
+            if (_effects.Count >= 1 
+                && GetSameEffect(effect)._currentInstanceNumber > GetSameEffect(effect).StackLimit) 
             {
-                // This means that the last one added only is refreshed, not the other previously applied
-                effect.Refresh();
+                return; 
+            }
+
+            if (HasOtherInstance(GetSameEffect(effect)))
+            {
+                GetSameEffect(effect).Stack();
                 return;
             }
 
             _effects.Add(effect);
-
-            if (HasMoreThanOneInstance(effect)) { effect.StackUp(); }
-
-            if (GetEffectAppliedAmount(effect) >= effect.GetStackLimit()) 
-            {
-                effect.OnStackSizeLimitReached(); 
-            }
         }
 
         public void RemoveEffectFromList(Effect effect)
@@ -67,61 +59,54 @@ namespace Khynan_Coding
         }
         #endregion
 
-        private void RefreshAllInstancesOfThisEffect(Effect effect)
-        {
-            for (int i = _effects.Count - 1; i >= 0; i--)
-            {
-                if (_effects[i].GetName() != effect.GetName()) { continue; }
-
-                if (_effects[i].GetName() == effect.GetName() && _effects[i].IsRefreshable()) { _effects[i].Refresh(); }
-            }
-        }
-
         private void HandleEffectDuration()
         {
             if (_effects.Count == 0) { return; }
 
             for (int i = _effects.Count - 1; i >= 0; i--)
             {
-                _effects[i].ProcessDuration();
-
-                //Debug.Log("Effect current timer " +
-                //    _effects[i].GetCurrentTimer() +
-                //    " | Will remains for : " +
-                //    _effects[i].GetCurrentDuration());
+                _effects[i].Process();
             }
         }
 
-        private int GetEffectAppliedAmount(Effect effect)
+        public bool HasOtherInstance(Effect effect)
         {
-            if (_effects.Count == 0) { return 0; }
-
-            int appliedAmount = 0;
+            if (_effects.Count == 0) { return false; }
 
             for (int i = _effects.Count - 1; i >= 0; i--)
             {
-                if (_effects[i].GetName() != effect.GetName()) { continue; }
-
-                appliedAmount++;
-
-                //Debug.Log("This effect "
-                //+ effect.GetName()
-                //+ " has been applied "
-                //+ appliedAmount
-                //+ ".");
+                if (AreEffectTheSame(_effects[i], effect) || effect.StackLimit == 1)
+                {
+                    return true;
+                }
             }
 
-            return appliedAmount;
+            return false;
         }
 
-        private bool HasEffectStackLimitBeenReached(Effect effect)
+        private bool AreEffectTheSame(Effect a, Effect b)
         {
-            return GetEffectAppliedAmount(effect) >= effect.GetStackLimit();
+            if (a.ID == b.ID && a.Sender == b.Sender)
+            {
+                return true;
+            }
+
+            return false;
         }
 
-        private bool HasMoreThanOneInstance(Effect effect)
+        private Effect GetSameEffect(Effect effect)
         {
-            return GetEffectAppliedAmount(effect) > 1;
+            if (_effects.Count == 0) { return null; }
+
+            for (int i = _effects.Count - 1; i >= 0; i--)
+            {
+                if (AreEffectTheSame(_effects[i], effect) || effect.StackLimit == 1)
+                {
+                    return _effects[i];
+                }
+            }
+
+            return null;
         }
     }
 }

@@ -14,16 +14,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _colliderAudioSettings:
   - _name: On Hit Sound - Head
-    _audioClip: {fileID: 0}
-    _pitchMinValue: 1
-    _pitchMaxValue: 1
-    _volumeMinValue: 0.5
-    _volumeMaxValue: 0.5
+    _audioClip: {fileID: 8300000, guid: 33bce226cbf46c449be57c38dd20b617, type: 3}
+    _pitchMinValue: 0.9
+    _pitchMaxValue: 1.15
+    _volumeMinValue: 0.1
+    _volumeMaxValue: 0.2
     _colliderType: 2
   - _name: On Hit Sound - Body
-    _audioClip: {fileID: 0}
-    _pitchMinValue: 1
-    _pitchMaxValue: 1
-    _volumeMinValue: 0.5
-    _volumeMaxValue: 0.5
+    _audioClip: {fileID: 8300000, guid: f359913542be495488e09dcb9d7f8421, type: 3}
+    _pitchMinValue: 0.9
+    _pitchMaxValue: 1.15
+    _volumeMinValue: 0.3
+    _volumeMaxValue: 0.4
     _colliderType: 3

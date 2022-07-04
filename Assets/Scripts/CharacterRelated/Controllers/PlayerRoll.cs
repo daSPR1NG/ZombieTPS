@@ -61,7 +61,7 @@ namespace Khynan_Coding
         private IEnumerator Roll()
         {
             bool canRoll = _thirdPersonController.GetCharacterController().velocity != Vector3.zero 
-                && !_thirdPersonController.IsRolling();
+                && !_thirdPersonController.IsRolling() && !_weaponSystem.IsReloading;
 
             if (!canRoll) { yield break; }
 
@@ -95,7 +95,7 @@ namespace Khynan_Coding
                 Vector3 rollDirection = 
                     (transform.forward * rollSpeed) + (Vector3.up * _thirdPersonController.VerticalVelocityValue);
 
-                _thirdPersonController.GetCharacterController().Move(_rollForce * Time.deltaTime * rollDirection);
+                _thirdPersonController.GetCharacterController().Move((_rollForce + (_thirdPersonController.CharacterStats.GetStat(StatAttribute.MovementSpeed).GetCurrentValue() / 2)) * Time.deltaTime * rollDirection);
 
                 timer += Time.deltaTime;
                 executionPercentage = timer / _rollTimer;

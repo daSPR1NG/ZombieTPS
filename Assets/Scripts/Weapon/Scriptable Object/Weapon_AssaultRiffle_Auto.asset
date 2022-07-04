@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _name: Assault Riffle
   _type: 2
-  _damage: 500
-  _ammoFiredPerShot: 1
+  _damage: 20
+  _ammoFiredPerShot: 0
   _fireRate: 0.2
   _range: 15
   _aimSpeed: 0.1
@@ -32,7 +32,19 @@ MonoBehaviour:
     type: 3}
   _bulletPf: {fileID: 4974453963120927326, guid: 9dceb17467781e644a34a5cd63eee64a,
     type: 3}
-  _magPf: {fileID: 0}
+  _magPf: {fileID: 2418726763276984413, guid: 0252df1354f475047a1cc14e5723aa69, type: 3}
+  _muzzleFlashes:
+  - {fileID: 5426031798781912364, guid: 12a91f77ed72e8d4388cd5a419e6e464, type: 3}
+  - {fileID: 5426031798781912364, guid: 7c311a5120be1b54ba93f3e6e6cbcdab, type: 3}
+  - {fileID: 5426031798781912364, guid: 1a880493d5696ba4b9e5e1f43eede8bf, type: 3}
+  _bulletTrailPfs:
+  - {fileID: 5409875807907865768, guid: 19d24228ea6028f40af3675a8b2cbd1a, type: 3}
+  - {fileID: 5409875807907865768, guid: ea4bd4b488558dd4995b47961e1b9acd, type: 3}
+  - {fileID: 5409875807907865768, guid: ddf6e443b77aded4e97a34293fc9c0a1, type: 3}
+  _bulletPfs:
+  - {fileID: 4974453963120927326, guid: 9dceb17467781e644a34a5cd63eee64a, type: 3}
+  - {fileID: 4974453963120927326, guid: 63730de74ad47dd458ee6d3c257bdbe4, type: 3}
+  - {fileID: 4974453963120927326, guid: 50942ad41903b9f4487b142ba171fa37, type: 3}
   EmitsSound: 1
   <WeaponAudioSettingList>k__BackingField: {fileID: 11400000, guid: e8b943fdeb8505f4fa0844ab15b8c83c,
     type: 2}

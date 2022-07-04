@@ -30,6 +30,7 @@ namespace Khynan_Coding
 
             Actions.OnShooting += SetAmmoText;
             Actions.OnReloadEndedSetWeaponData += SetAmmoText;
+            Actions.OnGettingMaxAmmo += SetAmmoText;
         }
 
         private void OnDisable()
@@ -38,6 +39,7 @@ namespace Khynan_Coding
 
             Actions.OnShooting -= SetAmmoText;
             Actions.OnReloadEndedSetWeaponData -= SetAmmoText;
+            Actions.OnGettingMaxAmmo -= SetAmmoText;
         }
         #endregion
 

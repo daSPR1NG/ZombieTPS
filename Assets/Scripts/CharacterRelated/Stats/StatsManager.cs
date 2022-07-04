@@ -17,6 +17,7 @@ namespace Khynan_Coding
 
         [Header("LOOK")]
         [SerializeField] private GameObject _popupPrefab;
+        [SerializeField] private float _deathVFXSpawnOffset;
         [SerializeField] private GameObject _deathVFX;
         [SerializeField] private GameObject _healVFX;
 
@@ -82,17 +83,10 @@ namespace Khynan_Coding
 
         private void InitHealth()
         {
-            switch (_globalCharacterParameters.CharacterType)
+            if (_globalCharacterParameters.CharacterType == CharacterType.Player)
             {
-                case CharacterType.Player:
-                    Actions.OnPlayerHealthValueInitialized?.Invoke(
+                Actions.OnPlayerHealthValueInitialized?.Invoke(
                     GetStat(StatAttribute.Health).GetCurrentValue(), GetStat(StatAttribute.Health).GetMaxValue());
-                    break;
-                case CharacterType.IA_Enemy:
-                    break;
-                case CharacterType.IA_Ally:
-                    // Nothing for now
-                    break;
             }
         }
 
@@ -174,21 +168,21 @@ namespace Khynan_Coding
             if (_globalCharacterParameters.CharacterType == CharacterType.Player)
             {
                 Actions.OnPlayerHealthValueChanged?.Invoke(
-                    GetStat(StatAttribute.Health).GetCurrentValue(), 
-                    GetStat(StatAttribute.Health).GetMaxValue(), 
+                    GetStat(StatAttribute.Health).GetCurrentValue(),
+                    GetStat(StatAttribute.Health).GetMaxValue(),
                     HealthInteraction.Damage);
             }
 
             if (statsManager.GetStat(StatAttribute.Health).GetCurrentValue() <= 0)
             {
-                Debug.Log("Character is dead.");
+                //Debug.Log("Character is dead.");
                 OnDeath(provider);
             }
 
             CalculateHealthPercentage();
         }
 
-        public void HealTarget(Transform provider, Transform target, float healAmount)
+        public virtual void HealTarget(Transform provider, Transform target, float healAmount)
         {
             if (IsCharacterDead() || _isInvulnerable || _healthPercentage == 100f) { return; }
 
@@ -202,11 +196,11 @@ namespace Khynan_Coding
             float newHealthValue = statsManager.GetStat(StatAttribute.Health).GetCurrentValue() + healAmount;
             statsManager.GetStat(StatAttribute.Health).SetCurrentValue(newHealthValue);
 
-            if (_globalCharacterParameters.CharacterType == CharacterType.Player)
+            if(_globalCharacterParameters.CharacterType == CharacterType.Player)
             {
                 Actions.OnPlayerHealthValueChanged?.Invoke(
-                    GetStat(StatAttribute.Health).GetCurrentValue(), 
-                    GetStat(StatAttribute.Health).GetMaxValue(), 
+                    GetStat(StatAttribute.Health).GetCurrentValue(),
+                    GetStat(StatAttribute.Health).GetMaxValue(),
                     HealthInteraction.Heal);
             }
 
@@ -227,9 +221,9 @@ namespace Khynan_Coding
         }
 
         #region OnDeath
-        public void OnDeath(Transform killer)
+        public virtual void OnDeath(Transform killer)
         {
-            Debug.Log("On death event");
+            //Debug.Log("On death event");
 
             if (_defaultController) { PlayOnDeathSound(_defaultController.AudioSource); }
 
@@ -254,7 +248,12 @@ namespace Khynan_Coding
 
         public void InstantiateDeathFX()
         {
-            if (_deathVFX) { Instantiate(_deathVFX, transform.position, transform.rotation); }
+            if (_deathVFX) 
+            {
+                Instantiate(_deathVFX, 
+                    new Vector3 (transform.position.x, transform.position.y + _deathVFXSpawnOffset, transform.position.z),
+                    _deathVFX.transform.rotation); 
+            }
 
             Destroy(gameObject);
         }

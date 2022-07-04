@@ -29,7 +29,7 @@ namespace Khynan_Coding
             if (HasReachedTarget())
             {
                 InteractWithTarget();
-                Debug.Log("No path left");
+                //Debug.Log("No path left");
             }
 
             CheckIfTargetIsStillInRange();

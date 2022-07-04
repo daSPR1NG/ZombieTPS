@@ -17,7 +17,7 @@ namespace Khynan_Coding
 
             scoreValue = Mathf.CeilToInt(scoreData.Value * GameManager.Instance.ScoreMultiplier);
 
-            Debug.Log("Score added : " + scoreValue);
+            //Debug.Log("Score added : " + scoreValue);
 
             // Call event that sends message to UI handling the score
             Actions.OnAddingScore?.Invoke(scoreValue);

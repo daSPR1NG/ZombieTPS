@@ -11,6 +11,13 @@ namespace Khynan_Coding
         [SerializeField] private float _displayDuration = .05f;
         private float _currentDisplayTimer;
 
+        [Header("UI HEALTHBAR")]
+        [SerializeField] private UIEnemyHealthBar _enemyHealthBar;
+
+        //[Header("ELEMENTAL EFFECTS")]
+        //[SerializeField] private GameObject _fireFXObject;
+        //[SerializeField] private GameObject _frostFXObject;
+
         private RandomizeAspect _randomizeAspect;
 
         protected override void Update()
@@ -27,6 +34,10 @@ namespace Khynan_Coding
 
             _currentDisplayTimer = _displayDuration;
             HideHitEffectRenderer();
+
+            _enemyHealthBar.InitHealthBarFill(
+                GetStat(StatAttribute.Health).GetCurrentValue(),
+                GetStat(StatAttribute.Health).GetMaxValue());
         }
 
         public override void ApplyDamageToTarget(Transform provider, Transform target, float damageAmount)
@@ -36,6 +47,28 @@ namespace Khynan_Coding
             // Reset display timer and display the hit effect renderer.
             _currentDisplayTimer = _displayDuration;
             DisplayHitEffectRenderer();
+
+            _enemyHealthBar.SetHealthBar(
+                GetStat(StatAttribute.Health).GetCurrentValue(),
+                GetStat(StatAttribute.Health).GetMaxValue(),
+                HealthInteraction.Damage);
+        }
+
+        public override void HealTarget(Transform provider, Transform target, float healAmount)
+        {
+            base.HealTarget(provider, target, healAmount);
+
+            _enemyHealthBar.SetHealthBar(
+                GetStat(StatAttribute.Health).GetCurrentValue(),
+                GetStat(StatAttribute.Health).GetMaxValue(),
+                HealthInteraction.Heal);
+        }
+
+        public override void OnDeath(Transform killer)
+        {
+            _enemyHealthBar.PlayDeathEffect();
+
+            base.OnDeath(killer);
         }
 
         #region Hit effect handle
@@ -67,5 +100,8 @@ namespace Khynan_Coding
             _randomizeAspect.SetAspectDefaultMaterials();
         }
         #endregion
+
+        //public GameObject GetFireFXObject() { return _fireFXObject; }
+        //public GameObject GetFrostFXObject() { return _frostFXObject; }
     }
 }

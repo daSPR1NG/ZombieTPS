@@ -42,8 +42,6 @@ namespace Khynan_Coding
         public static Action<float, float> OnPlayerHealthValueInitialized;
         public static Action<float, float, HealthInteraction> OnPlayerHealthValueChanged;
 
-        public static Action<StatsManager> OnEnemyHealthValueChanged;
-
         public static Action OnWaveBegun;
         public static Action OnWaveEnded;
         public static Action<int> OnWaveCountValueChanged;
@@ -54,5 +52,7 @@ namespace Khynan_Coding
         public static Action<Effect> OnAddingEffect;
         public static Action<Effect> OnRemovingEffect;
         public static Action<Effect> OnModifyingEffect;
+
+        public static Action<Weapon> OnGettingMaxAmmo;
     }
 }

@@ -12,9 +12,11 @@ namespace Khynan_Coding
         [SerializeField] private float _appliedForce = 2f;
         [SerializeField] private ForceMode _forceMode;
 
-        [Header("ROTATION SETTINGS")]
+        [Space(2), Header("ROTATION SETTINGS")]
         [SerializeField] private float _randomMinXRotation = -90;
         [SerializeField] private float _randomMaxXRotation = 90;
+        [SerializeField] private float _rotationForceOnLifetime = 90;
+        int _randomValue;
 
         private Rigidbody _rigidbody;
 
@@ -25,6 +27,8 @@ namespace Khynan_Coding
             ApplyForceMode();
             ApplyRandomRotationOnSpawn();
         }
+
+        private void LateUpdate() => ApplyRotationDuringLifetime();
 
         void Init()
         {
@@ -49,12 +53,31 @@ namespace Khynan_Coding
 
         private void ApplyRandomRotationOnSpawn()
         {
+            _randomValue = Random.Range(1, 3);
             float randomXRotation = Random.Range(_randomMinXRotation, _randomMaxXRotation);
 
             transform.eulerAngles = new Vector3(
                 randomXRotation, 
                 transform.rotation.y, 
                 transform.rotation.z);
+        }
+
+        private void ApplyRotationDuringLifetime()
+        {
+            float forceValue = _rotationForceOnLifetime * Time.deltaTime;
+
+            switch (_randomValue)
+            {
+                case 1:
+                    transform.Rotate(forceValue, 0, 0, Space.Self);
+                    break;
+                case 2:
+                    transform.Rotate(0, forceValue, 0, Space.Self);
+                    break;
+                case 3:
+                    transform.Rotate(0, 0, forceValue, Space.Self);
+                    break;
+            }
         }
     }
 }

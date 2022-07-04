@@ -23,7 +23,7 @@ namespace Khynan_Coding
             Helper.ResetAgentDestination(_controller.NavMeshAgent);
             _controller.LookAtSomething(_interactionHandler.CurrentTarget);
 
-            Helper.DebugMessage("Entering <ATTACK> state", stateManager.transform);
+            //Helper.DebugMessage("Entering <ATTACK> state", stateManager.transform);
         }
 
         public override void ExitState(StateManager stateManager)
@@ -31,7 +31,7 @@ namespace Khynan_Coding
             AnimatorHelper.SetAnimatorBoolean(_controller.Animator, "Attack", false);
             _combatSystem.ResetAttackState();
 
-            Helper.DebugMessage("Exiting <ATTACK> state", stateManager.transform);
+            //Helper.DebugMessage("Exiting <ATTACK> state", stateManager.transform);
         }
 
         public override void ProcessState(StateManager stateManager)
@@ -40,7 +40,7 @@ namespace Khynan_Coding
 
             _combatSystem.SetupAttack(_interactionHandler.CurrentTarget);
 
-            Debug.Log(stateManager.name + " is Attacking.");
+            //Debug.Log(stateManager.name + " is Attacking.");
         }
     }
 }
