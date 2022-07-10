@@ -42,26 +42,28 @@ namespace Khynan_Coding
 
         public override void ApplyDamageToTarget(Transform provider, Transform target, float damageAmount)
         {
-            base.ApplyDamageToTarget(provider, target, damageAmount);
+            base.ApplyDamageToTarget(provider, target, Mathf.Floor(damageAmount) );
 
             // Reset display timer and display the hit effect renderer.
             _currentDisplayTimer = _displayDuration;
             DisplayHitEffectRenderer();
 
-            _enemyHealthBar.SetHealthBar(
-                GetStat(StatAttribute.Health).GetCurrentValue(),
-                GetStat(StatAttribute.Health).GetMaxValue(),
-                HealthInteraction.Damage);
+            if ( _globalCharacterParameters.CharacterType == CharacterType.IA_Enemy )
+                _enemyHealthBar.SetHealthBar(
+                    GetStat(StatAttribute.Health).GetCurrentValue(),
+                    GetStat(StatAttribute.Health).GetMaxValue(),
+                    HealthInteraction.Damage);
         }
 
         public override void HealTarget(Transform provider, Transform target, float healAmount)
         {
-            base.HealTarget(provider, target, healAmount);
+            base.HealTarget(provider, target, Mathf.Floor(healAmount) );
 
-            _enemyHealthBar.SetHealthBar(
-                GetStat(StatAttribute.Health).GetCurrentValue(),
-                GetStat(StatAttribute.Health).GetMaxValue(),
-                HealthInteraction.Heal);
+            if ( _globalCharacterParameters.CharacterType == CharacterType.IA_Enemy )
+                _enemyHealthBar.SetHealthBar(
+                    GetStat(StatAttribute.Health).GetCurrentValue(),
+                    GetStat(StatAttribute.Health).GetMaxValue(),
+                    HealthInteraction.Heal);
         }
 
         public override void OnDeath(Transform killer)

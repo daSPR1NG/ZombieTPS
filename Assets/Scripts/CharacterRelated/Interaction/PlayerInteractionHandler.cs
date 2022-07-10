@@ -71,7 +71,7 @@ namespace Khynan_Coding
 
         private void Interact()
         {
-            if ( !_canInteract || IsInteracting ) return;
+            if ( !_canInteract ) return;
 
             //_thirdPersonController.LookAtSomething(_interactiveElement.transform);
 
@@ -88,7 +88,9 @@ namespace Khynan_Coding
         public void SetCanInteract(InteractiveElement interactiveElement, InteractionActionType interactionActionType, bool value)
         {
             if (interactiveElement) { _interactiveElement = interactiveElement; }
-            
+
+            _interactiveElement.InteractingActor = transform;
+
             _canInteract = value;
 
             switch (_uiFeedbackIsFromPlayer)

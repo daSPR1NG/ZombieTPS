@@ -4,7 +4,8 @@ namespace Khynan_Coding
 {
     public class CombatSystem : MonoBehaviour
     {
-        [Header("SETTINGS")]
+        [Header( "SETTINGS" )]
+        public bool IsRanged = false;
         [SerializeField] private float _attackAnimationTransitionOffset = .15f;
         [SerializeField] private float _attackAnimationReductionSpeed = 1.25f;
 
@@ -39,11 +40,13 @@ namespace Khynan_Coding
             AssignAnimationIDs();
         }
 
-        public void SetupAttack(Transform target)
+        public void SetupAttack( Transform target )
         {
             if (!_canAttack) { return; }
 
             //Debug.Log("Combat System : Attack on " + target.name);
+
+            RotateTowardsTarget( target );
 
             float attackAnimationSpeed = _statsManager.GetStat(StatAttribute.AttackSpeed).GetCurrentValue() / _attackAnimationReductionSpeed;
 
@@ -53,12 +56,21 @@ namespace Khynan_Coding
                 (AnimatorHelper.GetAnimationLength(_IAController.Animator, 2)) * 1 / _statsManager.GetStat(StatAttribute.AttackSpeed).GetCurrentValue();
 
             //Set cooldown
-            _attackRecover = _attackAnimationDuration - _attackAnimationTransitionOffset;
+            _attackRecover = _attackAnimationDuration /*- _attackAnimationTransitionOffset*/;
             _attackCooldown = _attackRecover;
 
-            AnimatorHelper.HandleThisAnimation(_IAController.Animator, "Attack", true, 1, 1);
+            if ( !IsRanged ) AnimatorHelper.HandleThisAnimation( _IAController.Animator, "Attack", true, 1, 1 );
+            if ( IsRanged ) AnimatorHelper.HandleThisAnimation( _IAController.Animator, "RangedAttack", true, 1, 1 );
 
             _canAttack = false;
+        }
+
+        public float RotationSpeed = 15;
+        private void RotateTowardsTarget( Transform target )
+        {
+            if ( !IsRanged ) return;
+
+            transform.LookAt( new Vector3( target.position.x, transform.position.y, target.position.z ) );
         }
 
         private void ProcessAttackCooldown()
@@ -77,14 +89,17 @@ namespace Khynan_Coding
         // This is called in animation
         public void ApplyDamageToTargetWhileInCombat()
         {
-            //Attack
+            if ( _interactionHandler._isTargetTooFar || IsRanged ) { return; }
+
             StatsManager targetStats = _interactionHandler.CurrentTarget.GetComponent<StatsManager>();
+            Animator animator = _interactionHandler.CurrentTarget.GetComponent<ThirdPersonController>().Animator;
+
+            if ( !targetStats.IsCharacterDead() ) { AnimatorHelper.HandleThisAnimation( animator, "GotHit", true, 1, 1 ); }
+
             targetStats.ApplyDamageToTarget(
                 transform, 
                 _interactionHandler.CurrentTarget, 
                 _statsManager.GetStat(StatAttribute.AttackDamage).GetCurrentValue());
-
-            _interactionHandler.CurrentTarget.GetComponent<ThirdPersonController>().Animator.SetBool("GotHit", true);
         }
 
         public void ResetAttackState()
@@ -97,5 +112,7 @@ namespace Khynan_Coding
         {
             _animIDAttackSpeed = Animator.StringToHash("AttackSpeed");
         }
+
+        public bool CanAttack() { return _canAttack; }
     }
 }

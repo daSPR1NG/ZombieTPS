@@ -46,9 +46,9 @@ namespace Khynan_Coding
             WorldUI worldUI = _content.GetComponent<WorldUI>();
             worldUI.SetTarget(target);
 
-            string interactionAction = interactionData.GetInteractionInputAction() + " to " + interactionData.GetInteractionActionType().ToString();
-            _inputActionText.SetText(interactionAction);
-            _inputActionText.color = Color.white;
+            //string interactionAction = interactionData.GetInteractionInputAction() + " to " + interactionData.GetInteractionActionType().ToString();
+            //_inputActionText.SetText(interactionAction);
+            //_inputActionText.color = Color.white;
 
             Sprite inputIcon = interactionData.GetInputIcon();
             _inputIcon.sprite = inputIcon;

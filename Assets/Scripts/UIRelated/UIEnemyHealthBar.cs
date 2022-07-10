@@ -1,48 +1,133 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Khynan_Coding
 {
-    public class UIEnemyHealthBar : UIHealthBar
+    public class UIEnemyHealthBar : MonoBehaviour
     {
+        [Header( "SETTINGS" )]
+        [SerializeField] protected bool _displaysTextInfos = false;
+
+        [Header( "DEPENDENCIES" )]
+        [SerializeField] protected TMP_Text _healthValueText;
+        [SerializeField] protected Image _healthIconImage;
+        [SerializeField] protected Sprite _healthIcon;
+
+        [Header( "FILL BARS" )]
+        [SerializeField] protected Image _healthFillImage;
+        [SerializeField] protected Image _damagedFillImage;
+
+        [Header( "FILL SPEED SETTINGS" )]
+        [SerializeField] protected float _damagedFillBarUpdateDelay = .5f;
+        [SerializeField] protected float _damagedFillBarUpdateSpeed = 1.5f;
+
+        protected bool _canUpdateDamagedFillBar = false;
+        protected float _damageUpdateCurrentTimer;
+
+        protected float _currentValue;
+        protected float _maxValue;
+
+        protected Animator _animator;
+
         [Header("Enemy Infos")]
         [SerializeField] private TMP_Text _characterNameText;
         [SerializeField] private AudioSource _audioSource;
         [SerializeField] private ControllerAudioSetting _audioSetting;
 
-        public void InitEnemyHealthBarFill(/*Transform target,*/ float current, float max)
+        void Start() => Init();
+
+        private void Update() => ProcessTimerBeforeUpdatingDamagedFillBar();
+
+        void Init()
         {
+            _animator = GetComponent<Animator>();
+
+            if ( !_displaysTextInfos ) { _healthValueText.gameObject.SetActive( false ); }
+
+            if ( _healthIconImage ) { _healthIconImage.sprite = _healthIcon; }
+        }
+
+        public virtual void InitHealthBarFill( float current, float max )
+        {
+            //Debug.Log("InitHealthBarFill");
+
             _currentValue = current;
             _maxValue = max;
 
-            if (_displaysTextInfos) { _healthValueText.SetText(current.ToString()); }
+            if ( _displaysTextInfos ) { _healthValueText.SetText( current.ToString() ); }
+
+            //_healthValueText.SetText($"<size=18>{current}</size>" + " " + $"<size=12><color=grey>{max}</color></size>");
 
             _healthFillImage.fillAmount = current / max;
+
+            //Debug.Log(_healthFillImage.fillAmount + " " + current + " " + max);
+
             _damagedFillImage.fillAmount = current / max;
         }
 
-        public override void SetHealthBar(float current, float max, HealthInteraction healthInteraction)
+        public virtual void SetHealthBar( float current, float max, HealthInteraction healthInteraction )
         {
-            base.SetHealthBar(current, max, healthInteraction);
+            //Debug.Log("Set health bar.");
+
+            _currentValue = current;
+            _maxValue = max;
+
+            if ( _displaysTextInfos )
+            {
+                _healthValueText.SetText( current.ToString()/* + " / " + max.ToString()*/);
+            }
+
+            _healthFillImage.fillAmount = current / max;
+
+            _animator.Play( "HealthBar_DamageTaken" );
+
+            switch ( healthInteraction )
+            {
+                case HealthInteraction.Damage:
+                    _canUpdateDamagedFillBar = true;
+                    _damageUpdateCurrentTimer = _damagedFillBarUpdateDelay;
+                    break;
+                case HealthInteraction.Heal:
+                    SetDamagedFillBarImmediatly( current, max );
+                    break;
+            }
         }
 
-        protected override void ProcessTimerBeforeUpdatingDamagedFillBar()
+        protected virtual void ProcessTimerBeforeUpdatingDamagedFillBar()
         {
-            base.ProcessTimerBeforeUpdatingDamagedFillBar();
+            if ( !_canUpdateDamagedFillBar ) { return; }
+
+            _damageUpdateCurrentTimer -= Time.deltaTime;
+
+            if ( _damageUpdateCurrentTimer <= 0 )
+            {
+                _damageUpdateCurrentTimer = 0;
+                SetDamagedFillBarOvertime( _currentValue, _maxValue );
+            }
         }
 
-        protected override void SetDamagedFillBarImmediatly(float current, float max)
+        protected virtual void SetDamagedFillBarOvertime( float current, float max )
         {
-            base.SetDamagedFillBarImmediatly(current, max);
+            float nextFillValue = current / max;
+
+            _damagedFillImage.fillAmount =
+                Mathf.Lerp( _damagedFillImage.fillAmount, nextFillValue, Time.deltaTime * _damagedFillBarUpdateSpeed );
+
+            if ( _damagedFillImage.fillAmount != nextFillValue ) { return; }
+
+            _canUpdateDamagedFillBar = false;
         }
 
-        protected override void SetDamagedFillBarOvertime(float current, float max)
+        protected virtual void SetDamagedFillBarImmediatly( float current, float max )
         {
-            base.SetDamagedFillBarOvertime(current, max);
+            _damagedFillImage.fillAmount = current / max;
         }
 
         public void PlayDeathEffect()
         {
+            SetDamagedFillBarImmediatly( 0, 0 );
+
             Debug.Log("PlayDeathEffect");
             _animator.SetTrigger("DeathEffect");
 

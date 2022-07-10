@@ -10,27 +10,41 @@ namespace Khynan_Coding
         [SerializeField] private Image waveIconImage;
         [SerializeField] private Sprite waveIcon;
 
+        private Animator _animator;
+        private int _waveCount;
+
         private void OnEnable()
         {
-            Actions.OnWaveCountValueChanged += SetWaveCounterText;
+            Actions.OnWaveCountValueChanged += SetWaveCounterAndDisplayFeedback;
         }
 
         private void OnDisable()
         {
-            Actions.OnWaveCountValueChanged -= SetWaveCounterText;
+            Actions.OnWaveCountValueChanged -= SetWaveCounterAndDisplayFeedback;
         }
 
         void Start() => Init();
 
         void Init()
         {
-            waveIconImage.sprite = waveIcon;
-            SetWaveCounterText(0);
+            _animator = GetComponent<Animator>();
+
+            //waveIconImage.sprite = waveIcon;
+
+            SetWaveCounterAndDisplayFeedback(0);
+            waveCounterText.SetText( _waveCount.ToString() );
         }
 
-        private void SetWaveCounterText(int waveCount)
+        private void SetWaveCounterAndDisplayFeedback( int waveCount )
         {
-            waveCounterText.SetText(waveCount.ToString());
+            _waveCount = waveCount;
+            _animator.Play( "WaveCount" );
+        }
+
+        // Called in animation
+        public void SetWaveCounterText()
+        {
+            waveCounterText.SetText( _waveCount.ToString() );
         }
     }
 }

@@ -6,19 +6,17 @@ namespace Khynan_Coding
     [DisallowMultipleComponent]
     public class IAInteractionHandler : MonoBehaviour
     {
-        // Est-ce que je suis arrivé à portée de la cible ?
-        // Si oui > interaction
-
         public Transform CurrentTarget;
         [SerializeField] private float _interactionRange = 1.25f;
         [SerializeField] private float _interactionMoveTransitionDelay = 0.5f;
 
-        private bool _isTargetTooFar;
+        public bool _isTargetTooFar;
         private bool _canMoveTowardsTarget = true;
         private float _currentTransitionTimer = 0;
 
         private NavMeshAgent _navMeshAgent;
         private IAController _iaController;
+        private CombatSystem _combatSystem;
 
         private void Awake() => Initialization();
 
@@ -39,6 +37,7 @@ namespace Khynan_Coding
         {
             _iaController = GetComponent<IAController>();
             _navMeshAgent = GetComponent<NavMeshAgent>();
+            _combatSystem = GetComponent<CombatSystem>();
         }
 
         public void SetTarget(Transform newTarget)
@@ -114,7 +113,7 @@ namespace Khynan_Coding
 
         private void OnTargetBeingTooFar()
         {
-            if (!_isTargetTooFar) { return; }
+            if (!_isTargetTooFar ) { return; }
 
             _canMoveTowardsTarget = false;
 

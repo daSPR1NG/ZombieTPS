@@ -51598,6 +51598,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e67beb7d3a65231408fe70b26e0e5b5d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  GreenFireVFX: {fileID: 0}
+  ProjectilePf: {fileID: 0}
+  ProjectileSpawnPoint: {fileID: 0}
 --- !u!1 &1118705277345341151
 GameObject:
   m_ObjectHideFlags: 0
@@ -52006,7 +52009,7 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 0.25
-  m_Speed: 0.35
+  m_Speed: 0.85
   m_Acceleration: 8
   avoidancePriority: 50
   m_AngularSpeed: 120
@@ -52046,6 +52049,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   IsCharacterMoving: 0
   _doesChasePlayer: 1
+  MotionSpeedOffset: 0.25
 --- !u!114 &4090928382533528489
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -52059,23 +52063,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _isInvulnerable: 0
+  _destroyOnDeath: 1
   _stats:
   - _name: MovementSpeed
     _attribute: 1
     _needsToMatchBaseValueAtStart: 1
-    _baseValue: 0.35
-    _maxValue: 0.35
-    _currentValue: 0.35
-    _minLimit: 0.1
-    _maxLimit: 0.95
+    _baseValue: 0.85
+    _maxValue: 0.85
+    _currentValue: 0.85
+    _minLimit: 0.35
+    _maxLimit: 2.25
     _statModifiers: []
     _criticalThresholdValue: 0
   - _name: Health
     _attribute: 2
     _needsToMatchBaseValueAtStart: 1
-    _baseValue: 150
-    _maxValue: 150
-    _currentValue: 150
+    _baseValue: 50
+    _maxValue: 50
+    _currentValue: 50
     _minLimit: 0
     _maxLimit: 0
     _statModifiers: []
@@ -52093,9 +52098,9 @@ MonoBehaviour:
   - _name: AttackDamage
     _attribute: 4
     _needsToMatchBaseValueAtStart: 1
-    _baseValue: 15
-    _maxValue: 15
-    _currentValue: 15
+    _baseValue: 10
+    _maxValue: 10
+    _currentValue: 10
     _minLimit: 0
     _maxLimit: 0
     _statModifiers: []
@@ -52103,12 +52108,12 @@ MonoBehaviour:
   _popupPrefab: {fileID: 3869969381968861476, guid: 191a2e11d38d66943880ea27edeeb7eb,
     type: 3}
   _deathVFXSpawnOffset: 0.05
-  _deathVFX: {fileID: 7358242720235404469, guid: ceda7f69af49cf449a3672de7378be9a,
-    type: 3}
+  _deathVFX: {fileID: 0}
   _healVFX: {fileID: 1041383877100388}
   _emitsDeathSound: 1
   _controllerAudioSettingList: {fileID: 11400000, guid: 1ececaea3ce4f1e4593b3f3879b17a80,
     type: 2}
+  CrossfadePlayerDeathDuration: 0.25
   _usesHitEffect: 1
   _hitEffectRendererGo: {fileID: 295874960559466657}
   _hitEffectMaterial: {fileID: 2100000, guid: b7a52a75810c9774fbc274cc1955e17e, type: 2}
@@ -52150,8 +52155,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4bc56898d01524c4195ebe054a2ed5a1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _attackAnimationTransitionOffset: 0.05
+  IsRanged: 0
+  _attackAnimationTransitionOffset: 4.5
   _attackAnimationReductionSpeed: 1.25
+  RotationSpeed: 15
 --- !u!114 &297732522007661727
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -52167,6 +52174,7 @@ MonoBehaviour:
   CurrentTarget: {fileID: 0}
   _interactionRange: 1
   _interactionMoveTransitionDelay: 0.5
+  _isTargetTooFar: 0
 --- !u!114 &1934162601
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -52300,7 +52308,7 @@ AudioSource:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1118705277658923931}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: -7299730364764669944, guid: 42541f75e5aa07e4ba4027401613ccb9,
     type: 2}

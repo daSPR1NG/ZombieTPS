@@ -9,6 +9,7 @@ namespace Khynan_Coding
         [SerializeField] private Sprite _icon;
         [SerializeField] private float _duration;
         [SerializeField] private float _grabbableDuration;
+        [SerializeField] private Vector3 _offsetSpawn;
 
         [Space(3), Header("GRAB SETTINGS")]
         [SerializeField] private Vector3 _grabFXOffsetSpawn;
@@ -31,5 +32,6 @@ namespace Khynan_Coding
         public float GetDuration() { return _duration; }
         public float GetGrabbableDuration() { return _grabbableDuration; }
         public AudioClip GetAudioClip() { return _onGrabSFX; }
+        public Vector3 GetOffsetWSpawn() { return _offsetSpawn; }
     }
 }

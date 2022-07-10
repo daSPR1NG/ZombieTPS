@@ -5,23 +5,17 @@ namespace Khynan_Coding
 {
     public class DamageTakenEffect : MonoBehaviour
     {
-        // Variables
+        public Animator Animator;
 
-        void OnEnable()
+        void OnEnable() => Actions.OnPlayerDamageTaken += DisplayDamageTakenEffect;
+
+        void OnDisable() => Actions.OnPlayerDamageTaken -= DisplayDamageTakenEffect;
+
+        private void DisplayDamageTakenEffect()
         {
+            Animator.ResetTrigger( "DamageTaken" );
 
-        }
-
-        void OnDisable()
-        {
-
-        }
-
-        void Start() => Init();
-
-        void Init()
-        {
-            //Set all datas that need it at the start of the game
+            Animator.SetTrigger( "DamageTaken" );
         }
     }
 }

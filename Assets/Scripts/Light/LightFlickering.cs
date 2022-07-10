@@ -9,9 +9,10 @@ namespace Khynan_Coding
     // 3. Add a warning notes, when GUI is disabled, the preview cannot be seen in the scene view.
     // 4. Add something to save the last custom preset made,
     // so you can go to previous if you want and you can save the one you've made,
-    // the notif saying there is a custom preset saved for this object (object, flickering profile)
+    // the notif saying there is a custom preset saved for this object (object, flickering profile).
     // 5. Lights components are not detected when they're placed as children of other object > need to go through every child of child etc...
-    // 6. Add components to objects holding light component to subscribe OnValueChanged
+    // 6. Add components to objects holding light component to subscribe OnValueChanged.
+    // 7. Add a warning when light view is not enabled in scene view.
 
     public enum FlickeringPreset
     {
@@ -35,7 +36,7 @@ namespace Khynan_Coding
         [SerializeField] private Material _lightOffMaterial;
         [Space(10), SerializeField] private List<LightData> _lightDatas = new();
 
-        private List<float> _lightMaxIntensityValues = new();
+        [SerializeField] private List<float> _lightMaxIntensityValues = new();
 
         [Space(20), Header("DEBUG SETTINGS")]
         public bool TestFlickering = false;
@@ -46,7 +47,7 @@ namespace Khynan_Coding
         {
             [HideInInspector] public string Name = "Profile Assigned Property";
             public bool SwitchON = false;
-            [Range(0,1)] public float FlickeringDelay = 0;
+            [Range(0,10)] public float FlickeringDelay = 0;
 
             public FlickeringProperty(float flickeringDelay, bool switchON)
             {
@@ -79,8 +80,6 @@ namespace Khynan_Coding
         /// <summary> Retrieve all the light components of transform children. </summary>
         private void GetAllLightComponentsInChildren()
         {
-            if (!_doesFlicker) { return; }
-
             if (transform.childCount == 0)
             {
                 Debug.LogError("Light would not be found, there is no child.", transform);
@@ -103,7 +102,7 @@ namespace Khynan_Coding
                 if (_lightDatas.Count < amount)
                 {
                     _lightDatas.Add(newLightData);
-                    _lightMaxIntensityValues.Add(light.intensity);
+                    if (!_lightMaxIntensityValues.Contains( light.intensity ) ) _lightMaxIntensityValues.Add(light.intensity);
                 }
             }
         }
@@ -163,6 +162,8 @@ namespace Khynan_Coding
             }
 
             bool switchState = _flickeringProfile[_index].SwitchON;
+
+            Debug.Log( gameObject.name + " " + switchState );
 
             _index++;
             if (_index >= _flickeringProfile.Count) { _index = 0; }

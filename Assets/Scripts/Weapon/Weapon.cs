@@ -23,6 +23,7 @@ namespace Khynan_Coding
         [SerializeField, Range(0, 2)] private float _aimSpeed = .5f;
 
         [Header("AMMO SETTINGS")]
+        public int BaseMaxAmmo = 350;
         [SerializeField] private int _maxAmmo = 150;
         private int _currentAmmo, _currentMaxAmmo = 0;
 
@@ -78,9 +79,10 @@ namespace Khynan_Coding
 
         #region Max Ammo + Current Max Ammo - Get / Set
         public int GetMaxAmmo() { return _maxAmmo; }
-        public void SetMaxAmmo(int value) 
+        public void SetMaxAmmo(int value)
         { 
-            _maxAmmo = value; 
+            _maxAmmo = value;
+            _currentMaxAmmo = _maxAmmo;
         }
 
         public int GetCurrentMaxAmmo() { return _currentMaxAmmo; }

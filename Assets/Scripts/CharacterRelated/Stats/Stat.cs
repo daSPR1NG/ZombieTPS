@@ -46,6 +46,8 @@ namespace Khynan_Coding
 
         public void MatchCurrentValueWithBaseValue()
         {
+            _baseValue = CalculateCurrentValue();
+
             if (_currentValue == _baseValue || !_needsToMatchBaseValueAtStart) { return; }
 
             _currentValue = _baseValue >= _maxLimit && _maxLimit > 0 ? _currentValue = _maxLimit : _currentValue = _baseValue;

@@ -96,6 +96,8 @@ namespace Khynan_Coding
 
             _shoot.performed += context => CheckRemainingAmmo();
             _shoot.canceled += context => HandleNonAutoWeaponOnInputCanceled();
+
+            Actions.OnPlayerDeath += DisableThis;
         }
 
         private void OnDisable()
@@ -108,6 +110,8 @@ namespace Khynan_Coding
 
             _shoot.performed -= context => CheckRemainingAmmo();
             _shoot.canceled -= context => HandleNonAutoWeaponOnInputCanceled();
+
+            Actions.OnPlayerDeath -= DisableThis;
         }
         #endregion
 
@@ -139,6 +143,8 @@ namespace Khynan_Coding
 
             HandleAimingRigWeight();
             HandleShootingWithoutAimingRigWeight();
+
+            weaponPivot.localEulerAngles = new Vector3( weaponPivot.localEulerAngles.x, weaponPivot.localEulerAngles.y, 0);
         }
 
         private void LateUpdate() => HandleAimSensitivityAndFeedbackAtRuntime();
@@ -201,6 +207,7 @@ namespace Khynan_Coding
             weapon.SetFireRate(_statsManager.GetStat(StatAttribute.FireRate).GetCurrentValue());
 
             weapon.SetAmountOfAmmoFiredPerShot((int)_statsManager.GetStat(StatAttribute.AmmoFiredPerShotBonus).GetCurrentValue());
+            weapon.SetMaxAmmo( weapon.BaseMaxAmmo );
         }
 
         private void AssignAnimationIDs()
@@ -1004,5 +1011,10 @@ namespace Khynan_Coding
         }
 
         public bool IsAimInputPressed() { return _aim.IsPressed(); }
+
+        private void DisableThis()
+        {
+            this.enabled = false;
+        }
     }
 }

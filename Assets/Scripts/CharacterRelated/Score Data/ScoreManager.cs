@@ -18,6 +18,16 @@ namespace Khynan_Coding
             Actions.OnRemovingScore -= RemoveValueToGlobalScore;
         }
 
+#if UNITY_EDITOR
+        private void Update()
+        {
+            if ( Input.GetKeyDown(KeyCode.N) )
+            {
+                AddValueToGlobalScore( 500 );
+            }
+        }
+#endif
+
         void Start() => Init();
 
         void Init()

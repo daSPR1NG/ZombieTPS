@@ -39,12 +39,14 @@ namespace Khynan_Coding
         {
             Actions.OnPlayerHealthValueInitialized += InitHealthBarFill;
             Actions.OnPlayerHealthValueChanged += SetHealthBar;
+            Actions.OnPlayerHealthValueAugmented += SetDamagedFillBarImmediatly;
         }
 
         protected virtual void OnDisable()
         {
             Actions.OnPlayerHealthValueInitialized -= InitHealthBarFill;
             Actions.OnPlayerHealthValueChanged -= SetHealthBar;
+            Actions.OnPlayerHealthValueAugmented -= SetDamagedFillBarImmediatly;
         }
         #endregion
 

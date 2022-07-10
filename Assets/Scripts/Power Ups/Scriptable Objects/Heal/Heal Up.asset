@@ -15,7 +15,8 @@ MonoBehaviour:
   _name: Heal Up
   _icon: {fileID: 0}
   _duration: 0
-  _grabbableDuration: 10
-  _grabFXOffsetSpawn: {x: 0, y: 0, z: 0}
+  _grabbableDuration: 25
+  _offsetSpawn: {x: 0, y: 0.8, z: 0}
+  _grabFXOffsetSpawn: {x: 0, y: 0.8, z: 0}
   _onGrabFX: {fileID: 0}
-  _onGrabSFX: {fileID: 0}
+  _onGrabSFX: {fileID: 8300000, guid: d4fa0567c88dcea48b23379bb0329ebf, type: 3}

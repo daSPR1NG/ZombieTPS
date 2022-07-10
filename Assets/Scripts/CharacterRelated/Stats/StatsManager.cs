@@ -13,6 +13,7 @@ namespace Khynan_Coding
     {
         [Header("DEPENDENCIES")]
         [SerializeField] private bool _isInvulnerable = false;
+        [SerializeField] private bool _destroyOnDeath = false;
         [SerializeField] private List<Stat> _stats = new();
 
         [Header("LOOK")]
@@ -27,8 +28,8 @@ namespace Khynan_Coding
 
         private float _healthPercentage = 0;
 
-        private DefaultController _defaultController;
-        GlobalCharacterParameters _globalCharacterParameters;
+        protected DefaultController _defaultController;
+        protected GlobalCharacterParameters _globalCharacterParameters;
 
         #region Public references
         public List<Stat> Stats { get => _stats; set => _stats = value; }
@@ -69,10 +70,11 @@ namespace Khynan_Coding
 
             for (int i = 0; i < Stats.Count; i++)
             {
-                if (Stats[i].GetAttribute() == StatAttribute.Unassigned) { continue; }
+                if ( Stats [ i ].GetAttribute() == StatAttribute.Unassigned ) { continue; }
 
-                Stats[i].SetStatName(Stats[i].GetAttribute().ToString());
-                Stats[i].MatchCurrentValueWithBaseValue();
+                Stats [ i ].SetCurrentValue( Stats [ i ].CalculateCurrentValue() );
+                Stats [ i ].SetStatName( Stats [ i ].GetAttribute().ToString() );
+                Stats [ i ].MatchCurrentValueWithBaseValue();
             }
 
             InitNavMeshAgent();
@@ -83,10 +85,10 @@ namespace Khynan_Coding
 
         private void InitHealth()
         {
-            if (_globalCharacterParameters.CharacterType == CharacterType.Player)
+            if ( _globalCharacterParameters.CharacterType == CharacterType.Player )
             {
                 Actions.OnPlayerHealthValueInitialized?.Invoke(
-                    GetStat(StatAttribute.Health).GetCurrentValue(), GetStat(StatAttribute.Health).GetMaxValue());
+                    GetStat( StatAttribute.Health ).GetCurrentValue(), GetStat( StatAttribute.Health ).GetMaxValue() );
             }
         }
 
@@ -143,9 +145,9 @@ namespace Khynan_Coding
 
         public virtual void ApplyDamageToTarget(Transform provider, Transform target, float damageAmount)
         {
-            if (IsCharacterDead()) { return; }
+            if ( IsCharacterDead() ) { return; }
 
-            if (_isInvulnerable)
+            if ( _isInvulnerable )
             {
                 Debug.Log("Target is invulnerable so we create a damage popup with invulnerable string value.");
 
@@ -160,20 +162,23 @@ namespace Khynan_Coding
                 Debug.Log("Stats manager is not present on this object or it is not using health", transform);
             }
 
-            float newHealthValue = statsManager.GetStat(StatAttribute.Health).GetCurrentValue() - damageAmount;
+            float newHealthValue = statsManager.GetStat(StatAttribute.Health).GetCurrentValue() - Mathf.Floor( damageAmount );
             statsManager.GetStat(StatAttribute.Health).SetCurrentValue(newHealthValue);
 
-            DamagePopup.CreateDamagePopup(_popupPrefab, target, damageAmount, PopupType.Damage);
+            DamagePopup.CreateDamagePopup(_popupPrefab, target, Mathf.Floor( damageAmount ), PopupType.Damage);
 
-            if (_globalCharacterParameters.CharacterType == CharacterType.Player)
+            if ( _globalCharacterParameters.CharacterType == CharacterType.Player )
             {
                 Actions.OnPlayerHealthValueChanged?.Invoke(
-                    GetStat(StatAttribute.Health).GetCurrentValue(),
-                    GetStat(StatAttribute.Health).GetMaxValue(),
-                    HealthInteraction.Damage);
+                        GetStat( StatAttribute.Health ).GetCurrentValue(),
+                        GetStat( StatAttribute.Health ).GetMaxValue(),
+                        HealthInteraction.Damage );
+
+                Actions.OnPlayerDamageTaken?.Invoke();
+
             }
 
-            if (statsManager.GetStat(StatAttribute.Health).GetCurrentValue() <= 0)
+            if (statsManager.GetStat(StatAttribute.Health).GetCurrentValue() == 0)
             {
                 //Debug.Log("Character is dead.");
                 OnDeath(provider);
@@ -196,12 +201,12 @@ namespace Khynan_Coding
             float newHealthValue = statsManager.GetStat(StatAttribute.Health).GetCurrentValue() + healAmount;
             statsManager.GetStat(StatAttribute.Health).SetCurrentValue(newHealthValue);
 
-            if(_globalCharacterParameters.CharacterType == CharacterType.Player)
+            if ( _globalCharacterParameters.CharacterType == CharacterType.Player )
             {
                 Actions.OnPlayerHealthValueChanged?.Invoke(
-                    GetStat(StatAttribute.Health).GetCurrentValue(),
-                    GetStat(StatAttribute.Health).GetMaxValue(),
-                    HealthInteraction.Heal);
+                        GetStat( StatAttribute.Health ).GetCurrentValue(),
+                        GetStat( StatAttribute.Health ).GetMaxValue(),
+                        HealthInteraction.Heal );
             }
 
             if (_healVFX) { _healVFX.SetActive(true); }
@@ -220,7 +225,14 @@ namespace Khynan_Coding
                 GetStat(StatAttribute.Health).GetMaxValue(), 100);
         }
 
+        public void AugmentMovementSpeed( StatModifier modifier )
+        {
+            GetStat( StatAttribute.MovementSpeed ).AddModifier( modifier );
+            _defaultController.NavMeshAgent.speed = GetStat( StatAttribute.MovementSpeed ).GetCurrentValue();
+        }
+
         #region OnDeath
+        public float CrossfadePlayerDeathDuration = .25f;
         public virtual void OnDeath(Transform killer)
         {
             //Debug.Log("On death event");
@@ -228,12 +240,25 @@ namespace Khynan_Coding
             if (_defaultController) { PlayOnDeathSound(_defaultController.AudioSource); }
 
             ScoreGiver scoreGiver = transform.GetComponent<ScoreGiver>();
-            scoreGiver.GiveScoreToTarget(killer, scoreGiver.GetScoreData(ScoreRelatedActionName.OnDeath));
+            if ( scoreGiver ) scoreGiver.GiveScoreToTarget( killer, scoreGiver.GetScoreData( ScoreRelatedActionName.OnDeath ) );
 
             DefaultController defaultController = GetComponent<DefaultController>();
             defaultController.SwitchState(defaultController.Death());
 
-            Actions.OnEnemyDeath?.Invoke();
+            if ( _globalCharacterParameters.CharacterType == CharacterType.Player )
+            {
+                RigBuilderHelper rigBuilderHelper = transform.GetChild( 0 ).GetComponent<RigBuilderHelper>();
+                rigBuilderHelper.FreeHandsWhileInAir( true );
+
+                int animDeathHash = Animator.StringToHash( "Character_Death" );
+                ThirdPersonController controller = GetComponent<ThirdPersonController>();
+                controller.Animator.CrossFade( animDeathHash, CrossfadePlayerDeathDuration, 0 );
+
+                Actions.OnPlayerDeath?.Invoke();
+                return;
+            }
+
+            Actions.OnEnemyDeath?.Invoke( transform );
         }
 
         public bool IsCharacterDead()
@@ -255,7 +280,7 @@ namespace Khynan_Coding
                     _deathVFX.transform.rotation); 
             }
 
-            Destroy(gameObject);
+            if ( _destroyOnDeath ) Destroy(gameObject);
         }
         #endregion
 

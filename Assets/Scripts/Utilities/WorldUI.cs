@@ -4,8 +4,7 @@ namespace Khynan_Coding
 {
     public class WorldUI : MonoBehaviour
     {
-        [Header("SETTINGS")]
-        [SerializeField] private Vector3 _offset;
+        private Vector3 _offset;
 
         Camera _mainCamera;
         Transform _target;
@@ -27,6 +26,11 @@ namespace Khynan_Coding
         public void SetTarget(Transform target)
         {
             _target = target;
+        }
+
+        public void SetOffset(Vector3 offset)
+        {
+            if ( _offset != offset ) _offset = offset;
         }
 
         private void FollowTarget()

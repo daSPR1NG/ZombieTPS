@@ -76,6 +76,9 @@ namespace Khynan_Coding
 
             Actions.OnShooting += ManageAmmoFeedbacks;
             Actions.OnReloadEnded += HideOrDisplayLowAmmoFeedback;
+            Actions.OnGettingMaxAmmo += ManageAmmoFeedbacks;
+
+            Actions.OnPlayerDeath += HideSelf;
         }
 
         private void OnDisable()
@@ -98,6 +101,9 @@ namespace Khynan_Coding
 
             Actions.OnShooting -= ManageAmmoFeedbacks;
             Actions.OnReloadEnded -= HideOrDisplayLowAmmoFeedback;
+            Actions.OnGettingMaxAmmo -= ManageAmmoFeedbacks;
+
+            Actions.OnPlayerDeath -= HideSelf;
         }
 
         void Start() => Init();
@@ -172,6 +178,13 @@ namespace Khynan_Coding
             }
 
             return null;
+        }
+
+        private void HideSelf()
+        {
+            Helper.HideGO( transform.GetChild( 0 ).gameObject );
+            SetDefaultReticle();
+            this.enabled = false;
         }
 
         #region Hit marker

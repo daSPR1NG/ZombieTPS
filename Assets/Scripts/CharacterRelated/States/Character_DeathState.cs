@@ -9,7 +9,7 @@ namespace Khynan_Coding
         DefaultController _controller;
         IAInteractionHandler _interactionHandler;
         StatsManager _statsManager;
-        CapsuleCollider _capsuleCollider;
+        Collider _collider;
         
         //Store each variable that might be needed for this state, here.
         public override void Init(StateManager stateManager)
@@ -18,17 +18,18 @@ namespace Khynan_Coding
             _interactionHandler = _controller.InteractionHandler;
             _statsManager = _controller.CharacterStats;
 
-            _capsuleCollider = stateManager.GetComponent<CapsuleCollider>();
-            _capsuleCollider.enabled = false;
+            _collider = stateManager.GetComponent<Collider>();
 
-            _deathAnimationDuration = AnimatorHelper.GetAnimationLength(_controller.Animator, 3) + 0.15f;
+            if ( _collider ) _collider.enabled = false;
+
+            _deathAnimationDuration = AnimatorHelper.GetAnimationLength(_controller.Animator, 3) + 1.25f;
         }
 
         public override void EnterState(StateManager stateManager)
         {
             Init(stateManager);
 
-            _interactionHandler.CurrentTarget = null;
+            if ( _interactionHandler ) _interactionHandler.CurrentTarget = null;
             Helper.ResetAgentDestination(_controller.NavMeshAgent);
 
             AnimatorHelper.HandleThisAnimation(_controller.Animator, "IsDead", true, 1, 1);

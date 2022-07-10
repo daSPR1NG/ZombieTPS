@@ -168,7 +168,7 @@ namespace Khynan_Coding
             Time.timeScale = newValue;
         }
 
-        private void IncrementeWaveCount()
+        public void IncrementeWaveCount()
         {
             WaveCount++;
 

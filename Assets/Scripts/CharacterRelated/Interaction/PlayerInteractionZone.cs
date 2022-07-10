@@ -9,6 +9,16 @@ namespace Khynan_Coding
         private PlayerInteractionHandler _playerInteractionHandler;
         private SphereCollider _sphereCollider;
 
+        private void OnEnable()
+        {
+            Actions.OnGlobalScoreValueChanged += ResetCollider;
+        }
+
+        private void OnDisable()
+        {
+            Actions.OnGlobalScoreValueChanged -= ResetCollider;
+        }
+
         private void Start() => Initialiaze();
 
         private void Initialiaze()
@@ -46,6 +56,12 @@ namespace Khynan_Coding
         public void SetRadius(float delta)
         {
             _sphereCollider.radius = delta;
+        }
+
+        private void ResetCollider(int i, bool b)
+        {
+            _sphereCollider.enabled = false;
+            _sphereCollider.enabled = true;
         }
     }
 }

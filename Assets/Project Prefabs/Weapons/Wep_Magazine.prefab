@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2441705550995073293}
   - component: {fileID: 2433720023141089005}
   - component: {fileID: 3905290436005285404}
-  m_Layer: 2
+  m_Layer: 10
   m_Name: Wep_Magazine
   m_TagString: Untagged
   m_Icon: {fileID: 0}

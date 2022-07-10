@@ -29,6 +29,8 @@ namespace Khynan_Coding
         public override void ExitState(StateManager stateManager)
         {
             AnimatorHelper.SetAnimatorBoolean(_controller.Animator, "Attack", false);
+            AnimatorHelper.SetAnimatorBoolean(_controller.Animator, "RangedAttack", false);
+
             _combatSystem.ResetAttackState();
 
             //Helper.DebugMessage("Exiting <ATTACK> state", stateManager.transform);

@@ -14,16 +14,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _name: Assault Riffle
   _type: 2
-  _damage: 20
-  _ammoFiredPerShot: 0
+  _damage: 5
+  _ammoFiredPerShot: 1
   _fireRate: 0.2
   _range: 15
   _aimSpeed: 0.1
+  BaseMaxAmmo: 350
   _maxAmmo: 350
   _magAmount: 7
   _timeToReload: 2.5
-  _recoilForce: 10
-  _impulseForce: 0.25
+  _recoilForce: 8
+  _impulseForce: 0.45
   _prefab: {fileID: 2266614924684990292, guid: c952687555fccac47b2e2394553fc362, type: 3}
   _icon: {fileID: 21300050, guid: e35b1509688e6294cad1ada6c91b7693, type: 3}
   _muzzleFlashPf: {fileID: 5426031798781912364, guid: 12a91f77ed72e8d4388cd5a419e6e464,

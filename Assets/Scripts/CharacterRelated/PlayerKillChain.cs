@@ -56,7 +56,7 @@ namespace Khynan_Coding
             }
         }
 
-        void SetKillChain()
+        void SetKillChain( Transform unit )
         {
             if (_killCount == 0) { Actions.OnKillChainStarted?.Invoke(_killChainDuration); }
 

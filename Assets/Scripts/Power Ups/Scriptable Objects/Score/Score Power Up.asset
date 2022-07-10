@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: afc2cf5b3ae807945ba50cad10e92912, type: 3}
+  m_Name: Score Power Up
+  m_EditorClassIdentifier: 
+  _name: Score Power Up
+  _icon: {fileID: 0}
+  _duration: 15
+  _grabbableDuration: 25
+  _offsetSpawn: {x: 0, y: 0.8, z: 0}
+  _grabFXOffsetSpawn: {x: 0, y: 0.8, z: 0}
+  _onGrabFX: {fileID: 0}
+  _onGrabSFX: {fileID: 8300000, guid: d4fa0567c88dcea48b23379bb0329ebf, type: 3}
+  ScoreMultiBonusValue: 2

@@ -22,8 +22,6 @@ namespace Khynan_Coding
 
         private void Init()
         {
-            _audioSource = GetComponent<AudioSource>();
-
             _animator = GetComponent<Animator>();
             _animator.speed = 0;
 
@@ -40,7 +38,7 @@ namespace Khynan_Coding
             }
 
             _powerUp.Apply(other.transform);
-            AudioHelper.PlaySound(_audioSource, _powerUp.GetAudioClip(), _audioSource.volume);
+            AudioHelper.PlaySound( _audioSource, _powerUp.GetAudioClip(), _audioSource.volume );
 
             Destroy(gameObject);
         }
@@ -90,5 +88,9 @@ namespace Khynan_Coding
                 }
             }
         }
+
+        public void SetAudioSource( AudioSource audioSource ) { _audioSource = audioSource; }
+
+        public PowerUp GetPowerUp() { return _powerUp; }
     }
 }

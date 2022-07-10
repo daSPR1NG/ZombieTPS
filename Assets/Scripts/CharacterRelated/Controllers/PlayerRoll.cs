@@ -25,6 +25,7 @@ namespace Khynan_Coding
         private Animator _animator;
         private ThirdPersonController _thirdPersonController;
         private WeaponSystem _weaponSystem;
+        private RigBuilderHelper _rigBuilderHelper;
 
         private void OnEnable()
         {
@@ -40,7 +41,7 @@ namespace Khynan_Coding
         {
             _thirdPersonController = GetComponent<ThirdPersonController>();
             _weaponSystem = GetComponent<WeaponSystem>();
-
+            
             if (!_thirdPersonController.CanRoll) { return; }
 
             _inputs = GetComponent<PlayerInput>();
@@ -52,6 +53,7 @@ namespace Khynan_Coding
         void Init()
         {
             _animator = transform.GetChild(0).GetComponent<Animator>();
+            _rigBuilderHelper = _thirdPersonController.GetRigBuilderHelper();
 
             SetRollCurveLength();
 
@@ -72,11 +74,11 @@ namespace Khynan_Coding
 
             if (_weaponSystem.IsAiming) { _weaponSystem.CancelAim(); }
 
+            _rigBuilderHelper.GetRigData(RigBodyPart.L_Hand).SetTwoBoneIKConstraintWeight( 0 );
+
             SetRollCurveLength();
             AnimatorHelper.HandleThisAnimation(_animator, "Roll", true, 0, 1);
             PlayRollSound(GetComponent<AudioSource>());
-
-            _thirdPersonController.GetRigBuilderHelper().FreeHandsWhileInAir(_hideHandsWhileRolling);
             SetCharacterControllerCollider(new Vector3(0, 0.675f, 0), 0.65f, 1.25f);
 
             float timer = 0;
@@ -109,11 +111,10 @@ namespace Khynan_Coding
                     if (_weaponSystem.IsAimInputPressed()) { _weaponSystem.Aim(); }
 
                     SetCharacterControllerCollider(new Vector3(0, 0.93f, 0), 0.15f, 1.8f);
+                    _rigBuilderHelper.GetRigData( RigBodyPart.L_Hand ).SetTwoBoneIKConstraintWeight( 1 );
 
                     yield break;
                 }
-
-                _thirdPersonController.GetRigBuilderHelper().ReAssignHoldingPoseOnTouchingGround();
 
                 yield return null;
             }

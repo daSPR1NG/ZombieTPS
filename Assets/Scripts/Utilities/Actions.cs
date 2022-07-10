@@ -30,7 +30,8 @@ namespace Khynan_Coding
         public static Action<ScoreData> OnScoreNotificationNeed;
 
         public static Action OnHittingValidTarget;
-        public static Action OnEnemyDeath;
+        public static Action OnPlayerDeath;
+        public static Action<Transform> OnEnemyDeath;
 
         public static Action<float> OnKillChainStarted;
         public static Action<int, float> OnKillCountValueChanged;
@@ -41,7 +42,9 @@ namespace Khynan_Coding
 
         public static Action<float, float> OnPlayerHealthValueInitialized;
         public static Action<float, float, HealthInteraction> OnPlayerHealthValueChanged;
-
+        public static Action<float, float> OnPlayerHealthValueAugmented;
+        public static Action OnPlayerDamageTaken;
+        
         public static Action OnWaveBegun;
         public static Action OnWaveEnded;
         public static Action<int> OnWaveCountValueChanged;

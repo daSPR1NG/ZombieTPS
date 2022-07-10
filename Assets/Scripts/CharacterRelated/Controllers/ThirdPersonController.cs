@@ -14,6 +14,7 @@ namespace Khynan_Coding
 		[Header("GENERAL SETTINGS")]
 		public bool CanJump = false;
 		public bool CanRoll = false;
+		public bool CanMove = true;
 
 		[Header("MOVEMENT SETTINGS")]
 		public bool HoldToSprint = true;
@@ -105,11 +106,13 @@ namespace Khynan_Coding
         private void OnEnable()
         {
 			_sprint.performed += context => HandleSprintInputAction();
+			Actions.OnPlayerDeath += SetPlayerCantMove;
 		}
 
         private void OnDisable()
         {
 			_sprint.performed -= context => HandleSprintInputAction();
+			Actions.OnPlayerDeath -= SetPlayerCantMove;
 		}
 		#endregion
 
@@ -129,6 +132,8 @@ namespace Khynan_Coding
         #region Initialisation
         private void Init()
         {
+			if ( !CanMove ) CanMove = true;
+
 			_playerRoll = GetComponent<PlayerRoll>();
 
 			_playerInteractionHandler = GetComponent<PlayerInteractionHandler>();
@@ -156,15 +161,19 @@ namespace Khynan_Coding
 		#endregion
 
 		#region Movement + speed value
+		private void SetPlayerCantMove() { CanMove = false; }
+
 		private void Move()
 		{
+			if ( !CanMove ) { return; }
+
 			if (_isRolling) 
 			{ 
 				ResetSettingsToRunningState();
+
 				if (GetActiveCamera3rdPersonFollow().Damping != RollDamping) 
-				{ 
-					GetActiveCamera3rdPersonFollow().Damping = RollDamping; 
-				}
+					GetActiveCamera3rdPersonFollow().Damping = RollDamping;
+
 				return; 
 			}
 
@@ -269,8 +278,7 @@ namespace Khynan_Coding
 
 			WeaponSystem weaponSystem = GetComponent<WeaponSystem>();
 
-			if (weaponSystem && weaponSystem.IsAiming 
-				&& GetActiveCamera3rdPersonFollow().Damping != RunDamping)
+			if (weaponSystem && weaponSystem.IsAiming)
             {
                 //Debug.Log("Sprint while rolling " + _isRolling);
 
@@ -279,6 +287,25 @@ namespace Khynan_Coding
             }
 
             GetActiveCamera3rdPersonFollow().Damping = _targetSpeed == _sprintSpeed ? SprintDamping : RunDamping;
+
+			if ( _input.actions [ "Sprint" ].IsPressed() && inputMovementHasCorrectValueToSprint )
+			{
+				_rigBuilderHelper.GetRigData( RigBodyPart.HeldObject_Shoot_NoAim ).GetMultiAimConstraint().transform.localEulerAngles = 
+					new Vector3 ( -18, -30, 0);
+				_rigBuilderHelper.GetRigData( RigBodyPart.HeldObject_Shoot_NoAim ).GetMultiAimConstraint().data.offset = 
+					new Vector3( .15f, -.15f, .05f );
+
+				_rigBuilderHelper.GetRigData( RigBodyPart.L_Hand ).SetTwoBoneIKConstraintWeight( 0 );
+			}
+			else 
+			{
+				_rigBuilderHelper.GetRigData( RigBodyPart.HeldObject_Shoot_NoAim ).GetMultiAimConstraint().transform.localEulerAngles =
+					new Vector3( 0, -30, 0 );
+				_rigBuilderHelper.GetRigData( RigBodyPart.HeldObject_Shoot_NoAim ).GetMultiAimConstraint().data.offset =
+					new Vector3( .12f, -.12f, .02f );
+
+				_rigBuilderHelper.GetRigData( RigBodyPart.L_Hand ).SetTwoBoneIKConstraintWeight( 1 ); 
+			}
 
 			// Set target speed based on move speed, sprint speed and if sprint is pressed
 			if (HoldToSprint)

@@ -26,7 +26,7 @@ namespace Khynan_Coding
 
         private void InitWeaponBoxes()
         {
-            WeaponSystem WeaponSystem = transform.parent.parent.GetComponent<WeaponSystem>();
+            WeaponSystem WeaponSystem = transform.parent.parent.parent.GetComponent<WeaponSystem>();
 
             for (int i = 0; i < WeaponSystem.Weapons.Count; i++)
             {

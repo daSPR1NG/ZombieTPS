@@ -9,6 +9,9 @@ namespace Khynan_Coding
 
         private Transform _playerRef;
 
+        private void OnEnable() => Actions.OnPlayerDeath += HideSelf;
+        private void OnDisable() => Actions.OnPlayerDeath -= HideSelf;
+
         void Start()
         {
             Init();
@@ -24,6 +27,11 @@ namespace Khynan_Coding
         {
             Camera camera = Helper.GetMainCamera();
             transform.LookAt(transform.position + camera.transform.rotation * Vector3.forward, -(camera.transform.rotation * Vector3.up));
+        }
+
+        void HideSelf()
+        {
+            Helper.HideGO( gameObject );
         }
     }
 }
